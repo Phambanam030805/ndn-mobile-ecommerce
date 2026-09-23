@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Chạy web trên Chrome", // Tên hiển thị khi nhấn Debug
+            "url": "http://localhost/ndnmobile", // Đường dẫn dự án trên XAMPP
+            "webRoot": "${workspaceFolder}" 
+        }
+    ]
+}

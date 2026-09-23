@@ -1,0 +1,101 @@
+/* =====================================================
+   RESET LỖI CŨ (RẤT QUAN TRỌNG)
+===================================================== */
+body{
+    margin: 0;
+    padding: 0;
+}
+
+.slider-main,
+#menu-slider,
+.bx-wrapper,
+.bx-viewport{
+    height: auto !important;
+    overflow: visible !important;
+}
+
+/* =====================================================
+   HEADER FIXED – CHUẨN
+===================================================== */
+.header_fixed{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+}
+
+/* CHIỀU CAO HEADER THỰC TẾ */
+body{
+    padding-top: 165px;
+}
+
+/* Tablet */
+@media (max-width: 991px){
+    body{
+        padding-top: 135px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 576px){
+    body{
+        padding-top: 115px;
+    }
+}
+
+/* =====================================================
+   MENU
+===================================================== */
+#menu-slider{
+    width: 100%;
+    background: #d70018;
+}
+
+/* =====================================================
+   SLIDER – KHÔNG CẮT ẢNH
+===================================================== */
+.slider-main{
+    width: 100%;
+    max-height: 420px;        /* THU NHỎ BANNER */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ẢNH LUÔN HIỂN THỊ ĐỦ */
+.slider-main img{
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+/* Tablet */
+@media (max-width: 991px){
+    .slider-main{
+        max-height: 300px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 576px){
+    .slider-main{
+        max-height: 220px;
+    }
+}
+
+/* =====================================================
+   FIX BXSLIDER (NẾU CÓ)
+===================================================== */
+.bx-wrapper{
+    margin: 0 auto;
+    border: none;
+    box-shadow: none;
+}
+
+.bx-viewport{
+    overflow: hidden;
+}

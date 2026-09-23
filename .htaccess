@@ -1,0 +1,26 @@
+# Kiểm tra nếu máy chủ Apache có hỗ trợ Module Rewrite
+<IfModule mod_rewrite.c>
+    
+    # Cho phép máy chủ truy cập theo các liên kết tượng trưng (Symlinks)
+    # Giúp xử lý các tệp tin và thư mục linh hoạt hơn
+    Options +FollowSymlinks
+
+    # Kích hoạt bộ máy Rewrite (ghi lại đường dẫn)
+    RewriteEngine On
+
+    # Chỉ định thư mục gốc của dự án. 
+    # Nếu bạn chạy localhost/ndnmobile thì để như bên dưới
+    RewriteBase /ndnmobile
+
+    # Kiểm tra: Nếu đường dẫn truy cập KHÔNG khớp với một tệp tin vật lý nào
+    RewriteCond %{REQUEST_FILENAME} !-f
+
+    # Kiểm tra: Nếu đường dẫn truy cập KHÔNG khớp với một thư mục vật lý nào
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Nếu 2 điều kiện trên đúng, sẽ chuyển hướng mọi yêu cầu về file index.php
+    # $1 là tham số đại diện cho phần nội dung sau tên thư mục gốc
+    # [L] (Last) có nghĩa là dừng các quy tắc ghi lại phía sau nếu dòng này đã chạy
+    RewriteRule ^(.*)$ index.php/$1 [L]
+
+</IfModule>

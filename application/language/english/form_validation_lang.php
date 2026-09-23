@@ -1,0 +1,30 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+$lang['form_validation_required']		= '{field} không được để trống !';
+$lang['form_validation_isset']			= '{field} phải có giá trị.';
+$lang['form_validation_valid_email']		= '{field} không đúng định dạng email.';
+$lang['form_validation_valid_emails']		= 'Email đã được sử dụng, vui lòng nhập email khác.';
+$lang['form_validation_min_length']		= '{field} phải dài tối thiểu {param} kí tự.';
+$lang['form_validation_max_length']		= '{field} không được vượt quá {param} kí tự.';
+$lang['form_validation_exact_length']		= '{field} phải có độ dài chính xác là {param} kí tự.';
+$lang['form_validation_alpha']			= '{field} chỉ được chứa các ký tự chữ cái.';
+$lang['form_validation_alpha_numeric']		= '{field} chỉ được chứa các ký tự chữ cái và số.';
+$lang['form_validation_alpha_numeric_spaces']	= '{field} chỉ được chứa các ký tự chữ cái, số và khoảng trắng.';
+$lang['form_validation_alpha_dash']		= '{field} chỉ được chứa các ký tự chữ cái, số, gạch dưới và gạch ngang.';
+$lang['form_validation_numeric']		= '{field} phải là định dạng số.';
+$lang['form_validation_is_numeric']		= '{field} phải là các ký tự số.';
+$lang['form_validation_integer']		= '{field} phải là số nguyên.';
+$lang['form_validation_regex_match']		= '{field} không đúng định dạng.';
+$lang['form_validation_matches']		= '{field} không khớp với trường {param}.';
+$lang['form_validation_differs']		= '{field} phải khác với trường {param}.';
+$lang['form_validation_is_unique'] 		= '{field} đã tồn tại trong hệ thống, vui lòng nhập {field} khác !';
+$lang['form_validation_is_natural']		= '{field} phải là số tự nhiên.';
+$lang['form_validation_is_natural_no_zero']	= '{field} phải là số tự nhiên lớn hơn 0.';
+$lang['form_validation_decimal']		= '{field} phải là số thập phân.';
+$lang['form_validation_less_than']		= '{field} phải nhỏ hơn {param}.';
+$lang['form_validation_less_than_equal_to']	= '{field} phải nhỏ hơn hoặc bằng {param}.';
+$lang['form_validation_greater_than']		= '{field} phải lớn hơn {param}.';
+$lang['form_validation_greater_than_equal_to']	= '{field} phải lớn hơn hoặc bằng {param}.';
+$lang['form_validation_error_message_not_set']	= 'Không thể truy cập thông báo lỗi tương ứng với tên trường {field}.';
+$lang['form_validation_in_list']		= '{field} phải là một trong các giá trị: {param}.';

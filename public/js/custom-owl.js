@@ -1,0 +1,1 @@
+/* Owl Carousel initialization moved to layout.php for better reliability */
