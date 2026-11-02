@@ -7,6 +7,11 @@ application/cache/*
 !application/cache/index.html
 !application/cache/.gitkeep
 
+# CodeIgniter logs
+application/logs/*
+!application/logs/index.html
+!application/logs/.gitkeep
+
 # Python & Temporary scripts
 __pycache__/
 *.py[cod]
