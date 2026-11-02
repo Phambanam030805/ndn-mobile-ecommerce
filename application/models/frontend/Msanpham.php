@@ -94,7 +94,7 @@ class Msanpham extends CI_Model {
     }
 
     /**
-     * Sản phẩm đang khuyến mãi
+     * Sản phẩm đang khuyến mãi (Dành cho widget/slider)
      */
     public function product_sale($limit)
     {
@@ -107,7 +107,32 @@ class Msanpham extends CI_Model {
     }
 
     /**
-     * Sản phẩm bán chạy
+     * Danh sách sản phẩm khuyến mãi có phân trang và lọc giá
+     */
+    public function product_sale_list($limit, $first, $f, $od, $price_min = null, $price_max = null)
+    {
+        $this->_apply_default_filters();
+        $this->db->where('price_sale >', 0);
+        $this->db->where('price_sale < price');
+        $this->_apply_price_filter($price_min, $price_max);
+        $this->db->order_by($f, $od);
+        return $this->db->get($this->table, $limit, $first)->result_array();
+    }
+
+    /**
+     * Đếm tổng số sản phẩm khuyến mãi
+     */
+    public function product_sale_count($price_min = null, $price_max = null)
+    {
+        $this->_apply_default_filters();
+        $this->db->where('price_sale >', 0);
+        $this->db->where('price_sale < price');
+        $this->_apply_price_filter($price_min, $price_max);
+        return $this->db->count_all_results($this->table);
+    }
+
+    /**
+     * Sản phẩm bán chạy (cho slider/carousel)
      */
     public function product_selling($limit)
     {
@@ -115,6 +140,27 @@ class Msanpham extends CI_Model {
         $this->db->order_by('number_buy', 'desc');
         $this->db->limit($limit);
         return $this->db->get($this->table)->result_array();
+    }
+
+    /**
+     * Danh sách sản phẩm bán chạy có phân trang và lọc giá
+     */
+    public function product_selling_list($limit, $first, $f = 'number_buy', $od = 'desc', $price_min = null, $price_max = null)
+    {
+        $this->_apply_default_filters();
+        $this->_apply_price_filter($price_min, $price_max);
+        $this->db->order_by($f, $od);
+        return $this->db->get($this->table, $limit, $first)->result_array();
+    }
+
+    /**
+     * Đếm tổng số sản phẩm bán chạy
+     */
+    public function product_selling_count($price_min = null, $price_max = null)
+    {
+        $this->_apply_default_filters();
+        $this->_apply_price_filter($price_min, $price_max);
+        return $this->db->count_all_results($this->table);
     }
 
     /**
@@ -216,5 +262,27 @@ class Msanpham extends CI_Model {
         $this->db->group_end();
         
         return $this->db->count_all_results();
+    }
+
+    /**
+     * Lấy các phiên bản sản phẩm cùng series/dòng máy (ví dụ các dung lượng khác nhau)
+     */
+    public function get_product_variants($name, $current_id)
+    {
+        // Trích xuất tên gốc của dòng sản phẩm (bỏ dung lượng như 64GB, 128GB, 256GB, 512GB, 1TB)
+        $clean_name = preg_replace('/\s*(16GB|32GB|64GB|128GB|256GB|512GB|1TB|2TB)\b/i', '', $name);
+        $clean_name = trim($clean_name);
+
+        $this->_apply_default_filters();
+        $this->db->like('name', $clean_name, 'both');
+        $this->db->order_by('price', 'asc');
+        $products = $this->db->get($this->table)->result_array();
+
+        if (empty($products)) {
+            $current = $this->product_detail_id($current_id);
+            return $current ? array($current) : array();
+        }
+
+        return $products;
     }
 }

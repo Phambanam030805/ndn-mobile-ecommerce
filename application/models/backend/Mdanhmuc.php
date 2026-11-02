@@ -8,21 +8,38 @@ class Mdanhmuc extends CI_Model {
         $this->table = 'categories'; 
     }
 
-    // Lấy lên danh sách danh mục sản phẩm
-    public function category_all($limit, $first)
+    // Lấy lên danh sách danh mục sản phẩm (hỗ trợ tìm kiếm)
+    public function category_all($limit, $first, $search = '')
     {
         $this->db->where('trash', 1);
         $this->db->where('type', 'product');
+        if(!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('name', $search);
+            if(is_numeric($search)){
+                $this->db->or_where('id', $search);
+            }
+            $this->db->group_end();
+        }
         $this->db->order_by('orders', 'ASC');
+        $this->db->order_by('id', 'DESC');
         $query = $this->db->get($this->table, $limit, $first);
         return $query->result_array();
     }
 
     // Đếm phân trang
-    public function category_count()
+    public function category_count($search = '')
     {
         $this->db->where('trash', 1);
         $this->db->where('type', 'product');
+        if(!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('name', $search);
+            if(is_numeric($search)){
+                $this->db->or_where('id', $search);
+            }
+            $this->db->group_end();
+        }
         $query = $this->db->get($this->table);
         return $query->num_rows();
     }
@@ -32,6 +49,7 @@ class Mdanhmuc extends CI_Model {
     {
         if(!isset($mydata['type'])) $mydata['type'] = 'product';
         $this->db->insert($this->table, $mydata);
+        $this->clear_frontend_cache();
     }
 
     // Cập nhật
@@ -39,6 +57,7 @@ class Mdanhmuc extends CI_Model {
     {
         $this->db->where('id',$id);
         $this->db->update($this->table, $mydata);
+        $this->clear_frontend_cache();
     }
 
     // Kiểm tra tồn tại danh mục con
@@ -100,6 +119,7 @@ class Mdanhmuc extends CI_Model {
     {
         $this->db->where('id',$id);
         $this->db->delete($this->table);
+        $this->clear_frontend_cache();
     }
 
     // Danh sách danh mục đã xóa
@@ -126,6 +146,7 @@ class Mdanhmuc extends CI_Model {
         $data=array('trash'=>1);
         $this->db->where('id',$id);
         $this->db->update($this->table, $data);
+        $this->clear_frontend_cache();
     }
 
     public function category_name($id)
@@ -151,5 +172,15 @@ class Mdanhmuc extends CI_Model {
         foreach ($results as $row) {
             $this->db->where('id', $row['id'])->update($this->table, ['orders' => $i++]);
         }
+        $this->clear_frontend_cache();
+    }
+
+    /**
+     * Tự động xóa sạch Cache danh mục ở Frontend khi Admin thay đổi dữ liệu
+     */
+    private function clear_frontend_cache()
+    {
+        $this->load->driver('cache', ['adapter' => 'file', 'backup' => 'dummy']);
+        $this->cache->clean();
     }
 }

@@ -14,19 +14,45 @@ class Mdonhang extends CI_Model {
         return $query->result_array();
     }
 
-    // 1. Lấy danh sách đơn hàng cho trang quản lý
-    public function orders_listorders($limit, $first)
+    // 1. Lấy danh sách đơn hàng cho trang quản lý (hỗ trợ tìm kiếm & lọc trạng thái)
+    public function orders_listorders($limit, $first, $search = '', $status = '')
     {
         $this->db->where('trash', 1);
+        if ($status !== '' && $status !== null) {
+            $this->db->where('status', (int)$status);
+        }
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('orderCode', $search);
+            $this->db->or_like('fullname', $search);
+            $this->db->or_like('phone', $search);
+            if (is_numeric($search)) {
+                $this->db->or_where('id', $search);
+            }
+            $this->db->group_end();
+        }
         $this->db->order_by('order_date', 'desc'); 
         $query = $this->db->get($this->table, $limit, $first);
         return $query->result_array();
     }
 
     // 2. Đếm tổng đơn hàng để phân trang
-    public function orders_count()
+    public function orders_count($search = '', $status = '')
     {
         $this->db->where('trash', 1);
+        if ($status !== '' && $status !== null) {
+            $this->db->where('status', (int)$status);
+        }
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('orderCode', $search);
+            $this->db->or_like('fullname', $search);
+            $this->db->or_like('phone', $search);
+            if (is_numeric($search)) {
+                $this->db->or_where('id', $search);
+            }
+            $this->db->group_end();
+        }
         return $this->db->count_all_results($this->table);
     }
 
@@ -58,15 +84,18 @@ class Mdonhang extends CI_Model {
         return $query->result_array();
     }
 
-    // 6. Đếm đơn hàng chưa xử lý cho Header
+    // 6. Đếm đơn hàng đang giao hàng (status = 1) cho Header
     public function orders_count_header() {
-        $this->db->where('status', 0);
+        $this->db->where('status', 1);
         $this->db->where('trash', 1);
         return $this->db->count_all_results($this->table);
     }
 
+    // 7. Đếm đơn hàng đang chờ duyệt (status = 0) cho Header
     public function orders_count_header_not() {
-        return $this->orders_count_header();
+        $this->db->where('status', 0);
+        $this->db->where('trash', 1);
+        return $this->db->count_all_results($this->table);
     }
 
     // 8. Lấy chi tiết một đơn hàng

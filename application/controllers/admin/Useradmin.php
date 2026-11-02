@@ -97,40 +97,64 @@ class Useradmin extends CI_Controller {
 			redirect('admin/E403/index','refresh');
 		}
 		$row=$this->Mnguoidung->user_detail($id);
+		if(empty($row)){
+			redirect('admin','refresh');
+		}
 		$this->data['row']=$row;
-		$d=getdate();
-		$today=$d['year']."/".$d['mon']."/".$d['mday']." ".$d['hours'].":".$d['minutes'].":".$d['seconds'];
+
 		$this->load->library('form_validation');
-		$this->load->library('alias');
-		$this->form_validation->set_rules('fullname', 'Họ và tên', 'required');
-		$this->form_validation->set_rules('address', 'Địa chỉ', 'required');
-		$this->form_validation->set_rules('password', 'Mật khẩu', 'required|min_length[5]|max_length[32]');
+		$this->form_validation->set_rules('fullname', 'Họ và tên', 'required|trim');
+		$this->form_validation->set_rules('email', 'Email', 'required|valid_email|trim');
+		$this->form_validation->set_rules('phone', 'Số điện thoại', 'required|trim');
+
+		if(!empty($_POST['password'])){
+			$this->form_validation->set_rules('password', 'Mật khẩu mới', 'min_length[5]|max_length[32]');
+		}
+
 		if ($this->form_validation->run() == TRUE) 
 		{
-			$mydata= array(
-				'fullname' =>$_POST['fullname'], 
-				'address' =>$_POST['address'], 
-				'password' =>sha1($_POST['password']), 
-				'gender'=>$_POST['gender']
+			$mydata = array(
+				'fullname' => $this->input->post('fullname', TRUE), 
+				'email'    => $this->input->post('email', TRUE),
+				'phone'    => $this->input->post('phone', TRUE),
+				'address'  => $this->input->post('address', TRUE), 
+				'gender'   => (int)$this->input->post('gender'),
 			);
-         	$config = array();
-	         $config['upload_path']   = './public/images/admin/';
-	         $config['allowed_types'] = 'jpg|png';
-	         $config['encrypt_name'] = TRUE;
-	         $config['max_size']      = '500';
-	         $config['max_width']     = '1028';
-	         $config['max_height']    = '1028';
-	         $this->load->library('upload', $config);
-	         if($this->upload->do_upload('image')){
-	             $data = $this->upload->data();
-	             $mydata['img']=$data['file_name'];
-	         }
+
+			// Nếu có nhập mật khẩu mới thì mới cập nhật password
+			$new_pass = $this->input->post('password');
+			if(!empty($new_pass)){
+				$mydata['password'] = sha1($new_pass);
+			}
+
+			// Upload ảnh đại diện
+			if(!empty($_FILES['image']['name'])){
+				$config = array();
+				$config['upload_path']   = './public/images/admin/';
+				$config['allowed_types'] = 'jpg|jpeg|png|webp';
+				$config['encrypt_name']  = TRUE;
+				$config['max_size']      = '5120';
+				$this->load->library('upload', $config);
+				if($this->upload->do_upload('image')){
+					$data = $this->upload->data();
+					$mydata['img'] = $data['file_name'];
+				}
+			}
+
 			$this->Mnguoidung->user_update($mydata, $id);
-			$this->session->set_flashdata('success', 'Cập nhật tài khoản thành công');
-			redirect('admin/useradmin/','refresh');
+
+			// Cập nhật lại session hiện tại nếu chính admin đang sửa tài khoản của mình
+			$current_user = $this->session->userdata('sessionadmin');
+			if($current_user['id'] == $id){
+				$updated_user = $this->Mnguoidung->user_detail($id);
+				$this->session->set_userdata('sessionadmin', $updated_user);
+			}
+
+			$this->session->set_flashdata('success', 'Cập nhật thông tin tài khoản thành công!');
+			redirect('admin/useradmin/update/'.$id, 'refresh');
 		} 
 		$this->data['view']='update';
-		$this->data['title']='Cập nhật tài khoản';
+		$this->data['title']='Hồ sơ quản trị viên';
 		$this->load->view('backend/layout', $this->data);
 	}
 

@@ -26,14 +26,26 @@ class Producer extends CI_Controller {
 
 	public function index(){
 		$this->load->library('phantrang');
-		$limit=10;
-		$current=$this->phantrang->PageCurrent();
-		$first=$this->phantrang->PageFirst($limit, $current);
-		$total=$this->Mnhacungcap->producer_count();
-		$this->data['strphantrang']=$this->phantrang->PagePer($total, $current, $limit, $url='admin/producer');
-		$this->data['list']=$this->Mnhacungcap->producer_all($limit,$first);
-		$this->data['view']='index';
-		$this->data['title']='Danh sách nhà cung cấp ';
+
+		$search = $this->input->get('search', TRUE);
+		$search = trim($search ? $search : '');
+
+		$limit = 10;
+		$current = $this->phantrang->PageCurrent();
+		$first = $this->phantrang->PageFirst($limit, $current);
+		$total = $this->Mnhacungcap->producer_count($search);
+
+		$url = 'admin/producer';
+		if (!empty($search)) {
+			$url .= '?search=' . urlencode($search);
+		}
+
+		$this->data['strphantrang'] = $this->phantrang->PagePer($total, $current, $limit, $url);
+		$this->data['list']         = $this->Mnhacungcap->producer_all($limit, $first, $search);
+		$this->data['search']       = $search;
+		$this->data['total']        = $total;
+		$this->data['view']         = 'index';
+		$this->data['title']        = 'Danh sách nhà cung cấp';
 		$this->load->view('backend/layout', $this->data);
 	}
 

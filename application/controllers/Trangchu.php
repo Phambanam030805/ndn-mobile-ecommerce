@@ -18,12 +18,31 @@ class Trangchu extends CI_Controller {
         $this->load->model('frontend/Msanpham');
         $this->load->model('frontend/Mdanhmuc');
         $this->load->model('frontend/Mnoidung');
+        $this->load->library('tech_news_crawler');
+        $this->load->library('phantrang');
         $this->data['com']='trangchu';
     }
     
-	public function index()
+	public function index($page = 1)
 	{
-        $this->data['title']='NDN Mobile - Điện thoại, Laptop, Link kiện chính hãng';
+        // Tự động cập nhật tin tức công nghệ mới nhất hôm nay từ RSS
+        $this->tech_news_crawler->auto_crawl_daily(6);
+
+        $limit = 10;
+        $current = is_numeric($page) && $page > 0 ? (int)$page : $this->phantrang->PageCurrent();
+        if ($current < 1) $current = 1;
+        $first = $this->phantrang->PageFirst($limit, $current);
+
+        // Lấy danh sách sản phẩm phân trang (mặc định theo ID tăng dần để các hãng lần lượt hiển thị đẹp mắt)
+        $total = $this->Msanpham->product_sanpham_count();
+        $config_url = base_url('trang-chu');
+
+        $this->data['strphantrang'] = $this->phantrang->PagePer($total, $current, $limit, $config_url);
+        $this->data['list_home_products'] = $this->Msanpham->product_sanpham($limit, $first, 'id', 'asc');
+        $this->data['current_page'] = $current;
+        $this->data['total_products'] = $total;
+
+        $this->data['title']='NDN Mobile - Điện thoại chính hãng giá tốt';
         $this->data['view']='index';
 		$this->load->view('frontend/layout',$this->data);
 	}

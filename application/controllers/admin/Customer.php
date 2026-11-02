@@ -37,21 +37,59 @@ class Customer extends CI_Controller {
     public function index()
     {
         $this->load->library('phantrang');
+
+        $search = $this->input->get('search', TRUE);
+        $search = trim($search ? $search : '');
+
         $limit   = 10;
         $current = $this->phantrang->PageCurrent();
         $first   = $this->phantrang->PageFirst($limit, $current);
-        $total   = $this->Mnguoidung->user_count([3]);
+        $total   = $this->Mnguoidung->user_count([3], $search);
 
-        $this->data['strphantrang'] = $this->phantrang->PagePer($total, $current, $limit, $url='admin/customer');
-        $this->data['list'] = $this->Mnguoidung->user_all([3], $limit, $first);
-        $this->data['view'] = 'index';
-        $this->data['title'] = 'Danh sách khách hàng';
+        $url = 'admin/customer';
+        if (!empty($search)) {
+            $url .= '?search=' . urlencode($search);
+        }
+
+        $this->data['strphantrang'] = $this->phantrang->PagePer($total, $current, $limit, $url);
+        $this->data['list']         = $this->Mnguoidung->user_all([3], $limit, $first, $search);
+        $this->data['search']       = $search;
+        $this->data['total']        = $total;
+        $this->data['view']         = 'index';
+        $this->data['title']        = 'Danh sách khách hàng';
         $this->load->view('backend/layout', $this->data);
     }
 
     public function update($id)
     {
         $this->data['row']  = $this->Mnguoidung->user_detail($id);
+        if(!$this->data['row'])
+        {
+            $this->session->set_flashdata('error', 'Khách hàng không tồn tại!');
+            redirect('admin/customer');
+        }
+
+        if($this->input->post())
+        {
+            $this->load->library('form_validation');
+            $this->form_validation->set_rules('fullname', 'Họ và tên', 'required|trim');
+            $this->form_validation->set_rules('phone', 'Số điện thoại', 'required|trim');
+            $this->form_validation->set_rules('email', 'Email', 'required|valid_email|trim');
+
+            if($this->form_validation->run() == TRUE)
+            {
+                $mydata = array(
+                    'fullname' => $this->input->post('fullname', TRUE),
+                    'phone'    => $this->input->post('phone', TRUE),
+                    'email'    => $this->input->post('email', TRUE),
+                    'status'   => (int)$this->input->post('status', TRUE),
+                );
+                $this->Mnguoidung->user_update($mydata, $id);
+                $this->session->set_flashdata('success', 'Cập nhật thông tin khách hàng thành công!');
+                redirect('admin/customer', 'refresh');
+            }
+        }
+
         $this->data['view'] = 'update';
         $this->data['title'] = 'Cập nhật khách hàng';
         $this->load->view('backend/layout', $this->data);

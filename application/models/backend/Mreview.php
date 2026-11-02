@@ -8,19 +8,47 @@ class Mreview extends CI_Model {
         $this->table = 'posts';
     }
 
-    public function review_all($limit, $first)
+    public function review_all($limit, $first, $search = '', $star = '')
     {
         $this->db->where('type', 'review');
         $this->db->where('trash', 1);
+        if ($star !== '' && $star !== null) {
+            $this->db->where('title', (string)$star);
+        }
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('fullname', $search);
+            $this->db->or_like('email', $search);
+            $this->db->or_like('content', $search);
+            if (is_numeric($search)) {
+                $this->db->or_where('id', $search);
+                $this->db->or_where('link', $search);
+            }
+            $this->db->group_end();
+        }
         $this->db->order_by('created_at', 'desc');
         $query = $this->db->get($this->table, $limit, $first);
         return $query->result_array();
     }
 
-    public function review_count()
+    public function review_count($search = '', $star = '')
     {
         $this->db->where('type', 'review');
         $this->db->where('trash', 1);
+        if ($star !== '' && $star !== null) {
+            $this->db->where('title', (string)$star);
+        }
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('fullname', $search);
+            $this->db->or_like('email', $search);
+            $this->db->or_like('content', $search);
+            if (is_numeric($search)) {
+                $this->db->or_where('id', $search);
+                $this->db->or_where('link', $search);
+            }
+            $this->db->group_end();
+        }
         $query = $this->db->get($this->table);
         return $query->num_rows();
     }

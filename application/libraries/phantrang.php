@@ -30,6 +30,18 @@ class Phantrang{
 		$html = '';
 		if( $numPage == 1)
 			return '';
+
+		// Hỗ trợ xử lý URL có Query String (ví dụ: admin/product?catid=1 hoặc admin/product)
+		$buildUrl = function($page) use ($url) {
+			if (strpos($url, '?') !== false) {
+				$parts = explode('?', $url, 2);
+				$baseUrl = rtrim($parts[0], '/');
+				$queryString = $parts[1];
+				return $baseUrl . '/' . $page . '?' . $queryString;
+			}
+			return rtrim($url, '/') . '/' . $page;
+		};
+
 		if( $current == 1)
 		{
 			$html.= "<li class = 'hidden-xs'><a>Trang đầu</a></li>";
@@ -37,8 +49,8 @@ class Phantrang{
 		}
 		else
 		{
-			$html.= "<li class = 'hidden-xs'><a href='$url/1'>Trang đầu</a></li>";
-			$html.= "<li><a href='$url/".($current - 1)."'>Trước</a></li>";
+			$html.= "<li class = 'hidden-xs'><a href='".$buildUrl(1)."'>Trang đầu</a></li>";
+			$html.= "<li><a href='".$buildUrl($current - 1)."'>Trước</a></li>";
 		}
 		if($current <= 3)
 		{
@@ -50,7 +62,7 @@ class Phantrang{
 				}
 				else
 				{
-					$html.= "<li><a href='$url/$i'>$i</a></li>";
+					$html.= "<li><a href='".$buildUrl($i)."'>$i</a></li>";
 				}
 			}
 		}
@@ -66,7 +78,7 @@ class Phantrang{
 					}
 					else
 					{
-						$html.= "<li><a href='$url/$i'>$i</a></li>";
+						$html.= "<li><a href='".$buildUrl($i)."'>$i</a></li>";
 					}
 				}
 			}
@@ -82,7 +94,7 @@ class Phantrang{
 						}
 						else
 						{
-							$html.= "<li><a href='$url/$i'>$i</a></li>";
+							$html.= "<li><a href='".$buildUrl($i)."'>$i</a></li>";
 						}
 					}
 				}
@@ -95,8 +107,8 @@ class Phantrang{
 		}
 		else
 		{
-			$html.="<li><a href='$url/".($current + 1)."'>Sau</a></li>";
-			$html.="<li class = 'hidden-xs'><a href='$url/$numPage'>Trang cuối</a></li>";
+			$html.="<li><a href='".$buildUrl($current + 1)."'>Sau</a></li>";
+			$html.="<li class = 'hidden-xs'><a href='".$buildUrl($numPage)."'>Trang cuối</a></li>";
 		}
 		return $html;
 	}

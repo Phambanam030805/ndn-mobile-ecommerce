@@ -8,17 +8,39 @@ class Msanpham extends CI_Model {
         $this->table = 'products';
     }
 
-    // index
-    public function product_sanpham_count()
+    // index (hỗ trợ tìm kiếm & lọc danh mục)
+    public function product_sanpham_count($search = '', $catid = '')
     {
         $this->db->where('trash', 1);
+        if(!empty($catid)){
+            $this->db->where('catid', $catid);
+        }
+        if(!empty($search)){
+            $this->db->group_start();
+            $this->db->like('name', $search);
+            if(is_numeric($search)){
+                $this->db->or_where('id', $search);
+            }
+            $this->db->group_end();
+        }
         $query = $this->db->get($this->table);
         return $query->num_rows();
     }
 
-    public function product_sanpham($limit, $first)
+    public function product_sanpham($limit, $first, $search = '', $catid = '')
     {
         $this->db->where('trash', 1);
+        if(!empty($catid)){
+            $this->db->where('catid', $catid);
+        }
+        if(!empty($search)){
+            $this->db->group_start();
+            $this->db->like('name', $search);
+            if(is_numeric($search)){
+                $this->db->or_where('id', $search);
+            }
+            $this->db->group_end();
+        }
         $this->db->order_by('id', 'desc');
         $query = $this->db->get($this->table, $limit, $first);
         return $query->result_array();

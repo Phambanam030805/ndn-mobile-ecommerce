@@ -38,14 +38,26 @@ class Coupon extends CI_Controller {
 		}
 		//
 		$this->load->library('phantrang');
-		$limit=10;
-		$current=$this->phantrang->PageCurrent();
-		$first=$this->phantrang->PageFirst($limit, $current);
-		$total=$this->Mgiamgia->coupon_count();
-		$this->data['strphantrang']=$this->phantrang->PagePer($total, $current, $limit, $url='admin/coupon');
-		$this->data['list']=$this->Mgiamgia->coupon_all($limit,$first);
-		$this->data['view']='index';
-		$this->data['title']='Danh sách mã giảm giá';
+
+		$search = $this->input->get('search', TRUE);
+		$search = trim($search ? $search : '');
+
+		$limit = 10;
+		$current = $this->phantrang->PageCurrent();
+		$first = $this->phantrang->PageFirst($limit, $current);
+		$total = $this->Mgiamgia->coupon_count($search);
+
+		$url = 'admin/coupon';
+		if (!empty($search)) {
+			$url .= '?search=' . urlencode($search);
+		}
+
+		$this->data['strphantrang'] = $this->phantrang->PagePer($total, $current, $limit, $url);
+		$this->data['list']         = $this->Mgiamgia->coupon_all($limit, $first, $search);
+		$this->data['search']       = $search;
+		$this->data['total']        = $total;
+		$this->data['view']         = 'index';
+		$this->data['title']        = 'Danh sách mã giảm giá';
 		$this->load->view('backend/layout', $this->data);
 	}
 

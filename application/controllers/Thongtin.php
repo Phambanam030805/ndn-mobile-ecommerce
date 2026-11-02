@@ -1,21 +1,30 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+
 /**
+ * Controller Thông tin cá nhân & Quản lý đơn hàng khách hàng
+ * Hardened IDOR Protection & Bcrypt Password Reset Architecture
+ *
  * @property CI_Session $session
  * @property CI_Loader $load
  * @property CI_Input $input
  * @property CI_DB_query_builder $db
+ * @property CI_Form_validation $form_validation
  * @property Mlienhe $Mlienhe
  * @property Mnguoidung $Mnguoidung
  * @property Mdonhang $Mdonhang
+ * @property Mchitietdonhang $Mchitietdonhang
+ * @property Mthongtinkhach $Mthongtinkhach
+ * @property Mkhachhang $Mkhachhang
+ * @property Mcauhinh $Mcauhinh
  * @property Phantrang $phantrang
  * @property array $data
  */
 class Thongtin extends CI_Controller {
-	// Hàm khởi tạo
-    function __construct() {
+
+    public function __construct() {
         parent::__construct();
-        $this->data['com']='thongtin';
+        $this->data['com'] = 'thongtin';
         $this->load->model('frontend/Msanpham');
         $this->load->model('frontend/Mdanhmuc');
         $this->load->model('frontend/Mkhachhang');
@@ -25,91 +34,169 @@ class Thongtin extends CI_Controller {
         $this->load->model('frontend/Mtinhthanh');
         $this->load->model('frontend/Mquanhuyen');
         $this->load->model('frontend/Mcauhinh');
-        if(!$this->session->userdata('sessionKhachHang')){
-            redirect('dang-nhap','refresh');
+        $this->load->library('session');
+        $this->load->library('form_validation');
+
+        if (!$this->session->userdata('sessionKhachHang')) {
+            redirect('dang-nhap', 'refresh');
+            return;
         }
-        $this->data['info']=$this->Mthongtinkhach->customer_detail_id($this->session->userdata('id'));
+
+        $this->data['info'] = $this->Mthongtinkhach->customer_detail_id($this->session->userdata('id'));
     }
     
-    public function index(){
-        $this->data['title']='NDN Mobile - Thông tin tài khoản';
-        $this->data['view']='index';
-        $this->load->view('frontend/layout',$this->data);
+    /**
+     * Trang thông tin hồ sơ & lịch sử đơn hàng
+     * URL: /thong-tin-khach-hang
+     */
+    public function index() {
+        $customer_id = (int)$this->session->userdata('id');
+        $this->data['order_stats'] = $this->Mthongtinkhach->customer_order_stats($customer_id);
+        $this->data['title']       = 'NDN Mobile - Thông tin tài khoản';
+        $this->data['view']        = 'index';
+        $this->load->view('frontend/layout', $this->data);
     }
 
-    public function order(){
-        $aurl= explode('/',uri_string());
-        $id = $aurl[2];
-        $this->data['orderid'] = $id;
-        $priceShip=$this->Mcauhinh->config_price_ship();
-        $this->data['row'] = $this->Mchitietdonhang->orderdetail_order_join_product($id);
-        $info = $this->Mthongtinkhach->order_orderid($id);
-        
-        // Lấy số tiền giảm giá thực tế thay vì lấy ID coupon
-        if ($info && $info['coupon'] != NULL) {
-            $coupon_detail = $this->db->where('id', $info['coupon'])->get('coupons')->row_array();
-            if ($coupon_detail) {
-                $info['coupon_amount'] = $coupon_detail['discount'];
-            } else {
-                $info['coupon_amount'] = 0;
-            }
+    /**
+     * Xem chi tiết đơn hàng (Chặn IDOR tuyệt đối)
+     * URL: /thongtin/order/{order_id}
+     */
+    public function order($id = null) {
+        if (!$id || !is_numeric($id)) {
+            $aurl = explode('/', uri_string());
+            $id = isset($aurl[2]) && is_numeric($aurl[2]) ? (int)$aurl[2] : null;
+        }
+
+        if (!$id) {
+            redirect('thong-tin-khach-hang', 'refresh');
+            return;
+        }
+
+        $currentCustomerId = (int)$this->session->userdata('id');
+
+        // BẢO MẬT IDOR: Buộc đơn hàng phải thuộc về chính khách hàng đang đăng nhập
+        $info = $this->db->where('id', (int)$id)
+                         ->where('customer_id', $currentCustomerId)
+                         ->where('trash', 1)
+                         ->get('orders')
+                         ->row_array();
+
+        if (!$info) {
+            $this->session->set_flashdata('error', 'Đơn hàng không tồn tại hoặc bạn không có quyền xem thông tin đơn hàng này!');
+            redirect('thong-tin-khach-hang', 'refresh');
+            return;
+        }
+
+        // Truy vấn số tiền chiết khấu thực tế của coupon
+        if (!empty($info['coupon'])) {
+            $coupon_detail = $this->db->where('id', (int)$info['coupon'])->get('coupons')->row_array();
+            $info['coupon_amount'] = $coupon_detail ? (float)$coupon_detail['discount'] : 0;
         } else {
             $info['coupon_amount'] = 0;
         }
 
-        $this->data['info'] = $info;
-        $this->data['title'] = 'NDN Mobile - Chi tiết đơn hàng';  
-        $this->data['view']='detail';
-        $this->load->view('frontend/layout',$this->data);
+        $this->data['orderid'] = $id;
+        $this->data['row']     = $this->Mchitietdonhang->orderdetail_order_join_product($id);
+        $this->data['info']    = $info;
+        $this->data['title']   = 'NDN Mobile - Chi tiết đơn hàng #' . $info['orderCode'];  
+        $this->data['view']    = 'detail';
+        $this->load->view('frontend/layout', $this->data);
     }
 
-    public function reset_password(){
-        $row=$this->Mkhachhang->customer_check_username($this->session->userdata('username'));
-        $this->data['row']=$row;
-        $this->load->library('form_validation');
-        $this->form_validation->set_rules('password_old', 'Mật khẩu', 'required|callback_check_password');
-        $this->form_validation->set_rules('password', 'Mật khẩu', 'required|min_length[6]|max_length[32]');
+    /**
+     * Đổi mật khẩu tài khoản khách hàng (Hỗ trợ Bcrypt / Seamless Rehash)
+     * URL: /thong-tin-khach-hang/reset_password
+     */
+    public function reset_password() {
+        $customerId = (int)$this->session->userdata('id');
+        $user = $this->db->where('id', $customerId)->get('users')->row_array();
+        $this->data['row'] = $user;
+
+        $this->form_validation->set_rules('password_old', 'Mật khẩu cũ', 'required|callback_check_password');
+        $this->form_validation->set_rules('password', 'Mật khẩu mới', 'required|min_length[6]|max_length[64]');
         $this->form_validation->set_rules('re_password', 'Nhập lại mật khẩu', 'required|matches[password]');
-        if($this->form_validation->run() ==TRUE){ 
-            $password_old = $_POST['password_old'];
-            $password_new = md5($_POST['password']);
-            if($this->session->userdata('sessionKhachHang')){
-                $mydata= array(
-                    'password' => $password_new,
-                );
-            }else{
-               redirect('/dang-nhap','refresh');
-           }
-           $this->Mkhachhang->customer_update($mydata, $this->session->userdata('id'));
-           $this->data['successpassword']='Đổi mật khẩu thành công';
-           echo '<script>alert("Mật khẩu đã được thay đổi thành công !")</script>';
-           redirect('thong-tin-khach-hang','refresh');
-       }
-       $this->data['title']='NDN Mobile - Đổi mật khẩu';
-       $this->data['view']='reset_password';
-       $this->load->view('frontend/layout',$this->data);
-   }
 
-    public function update($id){
-        $row=$this->Mdonhang->order_detail($id);
-        $status = $row['status'];
-        if($status == 0)
-        {
-            $status = 3;
-            $mydata= array('status' => $status);
-            $this->Mdonhang->order_update($mydata, $id);
-            redirect('thong-tin-khach-hang','refresh');
+        if ($this->form_validation->run() === TRUE) {
+            $newPassword = (string)$this->input->post('password');
+            $bcryptHash = password_hash($newPassword, PASSWORD_BCRYPT, ['cost' => 12]);
+
+            $this->Mkhachhang->customer_update(['password' => $bcryptHash], $customerId);
+            
+            $this->session->set_flashdata('success', 'Đổi mật khẩu tài khoản thành công!');
+            redirect('thong-tin-khach-hang', 'refresh');
+            return;
         }
+
+        $this->data['title'] = 'NDN Mobile - Đổi mật khẩu';
+        $this->data['view']  = 'reset_password';
+        $this->load->view('frontend/layout', $this->data);
     }
 
-   function check_password(){
-        $row=$this->Mkhachhang->customer_detail_email($this->session->userdata('email'));
-        $password = $this->input->post('password_old');
-        if(md5($password)!= $row['password']){
-            $this->form_validation->set_message(__FUNCTION__, 'Mật khẩu cũ không chính xác');
+    /**
+     * Hủy đơn hàng (Chặn IDOR & Giới hạn chỉ hủy khi đơn chưa được duyệt)
+     * URL: /thongtin/update/{order_id}
+     */
+    public function update($id = null) {
+        if (!$id || !is_numeric($id)) {
+            redirect('thong-tin-khach-hang', 'refresh');
+            return;
+        }
+
+        $currentCustomerId = (int)$this->session->userdata('id');
+
+        // BẢO MẬT IDOR: Chỉ cho phép thao tác trên đơn hàng của chính mình
+        $order = $this->db->where('id', (int)$id)
+                          ->where('customer_id', $currentCustomerId)
+                          ->where('trash', 1)
+                          ->get('orders')
+                          ->row_array();
+
+        if (!$order) {
+            $this->session->set_flashdata('error', 'Không tìm thấy đơn hàng cần thao tác!');
+            redirect('thong-tin-khach-hang', 'refresh');
+            return;
+        }
+
+        $status = (int)$order['status'];
+        if ($status === 0) {
+            // Hủy đơn (status = 3)
+            $this->Mdonhang->order_update(['status' => 3], (int)$id);
+            $this->session->set_flashdata('success', 'Đã hủy đơn hàng #' . $order['orderCode'] . ' thành công!');
+        } else {
+            $this->session->set_flashdata('error', 'Đơn hàng đã được xác nhận hoặc đang vận chuyển, không thể hủy!');
+        }
+
+        redirect('thong-tin-khach-hang', 'refresh');
+    }
+
+    /**
+     * Callback xác minh mật khẩu cũ (tương thích đa thuật toán Bcrypt, MD5, SHA1)
+     */
+    public function check_password($password) {
+        $customerId = (int)$this->session->userdata('id');
+        $user = $this->db->where('id', $customerId)->get('users')->row_array();
+
+        if (!$user) {
+            $this->form_validation->set_message(__FUNCTION__, 'Tài khoản không tồn tại!');
             return FALSE;
         }
+
+        $storedHash = (string)$user['password'];
+        $isValid = false;
+
+        if (password_verify($password, $storedHash)) {
+            $isValid = true;
+        } elseif (md5($password) === $storedHash) {
+            $isValid = true;
+        } elseif (sha1($password) === $storedHash) {
+            $isValid = true;
+        }
+
+        if (!$isValid) {
+            $this->form_validation->set_message(__FUNCTION__, 'Mật khẩu cũ không chính xác!');
+            return FALSE;
+        }
+
         return TRUE;
     }
-
 }

@@ -6,11 +6,22 @@
         <ul class="latest-news-list">
         <?php  
         $posts = $this->Mnoidung->content_get_news(5);
-        foreach ($posts as $value) :?>
+        foreach ($posts as $value) :
+            $sideImg = '';
+            if (!empty($value['img'])) {
+                if (strpos($value['img'], 'http://') === 0 || strpos($value['img'], 'https://') === 0) {
+                    $sideImg = $value['img'];
+                } else {
+                    $sideImg = base_url('public/images/posts/' . $value['img']);
+                }
+            } else {
+                $sideImg = base_url('public/images/no-image.jpg');
+            }
+        ?>
             <li class="news-item-modern">
                 <div class="news-img">
                     <a href="<?php echo base_url(); ?>tin-tuc/<?php echo $value['alias'] ?>">
-                        <img src="<?php echo base_url(); ?>public/images/posts/<?php echo $value['img']; ?>" alt="<?php echo $value['title']; ?>" onerror="this.src='<?php echo base_url(); ?>public/images/no-image.jpg';">
+                        <img src="<?php echo $sideImg; ?>" alt="<?php echo htmlspecialchars($value['title']); ?>" onerror="this.src='<?php echo base_url(); ?>public/images/no-image.jpg';">
                     </a>
                 </div>
                 <div class="news-info">

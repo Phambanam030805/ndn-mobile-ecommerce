@@ -30,14 +30,34 @@ class Product extends CI_Controller {
 	public function index(){
 		$this->load->library('phantrang');
 		$this->load->library('session');
-		$limit=10;
-		$current=$this->phantrang->PageCurrent();
-		$first=$this->phantrang->PageFirst($limit, $current);
-		$total=$this->Msanpham->product_sanpham_count();
-		$this->data['strphantrang']=$this->phantrang->PagePer($total, $current, $limit, $url='admin/product');
-		$this->data['list']=$this->Msanpham->product_sanpham($limit,$first);
-		$this->data['view']='index';
-		$this->data['title']='Danh mục sản phẩm';
+
+		$search = $this->input->get('search', TRUE);
+		$catid = $this->input->get('catid', TRUE);
+		$search = trim($search ? $search : '');
+		$catid = trim($catid ? $catid : '');
+
+		$limit = 10;
+		$current = $this->phantrang->PageCurrent();
+		$first = $this->phantrang->PageFirst($limit, $current);
+
+		$total = $this->Msanpham->product_sanpham_count($search, $catid);
+
+		$url = 'admin/product';
+		$queryString = array();
+		if (!empty($search)) $queryString['search'] = $search;
+		if (!empty($catid)) $queryString['catid'] = $catid;
+		if (!empty($queryString)) {
+			$url .= '?' . http_build_query($queryString);
+		}
+
+		$this->data['strphantrang'] = $this->phantrang->PagePer($total, $current, $limit, $url);
+		$this->data['list'] = $this->Msanpham->product_sanpham($limit, $first, $search, $catid);
+		$this->data['categories'] = $this->Mdanhmuc->category_list();
+		$this->data['search'] = $search;
+		$this->data['catid'] = $catid;
+		$this->data['total'] = $total;
+		$this->data['view'] = 'index';
+		$this->data['title'] = 'Danh mục sản phẩm';
 		$this->load->view('backend/layout', $this->data);
 	}
 

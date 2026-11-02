@@ -5,7 +5,7 @@ class Mcustomer extends CI_Model {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->table = $this->db->dbprefix('customer');
+		$this->table = 'users';
 	}
     //index
     public function customer_all($limit, $first)

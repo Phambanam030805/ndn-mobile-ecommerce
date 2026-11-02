@@ -22,8 +22,10 @@ date_default_timezone_set("Asia/Ho_Chi_Minh");
 | If you need to allow multiple domains, remember that this file is still
 | a PHP script and you can easily do that on your own.
 |
-*/
-$config['base_url'] = 'http://localhost/ndnmobile/';
+// Tự động nhận diện domain/IP để truy cập được cả trên máy tính và điện thoại qua Wi-Fi
+$base_protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https://' : 'http://';
+$base_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
+$config['base_url'] = $base_protocol . $base_host . '/ndnmobile/';
 
 
 /*
@@ -443,8 +445,17 @@ $config['csrf_protection'] = TRUE; // Bật chống giả mạo yêu cầu (Bắ
 $config['csrf_token_name'] = 'csrf_test_name';
 $config['csrf_cookie_name'] = 'csrf_cookie_name';
 $config['csrf_expire'] = 7200;
-$config['csrf_regenerate'] = FALSE;
-$config['csrf_exclude_uris'] = array();
+$config['csrf_exclude_uris'] = array(
+    'sanpham/addcart', 
+    'sanpham/update', 
+    'sanpham/remove', 
+    'giohang/update', 
+    'giohang/remove', 
+    'giohang/coupon', 
+    'giohang/removecoupon',
+    'ai-chat/ask',
+    'ai_chat/ask'
+);
 
 /*
 |--------------------------------------------------------------------------

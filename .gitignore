@@ -1,0 +1,19 @@
+/node_modules/
+/playwright-report/
+/test-results/
+
+# CodeIgniter cache & sessions
+application/cache/*
+!application/cache/index.html
+!application/cache/.gitkeep
+
+# Python & Temporary scripts
+__pycache__/
+*.py[cod]
+inspect_db.py
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini

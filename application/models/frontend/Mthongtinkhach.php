@@ -57,5 +57,32 @@ class Mthongtinkhach extends CI_Model {
         // Đổi từ 'db_order' sang 'orders'
         $query = $this->db->get('orders');
         return $query->result_array();
-    }  
+    }
+
+    // Thống kê đơn hàng cho trang tổng quan tài khoản
+    public function customer_order_stats($customer_id){
+        $this->db->where('customer_id', $customer_id);
+        $this->db->where('trash', 1);
+        $orders = $this->db->get('orders')->result_array();
+
+        $stats = [
+            'total_orders' => count($orders),
+            'processing' => 0,
+            'completed' => 0,
+            'cancelled' => 0,
+            'total_spent' => 0
+        ];
+
+        foreach($orders as $o){
+            if($o['status'] == 0 || $o['status'] == 1){
+                $stats['processing']++;
+            } else if($o['status'] == 2){
+                $stats['completed']++;
+                $stats['total_spent'] += (float)$o['money'];
+            } else if($o['status'] == 3 || $o['status'] == 4){
+                $stats['cancelled']++;
+            }
+        }
+        return $stats;
+    }
 }

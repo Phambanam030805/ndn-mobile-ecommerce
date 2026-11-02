@@ -19,14 +19,32 @@ class Reviews extends CI_Controller {
     public function index()
     {
         $this->load->library('phantrang');
-        $limit=10;
-        $current=$this->phantrang->PageCurrent();
-        $first=$this->phantrang->PageFirst($limit, $current);
-        $total=$this->Mreview->review_count();
-        $this->data['strphantrang']=$this->phantrang->PagePer($total, $current, $limit, $url='admin/reviews');
-        $this->data['list']=$this->Mreview->review_all($limit, $first);
-        $this->data['view']='index';
-        $this->data['title']='Quản lý Đánh giá & Bình luận';
+
+        $search = $this->input->get('search', TRUE);
+        $star   = $this->input->get('star', TRUE);
+        $search = trim($search ? $search : '');
+        $star   = ($star !== '' && $star !== null) ? trim($star) : '';
+
+        $limit   = 10;
+        $current = $this->phantrang->PageCurrent();
+        $first   = $this->phantrang->PageFirst($limit, $current);
+        $total   = $this->Mreview->review_count($search, $star);
+
+        $url = 'admin/reviews';
+        $queryString = array();
+        if (!empty($search)) $queryString['search'] = $search;
+        if ($star !== '') $queryString['star'] = $star;
+        if (!empty($queryString)) {
+            $url .= '?' . http_build_query($queryString);
+        }
+
+        $this->data['strphantrang'] = $this->phantrang->PagePer($total, $current, $limit, $url);
+        $this->data['list']         = $this->Mreview->review_all($limit, $first, $search, $star);
+        $this->data['search']       = $search;
+        $this->data['star']         = $star;
+        $this->data['total']        = $total;
+        $this->data['view']         = 'index';
+        $this->data['title']        = 'Quản lý Đánh giá & Bình luận';
         $this->load->view('backend/layout', $this->data);
     }
 

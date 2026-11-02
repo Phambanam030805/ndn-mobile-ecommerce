@@ -18,10 +18,14 @@ class Tintuc extends CI_Controller {
         $this->load->model('frontend/Msanpham');
         $this->load->model('frontend/Mdanhmuc');
         $this->load->model('frontend/Mnoidung');
+        $this->load->library('tech_news_crawler');
         $this->data['com']='tintuc';
     }
     
 	public function index(){
+        // Tự động kiểm tra cào tin tức điện thoại mới trong ngày (nếu hôm nay chưa chạy)
+        $this->tech_news_crawler->auto_crawl_daily(4);
+
 		$this->load->library('phantrang');
 		$limit=10;
 		$current=$this->phantrang->PageCurrent();
@@ -44,4 +48,16 @@ class Tintuc extends CI_Controller {
 		$this->data['view']='detail';
 		$this->load->view('frontend/layout',$this->data);
 	}
+
+    /**
+     * Endpoint API hoặc Cronjob để chủ động kích hoạt quét tin tức mới: /tin-tuc/sync
+     */
+    public function sync_news(){
+        $added = $this->tech_news_crawler->crawl_latest_news(6);
+        echo json_encode([
+            'status' => 'success',
+            'added_articles' => $added,
+            'message' => 'Đã quét và bổ sung thành công ' . $added . ' bài viết công nghệ mới.'
+        ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    }
 }

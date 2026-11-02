@@ -25,14 +25,26 @@ class Contact extends CI_Controller {
 	}
 	public function index(){
 		$this->load->library('phantrang');
-		$limit=8;
-		$current=$this->phantrang->PageCurrent();
-		$first=$this->phantrang->PageFirst($limit, $current);
-		$total=$this->Mlienhe->contact_count();
-		$this->data['strphantrang']=$this->phantrang->PagePer($total, $current, $limit, $url='admin/contact');
-		$this->data['list']=$this->Mlienhe->contact_all($limit,$first);
-		$this->data['view']='index';
-		$this->data['title']='Quản lý liên hệ ';
+
+		$search = $this->input->get('search', TRUE);
+		$search = trim($search ? $search : '');
+
+		$limit = 10;
+		$current = $this->phantrang->PageCurrent();
+		$first = $this->phantrang->PageFirst($limit, $current);
+		$total = $this->Mlienhe->contact_count($search);
+
+		$url = 'admin/contact';
+		if (!empty($search)) {
+			$url .= '?search=' . urlencode($search);
+		}
+
+		$this->data['strphantrang'] = $this->phantrang->PagePer($total, $current, $limit, $url);
+		$this->data['list']         = $this->Mlienhe->contact_all($limit, $first, $search);
+		$this->data['search']       = $search;
+		$this->data['total']        = $total;
+		$this->data['view']         = 'index';
+		$this->data['title']        = 'Quản lý liên hệ';
 		$this->load->view('backend/layout', $this->data);
 	}
 		public function status($id)

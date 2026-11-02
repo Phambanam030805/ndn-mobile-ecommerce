@@ -24,10 +24,21 @@ class Mnguoidung extends CI_Model {
     /**
      * Lấy danh sách người dùng theo vai trò
      */
-    public function user_all($roles = [1, 2], $limit = null, $first = null)
+    public function user_all($roles = [1, 2], $limit = null, $first = null, $search = '')
     {
         $this->db->where('trash', 1);
         $this->db->where_in('role', $roles);
+        if(!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('fullname', $search);
+            $this->db->or_like('username', $search);
+            $this->db->or_like('email', $search);
+            $this->db->or_like('phone', $search);
+            if(is_numeric($search)){
+                $this->db->or_where('id', $search);
+            }
+            $this->db->group_end();
+        }
         $this->db->order_by('id', 'desc');
         if ($limit !== null && $first !== null) {
             $query = $this->db->get($this->table, $limit, $first);
@@ -37,10 +48,21 @@ class Mnguoidung extends CI_Model {
         return $query->result_array();
     }
 
-    public function user_count($roles = [1, 2])
+    public function user_count($roles = [1, 2], $search = '')
     {
         $this->db->where('trash', 1);
         $this->db->where_in('role', $roles);
+        if(!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('fullname', $search);
+            $this->db->or_like('username', $search);
+            $this->db->or_like('email', $search);
+            $this->db->or_like('phone', $search);
+            if(is_numeric($search)){
+                $this->db->or_where('id', $search);
+            }
+            $this->db->group_end();
+        }
         return $this->db->count_all_results($this->table);
     }
 

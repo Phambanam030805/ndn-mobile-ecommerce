@@ -8,20 +8,42 @@ class Mlienhe extends CI_Model {
         $this->table = 'posts';
     }
 
-    // Lấy danh sách liên hệ
-    public function contact_all($limit, $first)
+    // Lấy danh sách liên hệ (hỗ trợ tìm kiếm)
+    public function contact_all($limit, $first, $search = '')
     {
         $this->db->where('trash', 1);
         $this->db->where('type', 'contact');
+        if(!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('fullname', $search);
+            $this->db->or_like('email', $search);
+            $this->db->or_like('phone', $search);
+            $this->db->or_like('title', $search);
+            if(is_numeric($search)){
+                $this->db->or_where('id', $search);
+            }
+            $this->db->group_end();
+        }
         $this->db->order_by('id', 'desc');
         $query = $this->db->get($this->table, $limit, $first);
         return $query->result_array();
     }
 
-    public function contact_count()
+    public function contact_count($search = '')
     {
         $this->db->where('trash', 1);
         $this->db->where('type', 'contact');
+        if(!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('fullname', $search);
+            $this->db->or_like('email', $search);
+            $this->db->or_like('phone', $search);
+            $this->db->or_like('title', $search);
+            if(is_numeric($search)){
+                $this->db->or_where('id', $search);
+            }
+            $this->db->group_end();
+        }
         $query = $this->db->get($this->table);
         return $query->num_rows();
     }

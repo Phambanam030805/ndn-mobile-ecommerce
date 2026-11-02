@@ -37,15 +37,21 @@ class Configuration extends CI_Controller {
 		if ($this->form_validation->run() == TRUE) 
 		{
 			$mydata= array(
-				'mail_smtp' =>$_POST['mail_smtp'], 
-				'mail_smtp_password'=>$_POST['mail_smtp_password'],
-				'mail_noreply'=>$_POST['mail_noreply'],
-				'priceShip'=>$_POST['priceShip'],
-				'title'=>$_POST['title'], 
-				'description'=>$_POST['description'],
+				'mail_smtp' => $this->input->post('mail_smtp', TRUE), 
+				'mail_smtp_password'=> $this->input->post('mail_smtp_password', TRUE),
+				'mail_noreply'=> $this->input->post('mail_noreply', TRUE),
+				'priceShip'=> (int)$this->input->post('priceShip'),
+				'title'=> $this->input->post('title', TRUE), 
+				'description'=> $this->input->post('description', TRUE),
+				'phone_hotline'=> $this->input->post('phone_hotline', TRUE),
 			);
 			
 			$this->Mcauhinh->configuration_update($mydata,$id);
+
+			// Tự động xóa sạch Cache website để phản ánh cấu hình mới ngay lập tức
+			$this->load->driver('cache', ['adapter' => 'file', 'backup' => 'dummy']);
+			$this->cache->delete('ndn_site_configuration');
+
 			$this->session->set_flashdata('success', 'Cập nhật Cấu hình thành công');
 			redirect('admin/configuration/update','refresh');
 		} 

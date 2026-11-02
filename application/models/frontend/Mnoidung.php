@@ -58,6 +58,22 @@ class Mnoidung extends CI_Model {
         return $query->result_array();
     }
 
+    // Thêm mới bài viết
+    public function content_insert($data){
+        return $this->db->insert($this->table, $data);
+    }
+
+    // Kiểm tra trùng bài viết theo tiêu đề hoặc link gốc
+    public function content_exists_by_title_or_alias($title, $alias){
+        $this->db->where('type', 'news');
+        $this->db->group_start();
+        $this->db->where('title', $title);
+        $this->db->or_where('alias', $alias);
+        $this->db->group_end();
+        $query = $this->db->get($this->table);
+        return $query->num_rows() > 0;
+    }
+
     // --- PHẦN ĐÁNH GIÁ SẢN PHẨM (Sử dụng bảng posts với type='review') ---
     
     public function review_insert($data)
@@ -87,4 +103,42 @@ class Mnoidung extends CI_Model {
         $query = $this->db->get($this->table);
         return $query->row_array();
     }
-}
+
+    /**
+     * Thống kê chi tiết đánh giá từ 1 đến 5 sao và phần trăm tương ứng
+     */
+    public function review_breakdown($product_id)
+    {
+        $this->db->where('type', 'review');
+        $this->db->where('link', $product_id);
+        $this->db->where('status', 1);
+        $this->db->where('trash', 1);
+        $reviews = $this->db->get($this->table)->result_array();
+
+        $total = count($reviews);
+        $stars = [5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0];
+        $sum = 0;
+
+        foreach ($reviews as $rv) {
+            $r = (int)$rv['title'];
+            if ($r >= 1 && $r <= 5) {
+                $stars[$r]++;
+                $sum += $r;
+            }
+        }
+
+        $avg = $total > 0 ? round($sum / $total, 1) : 5.0;
+
+        $percentages = [];
+        foreach ($stars as $star => $count) {
+            $percentages[$star] = $total > 0 ? round(($count / $total) * 100) : 0;
+        }
+
+        return [
+            'total' => $total,
+            'avg' => $avg,
+            'stars' => $stars,
+            'percentages' => $percentages
+        ];
+    }
+}

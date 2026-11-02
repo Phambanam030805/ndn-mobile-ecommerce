@@ -8,17 +8,35 @@ class Mnhacungcap extends CI_Model {
         $this->table = 'suppliers';
     }
 
-    public function producer_all($limit, $first)
+    public function producer_all($limit, $first, $search = '')
     {
         $this->db->where('trash', 1);
+        if(!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('name', $search);
+            $this->db->or_like('code', $search);
+            if(is_numeric($search)){
+                $this->db->or_where('id', $search);
+            }
+            $this->db->group_end();
+        }
         $this->db->order_by('id', 'desc');
         $query = $this->db->get($this->table, $limit, $first);
         return $query->result_array();
     }
 
-    public function producer_count()
+    public function producer_count($search = '')
     {
         $this->db->where('trash', 1);
+        if(!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('name', $search);
+            $this->db->or_like('code', $search);
+            if(is_numeric($search)){
+                $this->db->or_where('id', $search);
+            }
+            $this->db->group_end();
+        }
         $query = $this->db->get($this->table);
         return $query->num_rows();
     }

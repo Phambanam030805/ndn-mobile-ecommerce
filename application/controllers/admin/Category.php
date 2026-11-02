@@ -43,15 +43,25 @@ class Category extends CI_Controller {
         $this->load->library('phantrang');
         $this->load->library('alias');
 
+        $search = $this->input->get('search', TRUE);
+        $search = trim($search ? $search : '');
+
         $limit   = 10;
         $current = $this->phantrang->PageCurrent();
         $first   = $this->phantrang->PageFirst($limit, $current);
-        $total   = $this->Mdanhmuc->category_count();
+        $total   = $this->Mdanhmuc->category_count($search);
 
-        $this->data['strphantrang'] = $this->phantrang->PagePer($total, $current, $limit, $url = 'admin/category');
-        $this->data['list']  = $this->Mdanhmuc->category_all($limit, $first);
-        $this->data['view']  = 'index';
-        $this->data['title'] = 'Loại sản phẩm';
+        $url = 'admin/category';
+        if (!empty($search)) {
+            $url .= '?search=' . urlencode($search);
+        }
+
+        $this->data['strphantrang'] = $this->phantrang->PagePer($total, $current, $limit, $url);
+        $this->data['list']         = $this->Mdanhmuc->category_all($limit, $first, $search);
+        $this->data['search']       = $search;
+        $this->data['total']        = $total;
+        $this->data['view']         = 'index';
+        $this->data['title']        = 'Loại sản phẩm';
         $this->load->view('backend/layout', $this->data);
     }
 

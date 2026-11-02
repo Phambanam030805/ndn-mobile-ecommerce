@@ -33,10 +33,14 @@
 
 							<div class="row">
 								<div class="table-responsive">
+									<?php 
+										$cur_page = isset($current) ? $current : (isset($this->phantrang) ? $this->phantrang->PageCurrent() : 1);
+										$stt = ($cur_page - 1) * 10 + 1;
+									?>
 									<table class="table table-hover modern-admin-table">
 										<thead>
 											<tr>
-												<th class="text-center">ID</th>
+												<th class="text-center" style="width: 60px;">STT</th>
 												<th>Hình</th>
 												<th>Tên sliders</th>
 												<th>Liên kết</th>
@@ -47,7 +51,7 @@
 										<tbody>
 											<?php foreach ($list as $row):?>
 												<tr>
-													<td class="text-center"><?php echo $row['id'] ?></td>
+													<td class="text-center" style="font-weight: 600; color: #64748b;"><?php echo $stt++; ?></td>
 													<td>
 														<img src="public/images/banners/<?php echo $row['img'] ?>" class="modern-thumbnail-slider">
 													</td>

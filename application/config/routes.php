@@ -2,9 +2,14 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 $route['default_controller'] = 'trangchu/index';
+$route['trang-chu/(:num)'] = 'trangchu/index/$1';
 $route['trang-chu'] = 'trangchu/index';
 
 // --- ROUTE SẢN PHẨM ---
+$route['khuyen-mai/(:num)'] = 'sanpham/sale/$1';
+$route['khuyen-mai'] = 'sanpham/sale';
+$route['ban-chay/(:num)'] = 'sanpham/hot/$1';
+$route['ban-chay'] = 'sanpham/hot';
 $route['san-pham/(:num)'] = 'sanpham/index/$1';
 $route['san-pham/(:any)/(:num)'] = 'sanpham/category/$1/$2';
 $route['san-pham/(:any)'] = 'sanpham/category/$1';
@@ -12,6 +17,7 @@ $route['san-pham'] = 'sanpham/index';
 $route['chi-tiet/(:any)'] = 'sanpham/detail/$1';
 
 // --- ROUTE TIN TỨC ---
+$route['tin-tuc/sync'] = 'tintuc/sync_news';
 $route['tin-tuc/(:num)'] = 'tintuc/index/$1';
 $route['tin-tuc/(:any)'] = 'tintuc/detail/$1';
 $route['tin-tuc'] = 'tintuc/index';
@@ -23,15 +29,46 @@ $route['search'] = 'search';
 
 $route['lien-he'] = 'lienhe/index';
 $route['dang-nhap'] = 'dangnhap/dangnhap';
-$route['quen-mat-khau'] = 'dangnhap/forget_password';
 $route['dang-ky'] = 'dangnhap/dangky';
 $route['dang-xuat'] = 'dangnhap/dangxuat';
+// --- QUÊN MẬT KHẨU (3 bước: gửi OTP → nhập OTP → mật khẩu mới) ---
+$route['quen-mat-khau'] = 'dangnhap/quen_mat_khau';
+$route['nhap-otp'] = 'dangnhap/nhap_otp';
+$route['dat-lai-mat-khau'] = 'dangnhap/dat_lai_mat_khau';
+// --- WISHLIST ---
+$route['yeu-thich'] = 'wishlist/index';
+$route['yeu-thich/them/(:num)'] = 'wishlist/toggle/$1';
+$route['yeu-thich/xoa/(:num)'] = 'wishlist/remove/$1';
+$route['yeu-thich/check/(:num)'] = 'wishlist/check/$1';
+// --- SO SÁNH SẢN PHẨM ---
+$route['so-sanh'] = 'sosanh/index';
+$route['so-sanh/them/(:num)'] = 'sosanh/add/$1';
+$route['so-sanh/xoa/(:num)'] = 'sosanh/remove/$1';
+$route['so-sanh/xoa-tat-ca'] = 'sosanh/clear';
 $route['gio-hang'] = 'giohang/index';
+$route['giohang/remove/(:any)'] = 'giohang/remove/$1';
+$route['gio-hang/remove/(:any)'] = 'giohang/remove/$1';
+$route['giohang/remove'] = 'giohang/remove';
+$route['gio-hang/remove'] = 'giohang/remove';
 $route['checkout'] = 'giohang/checkout';
+$route['thanh-toan'] = 'giohang/info_order';
 $route['info-order'] = 'giohang/info_order';
+$route['tra-gop'] = 'chinhsach/huong_dan_tra_gop';
 $route['thankyou'] = 'giohang/thankyou';
+$route['giohang/vnpay_return'] = 'giohang/vnpay_return';
+$route['giohang/vnpay_ipn'] = 'giohang/vnpay_ipn';
+$route['giohang/payment_qr/(:any)'] = 'giohang/payment_qr/$1';
+$route['giohang/confirm_payment/(:any)'] = 'giohang/confirm_payment/$1';
 $route['thong-tin-khach-hang'] = 'thongtin/index';
 $route['gioi-thieu'] = 'gioithieu/index';
+
+// --- CHÍNH SÁCH VÀ HƯỚNG DẪN (FOOTER) ---
+$route['huong-dan-thanh-toan'] = 'chinhsach/huong_dan_thanh_toan';
+$route['huong-dan-dat-hang'] = 'chinhsach/huong_dan_dat_hang';
+$route['dieu-khoan-dich-vu'] = 'chinhsach/dieu_khoan_dich_vu';
+$route['chinh-sach-bao-mat'] = 'chinhsach/chinh_sach_bao_mat';
+$route['ai-chat/ask'] = 'ai_chat/ask';
+
 
 // --- TÀI KHOẢN ---
 $route['account/orders/(:num)'] = 'thongtin/order';
@@ -129,6 +166,14 @@ $route['customer/restore/(:num)'] ='admin/customer/restore/$1';
 // --- QUẢN LÝ ĐƠN HÀNG ---
 $route['admin/orders'] ='admin/orders';
 $route['admin/orders/(:num)'] ='admin/orders/index/$1';
+$route['admin/orders/status/(:num)'] ='admin/orders/status/$1';
+$route['admin/orders/cancelorder/(:num)'] ='admin/orders/cancelorder/$1';
+$route['admin/orders/detail/(:num)'] ='admin/orders/detail/$1';
+$route['admin/orders/view/(:num)'] ='admin/orders/view/$1';
+$route['admin/orders/trash/(:num)'] ='admin/orders/trash/$1';
+$route['admin/orders/restore/(:num)'] ='admin/orders/restore/$1';
+$route['admin/orders/recyclebin'] ='admin/orders/recyclebin';
+$route['admin/orders/recyclebin/(:num)'] ='admin/orders/recyclebin/$1';
 
 // --- QUẢN LÝ NHÂN VIÊN ---
 $route['admin/useradmin']='admin/useradmin/index';

@@ -40,6 +40,18 @@ class Content extends CI_Controller {
 		$this->load->view('backend/layout', $this->data);
 	}
 
+	public function sync_news()
+	{
+		$this->load->library('tech_news_crawler');
+		$added = $this->tech_news_crawler->crawl_latest_news(6);
+		if($added > 0) {
+			$this->session->set_flashdata('success', "Đã quét và tự động cập nhật thêm {$added} bài viết công nghệ mới nhất!");
+		} else {
+			$this->session->set_flashdata('success', "Tin tức hiện tại đã là mới nhất từ các nguồn báo!");
+		}
+		redirect('admin/content', 'refresh');
+	}
+
 	public function insert()
 	{
 		$d=getdate();
