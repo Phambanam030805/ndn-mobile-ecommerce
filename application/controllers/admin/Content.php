@@ -86,7 +86,7 @@ class Content extends CI_Controller {
             }
             else
             {
-                $mydata['img']='default.png';
+                $mydata['img']='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80';
             }
 
 			$this->Mnoidung->content_insert($mydata);

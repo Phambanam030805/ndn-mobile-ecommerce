@@ -66,7 +66,7 @@
 
                 <div class="col-md-6 col-sm-12">
                     <div class="about-story-image-box">
-                        <img src="<?php echo base_url('public/images/banners/Background.png'); ?>" alt="Showroom NDN Mobile">
+                        <img src="https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=1000&q=80" alt="Showroom NDN Mobile" onerror="this.src='https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1000&q=80';">
                         <div class="about-floating-badge">
                             <h5><i class="fas fa-shield-alt"></i> NDN MOBILE SHOWROOM</h5>
                             <p>Trải nghiệm máy thực tế • Test cấu hình tận tay</p>

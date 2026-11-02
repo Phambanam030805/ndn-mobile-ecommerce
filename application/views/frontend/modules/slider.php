@@ -3,9 +3,17 @@
         <?php
         $list_banner = $this->Mnoidung->slider_list();
         if(!empty($list_banner) && is_array($list_banner)) foreach ($list_banner as $value) :
-            $bannerImg = !empty($value['img']) && file_exists(FCPATH . 'public/images/banners/' . $value['img'])
-                ? base_url('public/images/banners/' . $value['img'])
-                : base_url('public/images/banners/default.png');
+            if (!empty($value['img'])) {
+                if (filter_var($value['img'], FILTER_VALIDATE_URL)) {
+                    $bannerImg = $value['img'];
+                } elseif (file_exists(FCPATH . 'public/images/banners/' . $value['img'])) {
+                    $bannerImg = base_url('public/images/banners/' . $value['img']);
+                } else {
+                    $bannerImg = 'https://images.unsplash.com/photo-1616469829941-c7200edec809?w=1200&auto=format&fit=crop&q=80';
+                }
+            } else {
+                $bannerImg = 'https://images.unsplash.com/photo-1616469829941-c7200edec809?w=1200&auto=format&fit=crop&q=80';
+            }
         ?>
             <div class="item">
                 <div class="banner-grid-item">

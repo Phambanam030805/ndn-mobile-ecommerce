@@ -66,7 +66,7 @@
                                                 $imgSrc = base_url('public/images/posts/' . $row['img']);
                                             }
                                         } else {
-                                            $imgSrc = base_url('public/images/posts/default.png');
+                                            $imgSrc = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80';
                                         }
 
                                         // Xử lý hiển thị tiêu đề giải mã HTML entities
@@ -81,7 +81,7 @@
                                                     <img src="<?php echo $imgSrc; ?>" 
                                                          alt="<?php echo htmlspecialchars($cleanTitle); ?>" 
                                                          class="modern-news-thumb"
-                                                         onerror="this.onerror=null; this.src='<?php echo base_url('public/images/posts/default.png'); ?>';">
+                                                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80';">
                                                 </div>
                                             </td>
                                             <td>

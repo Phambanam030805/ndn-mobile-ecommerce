@@ -119,7 +119,7 @@ class Tech_news_crawler {
                     'type'        => 'news',
                     'introtext'   => $clean_intro,
                     'fulltext'    => $fulltext,
-                    'img'         => !empty($img_url) ? $img_url : 'default.png',
+                    'img'         => !empty($img_url) ? $img_url : 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80',
                     'created_at'  => date('Y-m-d H:i:s'),
                     'created_by'  => 1,
                     'updated_at'  => date('Y-m-d H:i:s'),

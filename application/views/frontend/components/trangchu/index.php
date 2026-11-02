@@ -312,7 +312,7 @@
                             $imgUrl = base_url('public/images/posts/'.$rowPost['img']);
                         }
                     } else {
-                        $imgUrl = base_url('public/images/posts/default.png');
+                        $imgUrl = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80';
                     }
 
                     // Xử lý ngày đăng
@@ -341,7 +341,7 @@
                                 <img 
                                     src="<?php echo $imgUrl; ?>" 
                                     alt="<?php echo htmlspecialchars($rowPost['title']); ?>"
-                                    onerror="this.src='<?php echo base_url('public/images/posts/default.png'); ?>';">
+                                    onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80';">
                             </div>
                             <div class="news-body">
                                 <div>
