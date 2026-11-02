@@ -1202,7 +1202,7 @@
 	vertical-align: top;
 	margin-right: 5px;
 	min-height: 40px;
-	background: url(../images/user.png) no-repeat 0 50%;
+	/* background: user.png removed */
 	display: inline-block;
 }
 

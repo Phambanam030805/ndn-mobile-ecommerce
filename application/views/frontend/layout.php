@@ -12,7 +12,7 @@
         ?>
     </title>
 
-    <link rel="icon" type="image/x-icon" href="<?php echo base_url('public/images/cart2.png'); ?>">
+    <link rel="icon" type="image/svg+xml" href="<?php echo base_url('public/images/favicon.svg'); ?>">
 
     <!-- Bootstrap -->
     <link href="<?php echo base_url('public/css/bootstrap.css'); ?>" rel="stylesheet">
