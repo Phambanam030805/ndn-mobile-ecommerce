@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="draw.io" type="device">
+  <diagram id="comp_admin" name="Biểu đồ thành phần phía Admin">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ==================== CỘT 1 & 2: ADMIN & GIAO DIỆN ADMIN ==================== -->
+        <!-- Giao diện admin -->
+        <mxCell id="c_giaodien_admin" value="Giao diện admin" style="shape=component;align=center;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;strokeColor=#000000;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="190" y="270" width="140" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Admin -->
+        <mxCell id="c_admin" value="Admin" style="shape=component;align=center;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;strokeColor=#000000;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="200" y="440" width="120" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Mũi tên: Admin -> Giao diện admin -->
+        <mxCell id="arr_admin_gd" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="c_admin" target="c_giaodien_admin">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== CỘT 3: CÁC THÀNH PHẦN CHỨC NĂNG ADMIN ==================== -->
+        <!-- 1. Quản lý danh mục và nhà cung cấp -->
+        <mxCell id="c_danhmuc" value="Quản lý danh mục&#xa;và nhà cung cấp" style="shape=component;align=center;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;strokeColor=#000000;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="420" y="30" width="180" height="46" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Quản lý sản phẩm và kho hàng -->
+        <mxCell id="c_sanpham_kho" value="Quản lý sản phẩm&#xa;và kho hàng" style="shape=component;align=center;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;strokeColor=#000000;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="420" y="86" width="180" height="46" as="geometry"/>
+        </mxCell>
+
+        <!-- 3. Quản lý đơn hàng -->
+        <mxCell id="c_donhang" value="Quản lý đơn hàng" style="shape=component;align=center;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;strokeColor=#000000;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="420" y="142" width="180" height="46" as="geometry"/>
+        </mxCell>
+
+        <!-- 4. Quản lý khách hàng và tài khoản -->
+        <mxCell id="c_taikhoan" value="Quản lý khách hàng&#xa;và tài khoản quản trị" style="shape=component;align=center;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;strokeColor=#000000;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="420" y="198" width="180" height="46" as="geometry"/>
+        </mxCell>
+
+        <!-- 5. Quản lý đánh giá -->
+        <mxCell id="c_danhgia" value="Quản lý đánh giá" style="shape=component;align=center;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;strokeColor=#000000;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="420" y="254" width="180" height="46" as="geometry"/>
+        </mxCell>
+
+        <!-- 6. Quản lý liên hệ -->
+        <mxCell id="c_lienhe" value="Quản lý liên hệ" style="shape=component;align=center;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;strokeColor=#000000;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="420" y="310" width="180" height="46" as="geometry"/>
+        </mxCell>
+
+        <!-- 7. Quản lý mã giảm giá -->
+        <mxCell id="c_coupon" value="Quản lý mã giảm giá" style="shape=component;align=center;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;strokeColor=#000000;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="420" y="366" width="180" height="46" as="geometry"/>
+        </mxCell>
+
+        <!-- 8. Quản lý tin tức bài viết -->
+        <mxCell id="c_tintuc" value="Quản lý tin tức&#xa;và cào tin tự động" style="shape=component;align=center;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;strokeColor=#000000;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="420" y="422" width="180" height="46" as="geometry"/>
+        </mxCell>
+
+        <!-- 9. Quản lý cấu hình hệ thống -->
+        <mxCell id="c_cauhinh" value="Quản lý cấu hình&#xa;hệ thống" style="shape=component;align=center;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;strokeColor=#000000;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="420" y="478" width="180" height="46" as="geometry"/>
+        </mxCell>
+
+        <!-- 10. Báo cáo thống kê -->
+        <mxCell id="c_thongke" value="Báo cáo thống kê&#xa;(Dashboard)" style="shape=component;align=center;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;strokeColor=#000000;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="420" y="534" width="180" height="46" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== CỘT 4: BẢO MẬT & CƠ SỞ DỮ LIỆU ==================== -->
+        <!-- Kết nối CSDL -->
+        <mxCell id="c_ketnoi_csdl" value="Kết nối CSDL" style="shape=component;align=center;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;strokeColor=#000000;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="710" y="90" width="130" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Cơ sở dữ liệu -->
+        <mxCell id="c_csdl" value="Cơ sở dữ liệu" style="shape=component;align=center;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;strokeColor=#000000;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="710" y="225" width="130" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Bảo mật -->
+        <mxCell id="c_baomat" value="Bảo mật" style="shape=component;align=center;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;strokeColor=#000000;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="710" y="360" width="130" height="75" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== MŨI TÊN: GIAO DIỆN ADMIN -> CHỨC NĂNG ==================== -->
+        <mxCell id="arr_gda_1" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.1;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_giaodien_admin" target="c_danhmuc">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_gda_2" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.2;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_giaodien_admin" target="c_sanpham_kho">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_gda_3" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.3;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_giaodien_admin" target="c_donhang">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_gda_4" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.4;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_giaodien_admin" target="c_taikhoan">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_gda_5" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_giaodien_admin" target="c_danhgia">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_gda_6" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.6;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_giaodien_admin" target="c_lienhe">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_gda_7" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.7;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_giaodien_admin" target="c_coupon">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_gda_8" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.8;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_giaodien_admin" target="c_tintuc">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_gda_9" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.9;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_giaodien_admin" target="c_cauhinh">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_gda_10" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=1;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_giaodien_admin" target="c_thongke">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== MŨI TÊN: CHỨC NĂNG -> BẢO MẬT (PHÂN BỔ TỎA ĐỀU CÁC CẠNH) ==================== -->
+        <mxCell id="arr_bma_1" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.5;entryX=0.2;entryY=0;" edge="1" parent="1" source="c_danhmuc" target="c_baomat">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_bma_2" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.5;entryX=0.35;entryY=0;" edge="1" parent="1" source="c_sanpham_kho" target="c_baomat">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_bma_3" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.5;entryX=0;entryY=0.15;" edge="1" parent="1" source="c_donhang" target="c_baomat">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_bma_4" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.5;entryX=0;entryY=0.35;" edge="1" parent="1" source="c_taikhoan" target="c_baomat">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_bma_5" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.5;entryX=0;entryY=0.55;" edge="1" parent="1" source="c_danhgia" target="c_baomat">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_bma_6" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.5;entryX=0;entryY=0.75;" edge="1" parent="1" source="c_lienhe" target="c_baomat">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_bma_7" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.5;entryX=0;entryY=0.95;" edge="1" parent="1" source="c_coupon" target="c_baomat">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_bma_8" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.5;entryX=0.25;entryY=1;" edge="1" parent="1" source="c_tintuc" target="c_baomat">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_bma_9" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.5;entryX=0.5;entryY=1;" edge="1" parent="1" source="c_cauhinh" target="c_baomat">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_bma_10" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=1;exitY=0.5;entryX=0.75;entryY=1;" edge="1" parent="1" source="c_thongke" target="c_baomat">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== MŨI TÊN: BẢO MẬT -> CƠ SỞ DỮ LIỆU -> KẾT NỐI CSDL ==================== -->
+        <mxCell id="arr_bma_db" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=0.7;exitY=0;entryX=0.7;entryY=1;" edge="1" parent="1" source="c_baomat" target="c_csdl">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_db_kn" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;edgeStyle=straight;exitX=0.7;exitY=0;entryX=0.7;entryY=1;" edge="1" parent="1" source="c_csdl" target="c_ketnoi_csdl">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

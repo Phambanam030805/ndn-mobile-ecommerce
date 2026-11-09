@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="draw.io" type="device">
+  <diagram id="deploy_ndnmobile" name="Biểu đồ triển khai">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ==================== TIÊU ĐỀ HỆ THỐNG (CÂN GIỮA PHÍA TRÊN SERVER) ==================== -->
+        <mxCell id="main_title" value="&lt;b&gt;Website Bán Điện Thoại NDN Mobile&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=15;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="615" y="25" width="280" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== NODE CLIENT ==================== -->
+        <!-- Khung ngoài Client dạng Folder có Tab -->
+        <mxCell id="node_client" value="" style="shape=folder;tabWidth=80;tabHeight=22;tabPosition=left;fillColor=none;strokeColor=#000000;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="60" width="260" height="490" as="geometry"/>
+        </mxCell>
+        <!-- Chữ Client nằm CHÍNH GIỮA TAB góc trên bên trái -->
+        <mxCell id="tab_client_text" value="&lt;b&gt;Client&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=12;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="40" y="60" width="80" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- 3D Cube: Client (Browser) -->
+        <mxCell id="cube_client" value="&lt;b&gt;Client (Browser)&lt;/b&gt;&lt;br&gt;&lt;br&gt;Google Chrome, Firefox, Edge, Safari, v.v.&lt;br&gt;&lt;br&gt;&lt;div align=&quot;left&quot;&gt;- Duyệt sản phẩm, Giỏ hàng, Đặt hàng&lt;br&gt;- Thanh toán trực tuyến (VNPay, VietQR)&lt;br&gt;- Quản lý tài khoản, Đổi mật khẩu, OTP&lt;br&gt;- Tương tác với AI Chatbot tư vấn&lt;br&gt;- Quản trị hệ thống (Dành cho Admin)&lt;br&gt;- Giao diện: HTML5, CSS3, Bootstrap 3,&lt;br&gt;  AdminLTE, jQuery, AJAX&lt;/div&gt;" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.1;size=15;strokeColor=#000000;fillColor=none;fontFamily=Times New Roman;fontSize=11;fontColor=#000000;align=center;verticalAlign=top;spacingTop=10;spacingLeft=5;spacingRight=5;" vertex="1" parent="1">
+          <mxGeometry x="65" y="145" width="210" height="270" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== NODE SERVER ==================== -->
+        <!-- Khung ngoài Server dạng Folder có Tab -->
+        <mxCell id="node_server" value="" style="shape=folder;tabWidth=80;tabHeight=22;tabPosition=left;fillColor=none;strokeColor=#000000;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="380" y="60" width="750" height="490" as="geometry"/>
+        </mxCell>
+        <!-- Chữ Server nằm CHÍNH GIỮA TAB góc trên bên trái -->
+        <mxCell id="tab_server_text" value="&lt;b&gt;Server&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=12;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="380" y="60" width="80" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- 3D Cube: Web & Application Server (Apache & PHP) -->
+        <mxCell id="cube_web_server" value="&lt;b&gt;Web &amp; Application Server (Apache &amp; PHP)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;i&gt;ndnmobile (CodeIgniter 3 - PHP 7.4/8.x)&lt;/i&gt;&lt;br&gt;&lt;br&gt;&lt;div align=&quot;left&quot;&gt;- Tiếp nhận &amp; định tuyến Request (Routing, Controller)&lt;br&gt;- Render giao diện người dùng &amp; Admin (Views)&lt;br&gt;- Xử lý logic nghiệp vụ: Sản phẩm, Đơn hàng,&lt;br&gt;  Kho hàng, Khách hàng, Đánh giá, Mã giảm giá&lt;br&gt;- Tích hợp AI Chatbot (NLP Regex Engine)&lt;br&gt;- Quản lý xác thực Session &amp; Bảo mật (CSRF, XSS)&lt;br&gt;- Gọi cURL cào tin tức công nghệ RSS tự động&lt;br&gt;- Tích hợp API VNPay &amp; Webhook VietQR IPN&lt;br&gt;- Gửi email xác nhận đơn &amp; OTP qua Gmail SMTP&lt;/div&gt;" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.1;size=15;strokeColor=#000000;fillColor=none;fontFamily=Times New Roman;fontSize=11;fontColor=#000000;align=center;verticalAlign=top;spacingTop=10;spacingLeft=5;spacingRight=5;" vertex="1" parent="1">
+          <mxGeometry x="405" y="115" width="295" height="340" as="geometry"/>
+        </mxCell>
+
+        <!-- 3D Cube: External Cloud Services -->
+        <mxCell id="cube_ext_services" value="&lt;b&gt;External Cloud Services&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;i&gt;Dịch vụ đám mây tích hợp bên ngoài&lt;/i&gt;&lt;br&gt;&lt;br&gt;&lt;div align=&quot;left&quot;&gt;- Cổng thanh toán VNPay API (Sandbox/Production)&lt;br&gt;- Hệ thống VietQR &amp; Webhook xác nhận tự động&lt;br&gt;- Máy chủ Gmail SMTP (Port 465 / SSL)&lt;br&gt;- Nguồn cấp tin tức RSS (VnExpress, Tuổi Trẻ)&lt;/div&gt;" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.1;size=15;strokeColor=#000000;fillColor=none;fontFamily=Times New Roman;fontSize=11;fontColor=#000000;align=center;verticalAlign=top;spacingTop=10;spacingLeft=5;spacingRight=5;" vertex="1" parent="1">
+          <mxGeometry x="795" y="105" width="315" height="170" as="geometry"/>
+        </mxCell>
+
+        <!-- 3D Cube: Database Server (MySQL 8.0) -->
+        <mxCell id="cube_db_server" value="&lt;b&gt;Database Server (MySQL 8.0 / XAMPP)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;i&gt;db_shop (MySQL Database)&lt;/i&gt;&lt;br&gt;&lt;br&gt;&lt;div align=&quot;left&quot;&gt;- Quản lý CSDL quan hệ chính của website&lt;br&gt;- Lưu trữ: products, orders, order_items,&lt;br&gt;  users, posts, categories, suppliers,&lt;br&gt;  coupons, wishlists, configs, locations,&lt;br&gt;  password_resets, stock_logs&lt;br&gt;- Giao tiếp qua CodeIgniter MySQLi Driver&lt;/div&gt;" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.1;size=15;strokeColor=#000000;fillColor=none;fontFamily=Times New Roman;fontSize=11;fontColor=#000000;align=center;verticalAlign=top;spacingTop=10;spacingLeft=5;spacingRight=5;" vertex="1" parent="1">
+          <mxGeometry x="795" y="310" width="315" height="215" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== CÁC ĐƯỜNG KẾT NỐI (COMMUNICATION PATHS) ==================== -->
+        <!-- Đường kết nối: Client -> Web Server (HTTP/HTTPS) -->
+        <mxCell id="link_client_server" value="HTTP / HTTPS" style="endArrow=none;html=1;strokeColor=#000000;strokeWidth=1.5;fontFamily=Times New Roman;fontSize=11;fontColor=#000000;labelBackgroundColor=#ffffff;align=center;verticalAlign=middle;" edge="1" parent="1" source="node_client" target="cube_web_server">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="280" as="sourcePoint"/>
+            <mxPoint x="405" y="280" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Đường kết nối: Web Server -> External Cloud Services (THẲNG NGANG, CÂN ĐỐI) -->
+        <mxCell id="link_web_ext" value="REST API / HTTPS / SSL" style="endArrow=none;html=1;strokeColor=#000000;strokeWidth=1.5;fontFamily=Times New Roman;fontSize=11;fontColor=#000000;labelBackgroundColor=#ffffff;align=center;verticalAlign=middle;exitX=1;exitY=0.22;entryX=0;entryY=0.5;" edge="1" parent="1" source="cube_web_server" target="cube_ext_services">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Đường kết nối: Web Server -> Database Server (THẲNG NGANG, CÂN ĐỐI) -->
+        <mxCell id="link_web_db" value="MySQL Protocol&#xa;(TCP 3306)" style="endArrow=none;html=1;strokeColor=#000000;strokeWidth=1.5;fontFamily=Times New Roman;fontSize=11;fontColor=#000000;labelBackgroundColor=#ffffff;align=center;verticalAlign=middle;exitX=1;exitY=0.78;entryX=0;entryY=0.45;" edge="1" parent="1" source="cube_web_server" target="cube_db_server">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

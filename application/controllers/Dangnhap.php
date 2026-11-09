@@ -154,9 +154,9 @@ class Dangnhap extends CI_Controller {
                 return;
             }
 
-            // 2. Kiểm tra tài khoản Quản trị / Nhân viên (Role = 1 hoặc 2)
+            // 2. Kiểm tra tài khoản Quản trị viên (Role = 1)
             $adminUser = $this->db->where('username', $username)
-                                  ->where_in('role', [1, 2])
+                                  ->where('role', 1)
                                   ->where('status', 1)
                                   ->where('trash', 1)
                                   ->get('users')

@@ -441,6 +441,38 @@ LOCK TABLES `wishlists` WRITE;
 INSERT INTO `wishlists` VALUES (1,3,1,'2026-10-15 14:39:49'),(2,3,2,'2026-10-15 14:40:52'),(3,3,11,'2026-10-15 14:46:10');
 /*!40000 ALTER TABLE `wishlists` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table stock_logs
+--
+
+DROP TABLE IF EXISTS stock_logs;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE stock_logs (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  product_id int(11) NOT NULL,
+  change_amount int(11) NOT NULL,
+  change_type varchar(50) NOT NULL,
+  
+ote varchar(255) DEFAULT NULL,
+  updated_by int(11) DEFAULT NULL,
+  created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY product_id (product_id),
+  KEY updated_by (updated_by)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table stock_logs
+--
+
+LOCK TABLES stock_logs WRITE;
+/*!40000 ALTER TABLE stock_logs DISABLE KEYS */;
+INSERT INTO stock_logs VALUES (1,1,54,'import','Nhập lô hàng ban đầu iPhone 17 Pro Max',1,'2026-10-15 08:30:00'),(2,1,-4,'export','Xuất bán theo đơn hàng đã giao',1,'2026-10-18 14:20:00'),(3,2,47,'import','Nhập lô hàng Samsung Galaxy S26 Ultra',1,'2026-10-15 09:00:00'),(4,2,-2,'export','Xuất bán theo đơn hàng đã giao',1,'2026-10-19 10:15:00'),(5,3,62,'import','Nhập hàng iPhone 17 Pro đợt 1',1,'2026-10-16 11:00:00'),(6,3,-2,'export','Xuất bán đơn hàng',1,'2026-10-20 16:40:00');
+/*!40000 ALTER TABLE stock_logs ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

@@ -26,16 +26,16 @@ class Useradmin extends CI_Controller {
 
 	public function index(){
 		$user_role=$this->session->userdata('sessionadmin');
-		if($user_role['role']==2){
+		if($user_role['role'] != 1){
 			redirect('admin/E403/index','refresh');
 		}
 		$this->load->library('phantrang');
 		$limit=10;
 		$current=$this->phantrang->PageCurrent();
 		$first=$this->phantrang->PageFirst($limit, $current);
-		$total=$this->Mnguoidung->user_count([1, 2]);
+		$total=$this->Mnguoidung->user_count([1]);
 		$this->data['strphantrang']=$this->phantrang->PagePer($total, $current, $limit, $url='admin/useradmin');
-		$this->data['list']=$this->Mnguoidung->user_all([1, 2], $limit, $first);
+		$this->data['list']=$this->Mnguoidung->user_all([1], $limit, $first);
 		$this->data['view']='index';
 		$this->data['title']='Danh sách tài khoản';
 		$this->load->view('backend/layout', $this->data);
@@ -43,7 +43,7 @@ class Useradmin extends CI_Controller {
 
 	public function insert(){
 		$user_role=$this->session->userdata('sessionadmin');
-		if($user_role['role']==2){
+		if($user_role['role'] != 1){
 			redirect('admin/E403/index','refresh');
 		}
 		$d=getdate();
@@ -93,7 +93,7 @@ class Useradmin extends CI_Controller {
 
 	public function update($id){
 		$user_role=$this->session->userdata('sessionadmin');
-		if($user_role['role']==2){
+		if($user_role['role'] != 1){
 			redirect('admin/E403/index','refresh');
 		}
 		$row=$this->Mnguoidung->user_detail($id);
@@ -175,7 +175,7 @@ class Useradmin extends CI_Controller {
 	public function trash($id)
 	{
 		$row=$this->data['user'];
-		if($row['role']==2){
+		if($row['role'] != 1){
 			$this->session->set_flashdata('error', 'Không có quyền thao tác');
 			redirect('admin/useradmin','refresh');
 		}else{
@@ -190,7 +190,7 @@ class Useradmin extends CI_Controller {
 	{
 		$row=$this->Mnguoidung->user_detail($id);
 		$user=$this->data['user'];
-		if($user['role']==2){
+		if($user['role'] != 1){
 			$this->session->set_flashdata('error', 'Không có quyền thao tác');
 			redirect('admin/useradmin','refresh');
 		}else{
@@ -209,7 +209,7 @@ class Useradmin extends CI_Controller {
 
 	public function restore($id){
 		$row=$this->data['user'];
-		if($row['role']==2){
+		if($row['role'] != 1){
 			$this->session->set_flashdata('error', 'Không có quyền thao tác');
 			redirect('admin/useradmin','refresh');
 		}else{
@@ -221,7 +221,7 @@ class Useradmin extends CI_Controller {
 
 	public function delete($id){
 		$row=$this->data['user'];
-		if($row['role']==2){
+		if($row['role'] != 1){
 			$this->session->set_flashdata('error', 'Không có quyền thao tác');
 			redirect('admin/useradmin','refresh');
 		}else{

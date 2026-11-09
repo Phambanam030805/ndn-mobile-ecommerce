@@ -11,7 +11,7 @@ class Mnguoidung extends CI_Model {
     /**
      * Đăng nhập (Frontend & Backend)
      */
-    public function user_login($username, $password, $roles = [1, 2])
+    public function user_login($username, $password, $roles = [1])
     {
     	$this->db->where('username', $username);
     	$this->db->where('password', $password);
@@ -24,7 +24,7 @@ class Mnguoidung extends CI_Model {
     /**
      * Lấy danh sách người dùng theo vai trò
      */
-    public function user_all($roles = [1, 2], $limit = null, $first = null, $search = '')
+    public function user_all($roles = [1], $limit = null, $first = null, $search = '')
     {
         $this->db->where('trash', 1);
         $this->db->where_in('role', $roles);
@@ -48,7 +48,7 @@ class Mnguoidung extends CI_Model {
         return $query->result_array();
     }
 
-    public function user_count($roles = [1, 2], $search = '')
+    public function user_count($roles = [1], $search = '')
     {
         $this->db->where('trash', 1);
         $this->db->where_in('role', $roles);
@@ -96,7 +96,7 @@ class Mnguoidung extends CI_Model {
         return (isset($row['fullname'])) ? $row['fullname'] : 'Hệ thống';
     }
 
-    public function user_trash($roles = [1, 2], $limit = null, $first = null)
+    public function user_trash($roles = [1], $limit = null, $first = null)
     {
         $this->db->where('trash', 0);
         $this->db->where_in('role', $roles);
@@ -108,7 +108,7 @@ class Mnguoidung extends CI_Model {
         return $query->result_array();
     }
 
-    public function user_trash_count($roles = [1, 2])
+    public function user_trash_count($roles = [1])
     {
         $this->db->where('trash', 0);
         $this->db->where_in('role', $roles);
