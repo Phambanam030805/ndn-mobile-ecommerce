@@ -1,0 +1,87 @@
+<mxfile host="app.diagrams.net" modified="2026-11-11T14:20:00.000Z" agent="5.0" version="21.0.0" type="device">
+  <diagram id="diagram_state_warehouse" name="Biểu đồ trạng thái Quản lý kho">
+    <mxGraphModel dx="1000" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="520" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- =================== CÁC NỐT TRẠNG THÁI (STATES) =================== -->
+
+        <!-- NỐT KHỞI TẠO (START NODE) -->
+        <mxCell id="start_node" value="" style="ellipse;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="35" y="96" width="28" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- STATE 1: CÒN HÀNG -->
+        <mxCell id="state_in_stock" value="Còn hàng" style="rounded=1;arcSize=25;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=13;fontStyle=1;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="200" y="85" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- STATE 2: SẮP HẾT HÀNG -->
+        <mxCell id="state_low_stock" value="Sắp hết hàng" style="rounded=1;arcSize=25;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=13;fontStyle=1;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="520" y="85" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- STATE 3: HẾT HÀNG -->
+        <mxCell id="state_out_stock" value="Hết hàng" style="rounded=1;arcSize=25;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=13;fontStyle=1;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="360" y="250" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- NỐT KẾT THÚC (END NODE: BULLSEYE) -->
+        <mxCell id="end_outer" value="" style="ellipse;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="426" y="375" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="end_inner" value="" style="ellipse;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="432" y="381" width="16" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- =================== CÁC MŨI TÊN CHUYỂN TRẠNG THÁI =================== -->
+
+        <!-- 1. Start -> Còn hàng -->
+        <mxCell id="e_start" value="Nhập kho ban đầu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=bottom;labelBackgroundColor=#ffffff;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="start_node" target="state_in_stock">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 2. Còn hàng -> Sắp hết hàng (Mũi tên trên) -->
+        <mxCell id="e_in_to_low" value="Khách mua hàng&lt;br/&gt;[Tồn kho ≤ 5]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=bottom;labelBackgroundColor=#ffffff;exitX=1;exitY=0.35;exitDx=0;exitDy=0;entryX=0;entryY=0.35;entryDx=0;entryDy=0;" edge="1" parent="1" source="state_in_stock" target="state_low_stock">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 3. Sắp hết hàng -> Còn hàng (Mũi tên dưới) -->
+        <mxCell id="e_low_to_in" value="Admin nhập bổ sung kho" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=top;labelBackgroundColor=#ffffff;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="state_low_stock" target="state_in_stock">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 4. Sắp hết hàng -> Hết hàng -->
+        <mxCell id="e_low_to_out" value="Khách mua hết&lt;br/&gt;[Tồn kho = 0]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="state_low_stock" target="state_out_stock">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="600" y="195" />
+              <mxPoint x="480" y="195" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 5. Hết hàng -> Còn hàng (Quay lại Còn hàng) -->
+        <mxCell id="e_out_to_in" value="Admin nhập hàng mới&lt;br/&gt;[Tồn kho &gt; 5]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="state_out_stock" target="state_in_stock">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="280" y="275" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 6. Hết hàng -> Kết thúc (Ngừng kinh doanh / Xóa khỏi kho) -->
+        <mxCell id="e_out_to_end" value="Ngừng kinh doanh /&lt;br/&gt;Xóa khỏi kho" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="state_out_stock" target="end_outer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- CAPTION DƯỚI HÌNH (GIỐNG HỆT MẪU ẢNH 2 WORD) -->
+        <mxCell id="caption" value="Biểu đồ trạng thái - Vòng đời Quản lý kho" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Times New Roman;fontSize=13;fontStyle=0;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="270" y="440" width="340" height="30" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
