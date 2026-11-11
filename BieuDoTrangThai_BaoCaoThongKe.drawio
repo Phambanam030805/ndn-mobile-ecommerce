@@ -9,7 +9,7 @@
 
         <!-- NỐT KHỞI TẠO (START NODE) -->
         <mxCell id="start_node" value="" style="ellipse;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
-          <mxGeometry x="30" y="88" width="28" height="28" as="geometry" />
+          <mxGeometry x="15" y="88" width="28" height="28" as="geometry" />
         </mxCell>
 
         <!-- STATE 1: BÁO CÁO MẶC ĐỊNH -->
@@ -48,7 +48,7 @@
         <!-- =================== CÁC MŨI TÊN CHUYỂN TRẠNG THÁI =================== -->
 
         <!-- 1. Start -> Báo cáo mặc định -->
-        <mxCell id="e_start" value="Admin mở Dashboard" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=bottom;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="start_node" target="state_default">
+        <mxCell id="e_start" value="Admin mở&lt;br/&gt;Dashboard" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=bottom;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="start_node" target="state_default">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
