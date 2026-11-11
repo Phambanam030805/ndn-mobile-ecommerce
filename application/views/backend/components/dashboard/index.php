@@ -340,7 +340,124 @@
     padding: 2px 8px;
     border-radius: 20px;
   }
+
+  /* Nút thao tác In & Xuất Báo cáo chuẩn Doanh nghiệp */
+  .btn-dashboard-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    text-decoration: none;
+  }
+  .btn-print-report {
+    background: #0f172a;
+    color: #ffffff;
+  }
+  .btn-print-report:hover {
+    background: #1e293b;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(15,23,42,0.18);
+  }
+  .btn-export-excel {
+    background: #10b981;
+    color: #ffffff;
+  }
+  .btn-export-excel:hover {
+    background: #059669;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(16,185,129,0.25);
+  }
+
+  /* Khung in báo cáo doanh nghiệp (Mặc định ẩn trên màn hình thường) */
+  #enterprise-report-print-area {
+    display: none;
+  }
+
+  /* Bảng báo cáo doanh nghiệp chuẩn */
+  .table-enterprise-report {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+    font-size: 11pt;
+    font-family: 'Times New Roman', Times, serif;
+    background: #ffffff;
+  }
+  .table-enterprise-report th,
+  .table-enterprise-report td {
+    border: 1px solid #333333;
+    padding: 6px 10px;
+    vertical-align: middle;
+    color: #000000;
+  }
+  .table-enterprise-report th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  /* CHẾ ĐỘ IN ẤN CHUẨN DOANH NGHIỆP: TRIỆT TIÊU 100% GIAO DIỆN WEB & LINK RÁC */
+  @media print {
+    /* Ẩn hoàn toàn header AdminLTE, sidebar, footer, thanh điều hướng và giao diện web */
+    body, html, .wrapper, .content-wrapper {
+      background: #ffffff !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      width: 100% !important;
+      min-height: auto !important;
+      overflow: visible !important;
+    }
+    .main-header, .main-sidebar, .main-footer, .sidebar-brand-panel,
+    .dashboard-header-bar, .kpi-grid, .row, .content > *:not(#enterprise-report-print-area),
+    button, select, input, .filter-select {
+      display: none !important;
+    }
+
+    /* Hiển thị duy nhất khu vực văn bản báo cáo doanh nghiệp */
+    #enterprise-report-print-area {
+      display: block !important;
+      position: absolute !important;
+      left: 0 !important;
+      top: 0 !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #ffffff !important;
+      color: #000000 !important;
+      font-family: 'Times New Roman', Times, serif !important;
+      font-size: 12pt !important;
+      line-height: 1.4 !important;
+    }
+
+    /* Triệt tiêu 100% in kèm URL/link rác của trình duyệt */
+    a[href]:after, a:after {
+      content: none !important;
+    }
+    a {
+      text-decoration: none !important;
+      color: #000000 !important;
+    }
+
+    /* Tránh ngắt trang dở chừng giữa bảng */
+    .print-avoid-break {
+      page-break-inside: avoid !important;
+    }
+
+    @page {
+      size: A4 portrait;
+      margin: 15mm 15mm 15mm 15mm;
+    }
+  }
 </style>
+
 
 <div class="content-wrapper">
   <!-- Top bar header -->
@@ -350,13 +467,235 @@
       Bảng điều khiển Quản trị
       <small>Dữ liệu kinh doanh thời gian thực</small>
     </h1>
-    <div class="dashboard-header-date">
-      <i class="far fa-calendar-alt" style="color: var(--primary);"></i>
-      <span>Hôm nay: <?php echo date('d/m/Y'); ?></span>
+    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+      <div class="dashboard-header-date">
+        <i class="far fa-calendar-alt" style="color: var(--primary);"></i>
+        <span>Hôm nay: <?php echo date('d/m/Y'); ?></span>
+      </div>
+      <button type="button" class="btn-dashboard-action btn-print-report" onclick="printEnterpriseReport()" title="In báo cáo thống kê chuẩn doanh nghiệp">
+        <i class="fas fa-print"></i> In báo cáo
+      </button>
+      <button type="button" class="btn-dashboard-action btn-export-excel" onclick="exportEnterpriseExcel()" title="Xuất báo cáo thống kê ra tệp Excel">
+        <i class="fas fa-file-excel"></i> Xuất Excel
+      </button>
     </div>
   </div>
 
   <section class="content" style="padding: 0 20px 20px;">
+
+    <!-- ========================================================================= -->
+    <!-- BÁO CÁO DOANH NGHIỆP CHUẨN IN ẤN & XUẤT EXCEL (ENTERPRISE AUDIT REPORT)   -->
+    <!-- ========================================================================= -->
+    <div id="enterprise-report-print-area">
+      <!-- 1. QUỐC HIỆU & THÔNG TIN DOANH NGHIỆP -->
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 18px; border: none;">
+        <tr>
+          <td style="width: 55%; vertical-align: top; text-align: left; font-size: 11pt; line-height: 1.35; border: none; padding: 0;">
+            <strong style="font-size: 12pt; text-transform: uppercase;">CÔNG TY TNHH THƯƠNG MẠI & DỊCH VỤ NDN MOBILE</strong><br>
+            <strong>Hệ thống Bán lẻ Điện thoại Di động & Phụ kiện Chính hãng</strong><br>
+            Địa chỉ: 123 Đường Cầu Giấy, Q. Cầu Giấy, TP. Hà Nội<br>
+            Hotline: 1900.6868 | Email: contact@ndnmobile.vn<br>
+            Số hiệu: <strong>BC-<?php echo $selected_year; ?>/NDN-TCKT</strong>
+          </td>
+          <td style="width: 45%; vertical-align: top; text-align: center; font-size: 11pt; line-height: 1.35; border: none; padding: 0;">
+            <strong style="font-size: 12pt; text-transform: uppercase;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</strong><br>
+            <strong style="text-decoration: underline;">Độc lập – Tự do – Hạnh phúc</strong><br><br>
+            <em>Hà Nội, ngày <?php echo date('d'); ?> tháng <?php echo date('m'); ?> năm <?php echo date('Y'); ?></em>
+          </td>
+        </tr>
+      </table>
+
+      <!-- 2. TIÊU ĐỀ BÁO CÁO -->
+      <div style="text-align: center; margin: 20px 0 18px;">
+        <h2 style="font-size: 16pt; font-weight: bold; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">BÁO CÁO THỐNG KÊ DOANH THU & KẾT QUẢ KINH DOANH</h2>
+        <div style="font-size: 12pt; font-style: italic; margin-top: 4px;">Kỳ thống kê: Toàn bộ năm <?php echo $selected_year; ?> (Từ 01/01/<?php echo $selected_year; ?> đến 31/12/<?php echo $selected_year; ?>)</div>
+        <div style="font-size: 10.5pt; color: #333333; margin-top: 4px;">Người lập biểu: <strong><?php echo !empty($user['fullname']) ? $user['fullname'] : $user['username']; ?></strong> | Thời điểm kết xuất: <?php echo date('d/m/Y H:i:s'); ?></div>
+      </div>
+
+      <!-- 3. MỤC I: TỔNG QUAN CHỈ SỐ HOẠT ĐỘNG TOÀN HỆ THỐNG (KPIS) -->
+      <div style="margin-bottom: 18px;" class="print-avoid-break">
+        <h4 style="font-size: 11.5pt; font-weight: bold; margin: 0 0 6px; text-transform: uppercase;">I. TỔNG HỢP CÁC CHỈ SỐ KINH DOANH & HOẠT ĐỘNG CHÍNH</h4>
+        <table class="table-enterprise-report">
+          <thead>
+            <tr>
+              <th style="width: 8%; text-align: center;">STT</th>
+              <th style="width: 36%; text-align: left;">Chỉ số hoạt động / Quản trị</th>
+              <th style="width: 24%; text-align: right;">Giá trị ghi nhận</th>
+              <th style="width: 12%; text-align: center;">Đơn vị</th>
+              <th style="width: 20%; text-align: left;">Diễn giải nghiệp vụ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align: center;">01</td>
+              <td><strong>Tổng doanh thu bán hàng lũy kế</strong></td>
+              <td style="text-align: right; font-weight: bold; font-family: 'Courier New', monospace; font-size: 11pt;"><?php echo number_format($total_revenue); ?> đ</td>
+              <td style="text-align: center;">VNĐ</td>
+              <td>Đơn giao thành công</td>
+            </tr>
+            <tr>
+              <td style="text-align: center;">02</td>
+              <td><strong>Tổng số lượng đơn hàng phát sinh</strong></td>
+              <td style="text-align: right; font-weight: bold; font-family: 'Courier New', monospace; font-size: 11pt;"><?php echo number_format($total_orders); ?></td>
+              <td style="text-align: center;">Đơn hàng</td>
+              <td>Toàn hệ thống</td>
+            </tr>
+            <tr>
+              <td style="text-align: center;">03</td>
+              <td><strong>Tổng số khách hàng thành viên</strong></td>
+              <td style="text-align: right; font-weight: bold; font-family: 'Courier New', monospace; font-size: 11pt;"><?php echo number_format($total_customers); ?></td>
+              <td style="text-align: center;">Khách hàng</td>
+              <td>Tài khoản kích hoạt</td>
+            </tr>
+            <tr>
+              <td style="text-align: center;">04</td>
+              <td><strong>Số lượng sản phẩm trực tuyến</strong></td>
+              <td style="text-align: right; font-weight: bold; font-family: 'Courier New', monospace; font-size: 11pt;"><?php echo number_format($total_products); ?></td>
+              <td style="text-align: center;">Mặt hàng</td>
+              <td>Đang kinh doanh</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 4. MỤC II: BẢNG KÊ CHI TIẾT DOANH THU & ĐƠN HÀNG 12 THÁNG -->
+      <div style="margin-bottom: 18px;" class="print-avoid-break">
+        <h4 style="font-size: 11.5pt; font-weight: bold; margin: 0 0 6px; text-transform: uppercase;">II. BẢNG KÊ DOANH THU & ĐƠN HÀNG 12 THÁNG NĂM <?php echo $selected_year; ?></h4>
+        <table class="table-enterprise-report">
+          <thead>
+            <tr>
+              <th style="width: 8%; text-align: center;">Kỳ</th>
+              <th style="width: 22%; text-align: left;">Thời gian</th>
+              <th style="width: 18%; text-align: right;">Số đơn phát sinh</th>
+              <th style="width: 14%; text-align: right;">Tỷ trọng đơn</th>
+              <th style="width: 24%; text-align: right;">Doanh thu thực tế (VNĐ)</th>
+              <th style="width: 14%; text-align: right;">Tỷ trọng DT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php 
+              $sum_year_orders = array_sum($orders_count_months);
+              $sum_year_money = array_sum($revenue_months);
+              for($m = 1; $m <= 12; $m++):
+                $m_money = $revenue_months[$m] ?? 0;
+                $m_orders = $orders_count_months[$m] ?? 0;
+                $pct_orders = $sum_year_orders > 0 ? ($m_orders / $sum_year_orders) * 100 : 0;
+                $pct_money = $sum_year_money > 0 ? ($m_money / $sum_year_money) * 100 : 0;
+            ?>
+            <tr>
+              <td style="text-align: center;">T<?php echo sprintf('%02d', $m); ?></td>
+              <td>Tháng <?php echo sprintf('%02d', $m); ?>/<?php echo $selected_year; ?></td>
+              <td style="text-align: right;"><?php echo number_format($m_orders); ?> đơn</td>
+              <td style="text-align: right;"><?php echo number_format($pct_orders, 1); ?>%</td>
+              <td style="text-align: right; font-weight: bold; font-family: 'Courier New', monospace;"><?php echo number_format($m_money); ?> đ</td>
+              <td style="text-align: right;"><?php echo number_format($pct_money, 1); ?>%</td>
+            </tr>
+            <?php endfor; ?>
+            <tr style="background: #f2f2f2; font-weight: bold;">
+              <td colspan="2" style="text-align: center; text-transform: uppercase;">TỔNG CỘNG NĂM <?php echo $selected_year; ?></td>
+              <td style="text-align: right;"><?php echo number_format($sum_year_orders); ?> đơn</td>
+              <td style="text-align: right;">100.0%</td>
+              <td style="text-align: right; font-family: 'Courier New', monospace; font-size: 11pt;"><?php echo number_format($sum_year_money); ?> đ</td>
+              <td style="text-align: right;">100.0%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 5. MỤC III: TỔNG HỢP TRẠNG THÁI ĐƠN HÀNG & TOP 5 SẢN PHẨM -->
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 18px; border: none;" class="print-avoid-break">
+        <tr>
+          <!-- Cột Trái: Trạng thái đơn -->
+          <td style="width: 45%; vertical-align: top; border: none; padding: 0 10px 0 0;">
+            <h4 style="font-size: 11.5pt; font-weight: bold; margin: 0 0 6px; text-transform: uppercase;">III. TRẠNG THÁI XỬ LÝ ĐƠN HÀNG</h4>
+            <table class="table-enterprise-report">
+              <thead>
+                <tr>
+                  <th style="width: 60%; text-align: left;">Trạng thái</th>
+                  <th style="width: 40%; text-align: right;">Số lượng</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Chờ duyệt tiếp nhận</td>
+                  <td style="text-align: right; font-weight: bold;"><?php echo number_format($order_status['pending']); ?> đơn</td>
+                </tr>
+                <tr>
+                  <td>Đang vận chuyển giao hàng</td>
+                  <td style="text-align: right; font-weight: bold;"><?php echo number_format($order_status['shipping']); ?> đơn</td>
+                </tr>
+                <tr>
+                  <td>Giao hàng thành công</td>
+                  <td style="text-align: right; font-weight: bold;"><?php echo number_format($order_status['success']); ?> đơn</td>
+                </tr>
+                <tr>
+                  <td>Đã hủy / Hoàn trả</td>
+                  <td style="text-align: right; font-weight: bold;"><?php echo number_format($order_status['cancelled']); ?> đơn</td>
+                </tr>
+                <tr style="background: #f2f2f2; font-weight: bold;">
+                  <td style="text-transform: uppercase;">Tổng cộng</td>
+                  <td style="text-align: right;"><?php echo number_format(array_sum($order_status)); ?> đơn</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+
+          <!-- Cột Phải: Top sản phẩm bán chạy -->
+          <td style="width: 55%; vertical-align: top; border: none; padding: 0 0 0 10px;">
+            <h4 style="font-size: 11.5pt; font-weight: bold; margin: 0 0 6px; text-transform: uppercase;">IV. TOP 5 SẢN PHẨM BÁN CHẠY NHẤT</h4>
+            <table class="table-enterprise-report">
+              <thead>
+                <tr>
+                  <th style="width: 10%; text-align: center;">STT</th>
+                  <th style="width: 50%; text-align: left;">Tên sản phẩm</th>
+                  <th style="width: 18%; text-align: right;">Đã bán</th>
+                  <th style="width: 22%; text-align: right;">Doanh thu</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php if(!empty($best_selling_products)): $stt=1; foreach($best_selling_products as $bp): ?>
+                <tr>
+                  <td style="text-align: center;"><?php echo $stt++; ?></td>
+                  <td style="font-size: 10pt;"><?php echo htmlspecialchars($bp['name']); ?></td>
+                  <td style="text-align: right; font-weight: bold;"><?php echo number_format($bp['real_sold']); ?></td>
+                  <td style="text-align: right; font-family: 'Courier New', monospace; font-size: 9.5pt;"><?php echo number_format($bp['real_revenue']); ?> đ</td>
+                </tr>
+                <?php endforeach; else: ?>
+                <tr><td colspan="4" style="text-align: center;">Chưa có dữ liệu giao dịch</td></tr>
+                <?php endif; ?>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+      <!-- 6. CHỮ KÝ XÁC NHẬN CHUẨN DOANH NGHIỆP (3 BÊN) -->
+      <div style="margin-top: 30px; page-break-inside: avoid;" class="print-avoid-break">
+        <table style="width: 100%; border-collapse: collapse; text-align: center; border: none;">
+          <tr>
+            <td style="width: 33%; vertical-align: top; border: none; padding: 0;">
+              <strong>NGƯỜI LẬP BÁO CÁO</strong><br>
+              <span style="font-size: 10pt; font-style: italic;">(Ký và ghi rõ họ tên)</span>
+              <br><br><br><br><br>
+              <strong><?php echo !empty($user['fullname']) ? $user['fullname'] : $user['username']; ?></strong>
+            </td>
+            <td style="width: 33%; vertical-align: top; border: none; padding: 0;">
+              <strong>KẾ TOÁN TRƯỞNG</strong><br>
+              <span style="font-size: 10pt; font-style: italic;">(Ký và ghi rõ họ tên)</span>
+              <br><br><br><br><br>
+              <strong>....................................................</strong>
+            </td>
+            <td style="width: 34%; vertical-align: top; border: none; padding: 0;">
+              <strong>GIÁM ĐỐC DOANH NGHIỆP</strong><br>
+              <span style="font-size: 10pt; font-style: italic;">(Ký tên và đóng dấu)</span>
+              <br><br><br><br><br>
+              <strong>....................................................</strong>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
     
     <!-- 1. 4 Thẻ KPI Tổng quan -->
     <div class="kpi-grid">
@@ -786,4 +1125,65 @@
       }
     });
   });
+
+
+  // 1. Hàm in Báo cáo Doanh nghiệp chuẩn A4, loại bỏ 100% link rác và giao diện web
+  function printEnterpriseReport() {
+    window.print();
+  }
+
+  // 2. Hàm xuất Báo cáo Doanh nghiệp ra tệp Microsoft Excel (.xls) có đầy đủ chữ ký, kẻ bảng và tiếng Việt UTF-8
+  function exportEnterpriseExcel() {
+    var reportArea = document.getElementById('enterprise-report-print-area');
+    if (!reportArea) {
+      alert('Không tìm thấy dữ liệu báo cáo!');
+      return;
+    }
+
+    var reportContent = reportArea.innerHTML;
+    var excelTemplate = `
+      <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+      <head>
+        <meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">
+        <!--[if gte mso 9]>
+        <xml>
+          <x:ExcelWorkbook>
+            <x:ExcelWorksheets>
+              <x:ExcelWorksheet>
+                <x:Name>BaoCao_NDNMobile_<?php echo $selected_year; ?></x:Name>
+                <x:WorksheetOptions>
+                  <x:DisplayGridlines/>
+                </x:WorksheetOptions>
+              </x:ExcelWorksheet>
+            </x:ExcelWorksheets>
+          </x:ExcelWorkbook>
+        </xml>
+        <![endif]-->
+        <style>
+          body { font-family: 'Times New Roman', serif; font-size: 11pt; color: #000; }
+          table { border-collapse: collapse; width: 100%; margin-bottom: 12px; }
+          th, td { border: 0.5pt solid #333333; padding: 6px 8px; vertical-align: middle; }
+          th { background-color: #f2f2f2; font-weight: bold; text-align: center; }
+          h2, h4 { margin: 0; padding: 4px 0; }
+        </style>
+      </head>
+      <body>
+        ${reportContent}
+      </body>
+      </html>
+    `;
+
+    var blob = new Blob(['\uFEFF' + excelTemplate], {
+      type: 'application/vnd.ms-excel;charset=utf-8'
+    });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'BaoCao_KinhDoanh_NDNMobile_Nam_' + <?php echo $selected_year; ?> + '.xls';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
 </script>
