@@ -404,7 +404,7 @@
     text-align: center;
   }
 
-    /* CHẾ ĐỘ IN ẤN CHUẨN DOANH NGHIỆP: TRIỆT TIÊU 100% GIAO DIỆN WEB & LINK RÁC CỦA TRÌNH DUYỆT */
+      /* CHẾ ĐỘ IN ẤN CHUẨN DOANH NGHIỆP: TRIỆT TIÊU 100% GIAO DIỆN WEB & LINK RÁC CỦA TRÌNH DUYỆT */
   @media print {
     /* Đặt margin: 0 để trình duyệt (Chrome/Edge) KHÔNG THỂ in link URL, ngày giờ ở góc trái/phải trang */
     @page {
@@ -428,7 +428,7 @@
       display: none !important;
     }
 
-    /* Hiển thị duy nhất khu vực văn bản in với lề giấy nội tại 12mm x 15mm */
+    /* Hiển thị duy nhất khu vực văn bản in với lề giấy nội tại 10mm x 15mm */
     #enterprise-report-print-area {
       display: block !important;
       position: absolute !important;
@@ -437,12 +437,12 @@
       width: 100% !important;
       box-sizing: border-box !important;
       margin: 0 !important;
-      padding: 12mm 15mm 12mm 15mm !important;
+      padding: 10mm 15mm 10mm 15mm !important;
       background: #ffffff !important;
       color: #000000 !important;
       font-family: 'Times New Roman', Times, serif !important;
-      font-size: 10.5pt !important;
-      line-height: 1.3 !important;
+      font-size: 10pt !important;
+      line-height: 1.25 !important;
     }
 
     /* Triệt tiêu 100% in URL link rác */
@@ -450,13 +450,15 @@
       content: none !important;
     }
 
-    /* Phân trang chủ động chuẩn 2 trang A4 */
-    .page-break-after {
-      page-break-after: always !important;
-      break-after: page !important;
-      height: 0;
-      display: block;
-      clear: both;
+    /* ĐẢM BẢO CHUẨN XÁC: TRANG 2 BẮT ĐẦU HOÀN TOÀN TỪ ĐẦU TRANG MỚI, KHÔNG LỌT LÊN TRANG 1 */
+    .print-page-1 {
+      box-sizing: border-box !important;
+    }
+    .print-page-2 {
+      page-break-before: always !important;
+      break-before: page !important;
+      box-sizing: border-box !important;
+      padding-top: 15mm !important;
     }
     .print-avoid-break {
       page-break-inside: avoid !important;
@@ -497,17 +499,17 @@
       <!-- ====================== TRANG 1 ====================== -->
       <div class="print-page-1">
         <!-- 1. QUỐC HIỆU & THÔNG TIN DOANH NGHIỆP -->
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px; border: none;">
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px; border: none;">
           <tr>
-            <td style="width: 55%; vertical-align: top; text-align: left; font-size: 10pt; line-height: 1.3; border: none; padding: 0;">
-              <strong style="font-size: 11pt; text-transform: uppercase;">CÔNG TY TNHH THƯƠNG MẠI & DỊCH VỤ NDN MOBILE</strong><br>
+            <td style="width: 55%; vertical-align: top; text-align: left; font-size: 9.5pt; line-height: 1.25; border: none; padding: 0;">
+              <strong style="font-size: 10.5pt; text-transform: uppercase;">CÔNG TY TNHH THƯƠNG MẠI & DỊCH VỤ NDN MOBILE</strong><br>
               <strong>Hệ thống Bán lẻ Điện thoại Di động & Phụ kiện Chính hãng</strong><br>
               Địa chỉ: 123 Đường Cầu Giấy, Q. Cầu Giấy, TP. Hà Nội<br>
               Hotline: 1900.6868 | Email: contact@ndnmobile.vn<br>
               Số hiệu: <strong>BC-<?php echo $selected_year; ?>/NDN-TCKT</strong>
             </td>
-            <td style="width: 45%; vertical-align: top; text-align: center; font-size: 10pt; line-height: 1.3; border: none; padding: 0;">
-              <strong style="font-size: 11pt; text-transform: uppercase;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</strong><br>
+            <td style="width: 45%; vertical-align: top; text-align: center; font-size: 9.5pt; line-height: 1.25; border: none; padding: 0;">
+              <strong style="font-size: 10.5pt; text-transform: uppercase;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</strong><br>
               <strong style="text-decoration: underline;">Độc lập – Tự do – Hạnh phúc</strong><br><br>
               <em>Hà Nội, ngày <?php echo date('d'); ?> tháng <?php echo date('m'); ?> năm <?php echo date('Y'); ?></em>
             </td>
@@ -515,10 +517,10 @@
         </table>
 
         <!-- 2. TIÊU ĐỀ BÁO CÁO -->
-        <div style="text-align: center; margin: 12px 0 14px;">
-          <h2 style="font-size: 15pt; font-weight: bold; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">BÁO CÁO THỐNG KÊ DOANH THU & KẾT QUẢ KINH DOANH</h2>
-          <div style="font-size: 11pt; font-style: italic; margin-top: 3px;">Kỳ thống kê: Toàn bộ năm <?php echo $selected_year; ?> (Từ 01/01/<?php echo $selected_year; ?> đến 31/12/<?php echo $selected_year; ?>)</div>
-          <div style="font-size: 10pt; color: #333333; margin-top: 3px;">Người lập biểu: <strong><?php echo !empty($user['fullname']) ? $user['fullname'] : $user['username']; ?></strong> | Thời điểm kết xuất: <?php echo date('d/m/Y H:i:s'); ?></div>
+        <div style="text-align: center; margin: 8px 0 10px;">
+          <h2 style="font-size: 14pt; font-weight: bold; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">BÁO CÁO THỐNG KÊ DOANH THU & KẾT QUẢ KINH DOANH</h2>
+          <div style="font-size: 10.5pt; font-style: italic; margin-top: 2px;">Kỳ thống kê: Toàn bộ năm <?php echo $selected_year; ?> (Từ 01/01/<?php echo $selected_year; ?> đến 31/12/<?php echo $selected_year; ?>)</div>
+          <div style="font-size: 9.5pt; color: #333333; margin-top: 2px;">Người lập biểu: <strong><?php echo !empty($user['fullname']) ? $user['fullname'] : $user['username']; ?></strong> | Thời điểm kết xuất: <?php echo date('d/m/Y H:i:s'); ?></div>
         </div>
 
         <!-- 3. MỤC I: TỔNG QUAN CHỈ SỐ HOẠT ĐỘNG TOÀN HỆ THỐNG (KPIS) -->
@@ -613,10 +615,8 @@
       </div>
 
       <!-- ĐƯỜNG NGẮT TRANG CHỦ ĐỘNG: ĐẢM BẢO CHUẨN XÁC 2 TRANG A4 -->
-      <div class="page-break-after"></div>
-
-      <!-- ====================== TRANG 2 ====================== -->
-      <div class="print-page-2" style="padding-top: 10px;">
+      <!-- ====================== TRANG 2 (NGẮT TRANG BẮT BUỘC) ====================== -->
+      <div class="print-page-2">
         <!-- 5. MỤC III: TỔNG HỢP TRẠNG THÁI ĐƠN HÀNG & TOP 5 SẢN PHẨM BÁN CHẠY -->
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; border: none;">
           <tr>
@@ -1228,30 +1228,30 @@
           <col width="130">
 
           <!-- ĐẦU TRANG DOANH NGHIỆP & QUỐC HIỆU -->
-          <tr>
-            <td colspan="3" class="no-border" style="font-weight: bold; font-size: 11pt;">CÔNG TY TNHH THƯƠNG MẠI & DỊCH VỤ NDN MOBILE</td>
-            <td colspan="3" class="no-border text-center" style="font-weight: bold; font-size: 11pt;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</td>
+          <tr height="24">
+            <td colspan="3" class="no-border" style="font-weight: bold; font-size: 11pt; white-space: nowrap;">CÔNG TY TNHH THƯƠNG MẠI & DỊCH VỤ NDN MOBILE</td>
+            <td colspan="3" class="no-border text-center" style="font-weight: bold; font-size: 11pt; white-space: nowrap;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</td>
           </tr>
-          <tr>
-            <td colspan="3" class="no-border">Hệ thống Bán lẻ Điện thoại Di động & Phụ kiện Chính hãng</td>
-            <td colspan="3" class="no-border text-center" style="text-decoration: underline; font-weight: bold;">Độc lập – Tự do – Hạnh phúc</td>
+          <tr height="22">
+            <td colspan="3" class="no-border" style="white-space: nowrap;">Hệ thống Bán lẻ Điện thoại Di động & Phụ kiện Chính hãng</td>
+            <td colspan="3" class="no-border text-center" style="text-decoration: underline; font-weight: bold; white-space: nowrap;">Độc lập – Tự do – Hạnh phúc</td>
           </tr>
-          <tr>
-            <td colspan="3" class="no-border">Địa chỉ: 123 Đường Cầu Giấy, Q. Cầu Giấy, TP. Hà Nội</td>
-            <td colspan="3" class="no-border text-center" style="font-style: italic;">Hà Nội, ngày <?php echo date('d/m/Y'); ?></td>
+          <tr height="22">
+            <td colspan="3" class="no-border" style="white-space: nowrap;">Địa chỉ: 123 Đường Cầu Giấy, Q. Cầu Giấy, TP. Hà Nội</td>
+            <td colspan="3" class="no-border text-center" style="font-style: italic; white-space: nowrap;">Hà Nội, ngày <?php echo date('d/m/Y'); ?></td>
           </tr>
-          <tr>
-            <td colspan="3" class="no-border">Số hiệu: BC-${year}/NDN-TCKT</td>
+          <tr height="22">
+            <td colspan="3" class="no-border" style="white-space: nowrap;">Số hiệu: BC-${year}/NDN-TCKT</td>
             <td colspan="3" class="no-border"></td>
           </tr>
-          <tr><td colspan="6" class="no-border" style="height: 15px;"></td></tr>
+          <tr height="15"><td colspan="6" class="no-border"></td></tr>
 
           <!-- TIÊU ĐỀ BÁO CÁO -->
-          <tr>
-            <td colspan="6" class="no-border header-title">BÁO CÁO THỐNG KÊ DOANH THU & KẾT QUẢ KINH DOANH</td>
+          <tr height="30">
+            <td colspan="6" class="no-border header-title" style="white-space: nowrap;">BÁO CÁO THỐNG KÊ DOANH THU & KẾT QUẢ KINH DOANH</td>
           </tr>
-          <tr>
-            <td colspan="6" class="no-border sub-title">Kỳ thống kê: Toàn bộ năm ${year} (Từ 01/01/${year} đến 31/12/${year})</td>
+          <tr height="22">
+            <td colspan="6" class="no-border sub-title" style="white-space: nowrap;">Kỳ thống kê: Toàn bộ năm ${year} (Từ 01/01/${year} đến 31/12/${year})</td>
           </tr>
           <tr>
             <td colspan="6" class="no-border text-center" style="font-size: 10pt; color: #555;">Người lập biểu: ${reporter} | Thời điểm kết xuất: ${exportDate}</td>
