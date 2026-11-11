@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2026-11-11T11:45:00.000Z" agent="5.0" version="21.0.0" type="device">
-  <diagram id="diagram_state_thongke_clean" name="Biểu đồ trạng thái Báo cáo thống kê">
-    <mxGraphModel dx="1000" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="600" background="#ffffff" math="0" shadow="0">
+<mxfile host="app.diagrams.net" modified="2026-11-11T12:00:00.000Z" agent="5.0" version="21.0.0" type="device">
+  <diagram id="diagram_state_thongke_perfect" name="Biểu đồ trạng thái Báo cáo thống kê">
+    <mxGraphModel dx="1000" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="950" pageHeight="500" background="#ffffff" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -9,7 +9,7 @@
 
         <!-- NỐT KHỞI TẠO (START NODE) -->
         <mxCell id="start_node" value="" style="ellipse;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
-          <mxGeometry x="40" y="88" width="28" height="28" as="geometry" />
+          <mxGeometry x="30" y="88" width="28" height="28" as="geometry" />
         </mxCell>
 
         <!-- STATE 1: BÁO CÁO MẶC ĐỊNH -->
@@ -24,25 +24,25 @@
 
         <!-- STATE 3: HIỂN THỊ KẾT QUẢ -->
         <mxCell id="state_result" value="Hiển thị kết quả" style="rounded=1;arcSize=25;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=13;fontStyle=1;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="680" y="77" width="160" height="50" as="geometry" />
+          <mxGeometry x="690" y="77" width="160" height="50" as="geometry" />
         </mxCell>
 
         <!-- STATE 4: KHÔNG CÓ DỮ LIỆU -->
         <mxCell id="state_nodata" value="Không có dữ liệu" style="rounded=1;arcSize=25;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=13;fontStyle=1;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="420" y="235" width="160" height="50" as="geometry" />
+          <mxGeometry x="420" y="230" width="160" height="50" as="geometry" />
         </mxCell>
 
         <!-- STATE 5: XUẤT BÁO CÁO -->
         <mxCell id="state_export" value="Xuất báo cáo" style="rounded=1;arcSize=25;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=13;fontStyle=1;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="680" y="235" width="160" height="50" as="geometry" />
+          <mxGeometry x="690" y="230" width="160" height="50" as="geometry" />
         </mxCell>
 
         <!-- NỐT KẾT THÚC (END NODE: BULLSEYE) -->
         <mxCell id="end_outer" value="" style="ellipse;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="746" y="375" width="28" height="28" as="geometry" />
+          <mxGeometry x="756" y="360" width="28" height="28" as="geometry" />
         </mxCell>
         <mxCell id="end_inner" value="" style="ellipse;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
-          <mxGeometry x="752" y="381" width="16" height="16" as="geometry" />
+          <mxGeometry x="762" y="366" width="16" height="16" as="geometry" />
         </mxCell>
 
         <!-- =================== CÁC MŨI TÊN CHUYỂN TRẠNG THÁI =================== -->
@@ -67,31 +67,43 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- 5. Đang lọc dữ liệu -> Không có dữ liệu (Mũi tên đi xuống) -->
-        <mxCell id="e_filter_nodata" value="[Không có đơn hàng]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;exitX=0.35;exitY=1;exitDx=0;exitDy=0;entryX=0.35;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="state_filtering" target="state_nodata">
+        <!-- 5. Đang lọc dữ liệu -> Không có dữ liệu (Mũi tên đi thẳng xuống) -->
+        <mxCell id="e_filter_nodata" value="[Không có đơn hàng]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="state_filtering" target="state_nodata">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- 6. Không có dữ liệu -> Đang lọc dữ liệu (Mũi tên đi lên) -->
-        <mxCell id="e_nodata_filter" value="Chọn lại năm" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="state_nodata" target="state_filtering">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- 7. Hiển thị kết quả -> Xuất báo cáo (Mũi tên đi xuống) -->
-        <mxCell id="e_result_export" value="Yêu cầu in / xuất" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;exitX=0.35;exitY=1;exitDx=0;exitDy=0;entryX=0.35;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="state_result" target="state_export">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- 8. Xuất báo cáo -> Hiển thị kết quả (Mũi tên đi lên) -->
-        <mxCell id="e_export_result" value="Hoàn tất in ấn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="state_export" target="state_result">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- 9. Báo cáo mặc định -> Xuất báo cáo (In trực tiếp báo cáo mặc định) -->
-        <mxCell id="e_default_export" value="In báo cáo mặc định" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=top;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="state_default" target="state_export">
+        <!-- 6. Không có dữ liệu -> Đang lọc dữ liệu (Đi vòng ra ngoài mép trái) -->
+        <mxCell id="e_nodata_filter" value="Chọn lại năm" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="state_nodata" target="state_filtering">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="230" y="260" />
+              <mxPoint x="365" y="255" />
+              <mxPoint x="365" y="102" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 7. Hiển thị kết quả -> Xuất báo cáo (Mũi tên đi thẳng xuống) -->
+        <mxCell id="e_result_export" value="Yêu cầu in / xuất" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="state_result" target="state_export">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 8. Xuất báo cáo -> Hiển thị kết quả (Đi vòng ra ngoài mép phải, giống hệt Mẫu 2) -->
+        <mxCell id="e_export_result" value="Hoàn tất in ấn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="state_export" target="state_result">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="895" y="255" />
+              <mxPoint x="895" y="102" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 9. Báo cáo mặc định -> Xuất báo cáo (Đi vòng xuống dưới đáy, KHÔNG cắt qua ô Không có dữ liệu) -->
+        <mxCell id="e_default_export" value="In báo cáo mặc định" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=11;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="state_default" target="state_export">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="230" y="320" />
+              <mxPoint x="640" y="320" />
+              <mxPoint x="640" y="268" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -103,7 +115,7 @@
 
         <!-- CAPTION DƯỚI HÌNH (GIỐNG HỆT MẪU ẢNH 2 WORD) -->
         <mxCell id="caption" value="Biểu đồ trạng thái - Phân hệ Báo cáo thống kê" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Times New Roman;fontSize=13;fontStyle=0;strokeColor=none;fillColor=none;" vertex="1" parent="1">
-          <mxGeometry x="275" y="440" width="300" height="30" as="geometry" />
+          <mxGeometry x="290" y="420" width="300" height="30" as="geometry" />
         </mxCell>
 
       </root>
