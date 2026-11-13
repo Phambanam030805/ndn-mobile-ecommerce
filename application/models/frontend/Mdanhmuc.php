@@ -189,10 +189,21 @@ class Mdanhmuc extends CI_Model {
 
     /**
      * Xóa sạch Cache danh mục khi Admin thêm/sửa/xóa danh mục
+     * Chỉ xóa các file cache danh mục có tiền tố ndn_cat_*, tuyệt đối không xóa toàn bộ cache làm mất file ci_session
      */
     public function clear_category_cache()
     {
         self::$_memory_cache = [];
-        $this->cache->clean();
+        $cache_path = APPPATH . 'cache/';
+        if (is_dir($cache_path)) {
+            $files = glob($cache_path . 'ndn_cat_*');
+            if (!empty($files)) {
+                foreach ($files as $file) {
+                    if (is_file($file)) {
+                        @unlink($file);
+                    }
+                }
+            }
+        }
     }
 }
