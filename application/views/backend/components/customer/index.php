@@ -16,20 +16,20 @@
         <div class="row">
             <div class="col-md-12">
                 
-                <!-- Flash Messages -->
+                <!-- Flash Messages (Toast Fixed) -->
                 <?php if($this->session->flashdata('success')): ?>
-                    <div class="alert alert-success alert-modern">
-                        <i class="fa fa-check-circle"></i>
-                        <span><?php echo $this->session->flashdata('success'); ?></span>
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <div class="alert alert-success alert-modern alert-toast-fixed">
+                        <i class="fa fa-check-circle" style="font-size: 20px; color: #10b981;"></i>
+                        <span style="font-weight: 500; font-size: 14px; color: #065f46;"><?php echo $this->session->flashdata('success'); ?></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true" style="margin-left: auto;">&times;</button>
                     </div>
                 <?php endif; ?>
 
                 <?php if($this->session->flashdata('error')): ?>
-                    <div class="alert alert-danger alert-modern">
-                        <i class="fa fa-exclamation-triangle"></i>
-                        <span><?php echo $this->session->flashdata('error'); ?></span>
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <div class="alert alert-danger alert-modern alert-toast-fixed">
+                        <i class="fa fa-exclamation-triangle" style="font-size: 20px; color: #ef4444;"></i>
+                        <span style="font-weight: 500; font-size: 14px; color: #991b1b;"><?php echo $this->session->flashdata('error'); ?></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true" style="margin-left: auto;">&times;</button>
                     </div>
                 <?php endif; ?>
 
@@ -112,7 +112,7 @@
                                                         <?php echo mb_strtoupper($first_char, 'UTF-8'); ?>
                                                     </div>
                                                     <div class="customer-name-wrap">
-                                                        <a href="<?php echo base_url('admin/customer/update/' . $row['id']); ?>" class="customer-fullname" title="Bấm xem hồ sơ khách hàng">
+                                                        <a href="<?php echo base_url('admin/customer/detail/' . $row['id']); ?>" class="customer-fullname" title="Bấm xem hồ sơ & lịch sử đơn hàng">
                                                             <?php echo htmlspecialchars($fullname); ?>
                                                         </a>
                                                         <?php if(!empty($row['username'])): ?>
@@ -169,25 +169,30 @@
                                             </td>
 
                                             <td class="text-center">
-                                                <span class="status-badge <?php echo ($row['status'] == 1) ? 'status-active' : 'status-locked'; ?>">
-                                                    <?php if($row['status'] == 1): ?>
-                                                        <i class="fa fa-check-circle"></i> Hoạt động
-                                                    <?php else: ?>
-                                                        <i class="fa fa-lock"></i> Đang khóa
-                                                    <?php endif; ?>
-                                                </span>
+                                                <a href="<?php echo base_url('admin/customer/status/' . $row['id']); ?>" 
+                                                   onclick="return confirm('<?php echo ($row['status'] == 1) ? 'Tạm khóa tài khoản khách hàng [' . htmlspecialchars(addslashes($fullname)) . ']? Khách sẽ không thể đăng nhập.' : 'Kích hoạt lại tài khoản khách hàng [' . htmlspecialchars(addslashes($fullname)) . ']?'; ?>');"
+                                                   class="status-toggle-link"
+                                                   title="Bấm để <?php echo ($row['status'] == 1) ? 'Khóa' : 'Kích hoạt'; ?> tài khoản này">
+                                                    <span class="status-badge <?php echo ($row['status'] == 1) ? 'status-active' : 'status-locked'; ?>">
+                                                        <?php if($row['status'] == 1): ?>
+                                                            <i class="fa fa-check-circle"></i> Hoạt động
+                                                        <?php else: ?>
+                                                            <i class="fa fa-lock"></i> Đang khóa
+                                                        <?php endif; ?>
+                                                    </span>
+                                                </a>
                                             </td>
 
                                             <td class="text-center">
                                                 <div class="action-btn-group">
-                                                    <!-- Xem/Sửa -->
-                                                    <a href="<?php echo base_url('admin/customer/update/' . $row['id']); ?>" 
+                                                    <!-- Xem chi tiết hồ sơ & lịch sử mua hàng -->
+                                                    <a href="<?php echo base_url('admin/customer/detail/' . $row['id']); ?>" 
                                                        class="btn-action-pill btn-action-view" 
-                                                       title="Xem và chỉnh sửa hồ sơ">
-                                                        <i class="fa fa-pencil"></i> Sửa
+                                                       title="Xem chi tiết hồ sơ & lịch sử đơn hàng">
+                                                        <i class="fa fa-eye"></i> Chi tiết
                                                     </a>
 
-                                                    <!-- Xóa -->
+                                                    <!-- Xóa vào thùng rác -->
                                                     <a href="<?php echo base_url('admin/customer/trash/' . $row['id']); ?>" 
                                                        onclick="return confirm('Chuyển khách hàng [<?php echo htmlspecialchars(addslashes($fullname)); ?>] vào thùng rác?');" 
                                                        class="btn-action-pill btn-action-trash" 
@@ -678,4 +683,56 @@
     color: #fff !important;
     box-shadow: 0 3px 10px rgba(215, 0, 24, 0.25);
 }
+
+/* Status toggle interactive */
+.status-toggle-link {
+    text-decoration: none !important;
+    cursor: pointer;
+    display: inline-block;
+    transition: transform 0.15s ease;
+}
+.status-toggle-link:hover {
+    transform: scale(1.05);
+}
+
+/* Toast Fixed */
+.alert-toast-fixed {
+    position: fixed !important;
+    top: 65px !important;
+    right: 25px !important;
+    z-index: 99999 !important;
+    min-width: 330px !important;
+    max-width: 480px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18) !important;
+    border-left: 5px solid #10b981 !important;
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 14px 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    animation: toastSlideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+@keyframes toastSlideIn {
+    from {
+        transform: translateX(110%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
 </style>
+
+<script>
+$(document).ready(function() {
+    if ($('.alert-toast-fixed').length) {
+        setTimeout(function() {
+            $('.alert-toast-fixed').fadeOut(600, function() {
+                $(this).remove();
+            });
+        }, 4000);
+    }
+});
+</script>

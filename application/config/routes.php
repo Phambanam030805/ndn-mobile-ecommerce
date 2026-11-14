@@ -155,6 +155,9 @@ $route['sliders/restore/(:num)'] ='admin/sliders/restore/$1';
 // --- QUẢN LÝ KHÁCH HÀNG ---
 $route['admin/customer'] ='admin/customer';
 $route['admin/customer/(:num)'] ='admin/customer/index/$1';
+$route['admin/customer/detail/(:num)'] = 'admin/customer/detail/$1';
+$route['customer/detail/(:num)'] = 'admin/customer/detail/$1';
+$route['admin/customer/status/(:num)'] = 'admin/customer/status/$1';
 $route['customer/update/(:num)'] ='admin/customer/update/$1';
 $route['customer/status/(:num)'] ='admin/customer/status/$1';
 $route['customer/recyclebin'] ='admin/customer/recyclebin';

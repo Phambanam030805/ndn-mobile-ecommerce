@@ -60,39 +60,129 @@ class Customer extends CI_Controller {
         $this->load->view('backend/layout', $this->data);
     }
 
-    public function update($id)
+    /**
+     * Chi tiết hồ sơ khách hàng & lịch sử đơn hàng
+     * Tuân thủ quyền riêng tư: Admin chỉ xem thông tin & quản lý trạng thái tài khoản
+     */
+    public function detail($id)
     {
-        $this->data['row']  = $this->Mnguoidung->user_detail($id);
-        if(!$this->data['row'])
+        $this->data['row'] = $this->Mnguoidung->user_detail($id);
+        if(!$this->data['row'] || (int)$this->data['row']['role'] !== 3)
         {
-            $this->session->set_flashdata('error', 'Khách hàng không tồn tại!');
+            $this->session->set_flashdata('error', 'Khách hàng không tồn tại hoặc không hợp lệ!');
             redirect('admin/customer');
+            return;
         }
 
+        // Xử lý cập nhật trạng thái tài khoản (Hoạt động / Tạm khóa)
         if($this->input->post())
         {
-            $this->load->library('form_validation');
-            $this->form_validation->set_rules('fullname', 'Họ và tên', 'required|trim');
-            $this->form_validation->set_rules('phone', 'Số điện thoại', 'required|trim');
-            $this->form_validation->set_rules('email', 'Email', 'required|valid_email|trim');
+            $status = (int)$this->input->post('status', TRUE);
+            $mydata = array('status' => $status);
+            $this->Mnguoidung->user_update($mydata, $id);
 
-            if($this->form_validation->run() == TRUE)
-            {
-                $mydata = array(
-                    'fullname' => $this->input->post('fullname', TRUE),
-                    'phone'    => $this->input->post('phone', TRUE),
-                    'email'    => $this->input->post('email', TRUE),
-                    'status'   => (int)$this->input->post('status', TRUE),
-                );
-                $this->Mnguoidung->user_update($mydata, $id);
-                $this->session->set_flashdata('success', 'Cập nhật thông tin khách hàng thành công!');
-                redirect('admin/customer', 'refresh');
+            $status_msg = ($status === 1) 
+                ? 'Đã mở khóa tài khoản khách hàng [' . $this->data['row']['fullname'] . '] thành công!'
+                : 'Đã tạm khóa tài khoản khách hàng [' . $this->data['row']['fullname'] . ']!';
+            $this->session->set_flashdata('success', $status_msg);
+            redirect('admin/customer/detail/' . $id);
+            return;
+        }
+
+        // Lấy toàn bộ đơn hàng của khách hàng này (kể cả đã lưu trữ, loại trừ thùng rác)
+        $this->db->where('customer_id', $id);
+        $this->db->where('trash', 1);
+        $this->db->order_by('id', 'desc');
+        $orders = $this->db->get('orders')->result_array();
+        $this->data['orders'] = $orders;
+
+        // Thống kê đơn hàng và chi tiêu
+        $total_orders      = count($orders);
+        $total_spent       = 0;
+        $completed_orders  = 0;
+        $delivering_orders = 0;
+        $canceled_orders   = 0;
+        $pending_orders    = 0;
+
+        foreach ($orders as $ord) {
+            $st = (int)$ord['status'];
+            if ($st === 2) {
+                $completed_orders++;
+                $total_spent += (int)$ord['money'];
+            } elseif ($st === 1) {
+                $delivering_orders++;
+            } elseif ($st === 3 || $st === 4) {
+                $canceled_orders++;
+            } elseif ($st === 0) {
+                $pending_orders++;
             }
         }
 
-        $this->data['view'] = 'update';
-        $this->data['title'] = 'Cập nhật khách hàng';
+        // Phân hạng khách hàng dựa trên chi tiêu thực tế
+        if ($total_spent >= 25000000) {
+            $rank_title = 'Khách hàng Kim Cương (VIP Diamond)';
+            $rank_class = 'rank-diamond';
+            $rank_badge = '💎 Kim Cương';
+        } elseif ($total_spent >= 10000000) {
+            $rank_title = 'Khách hàng Vàng (VIP Gold)';
+            $rank_class = 'rank-gold';
+            $rank_badge = '⭐ Hạng Vàng';
+        } elseif ($total_spent >= 3000000) {
+            $rank_title = 'Khách hàng Thân thiết (Silver)';
+            $rank_class = 'rank-silver';
+            $rank_badge = '🥈 Thân thiết';
+        } else {
+            $rank_title = 'Khách hàng Tiêu chuẩn (Standard)';
+            $rank_class = 'rank-bronze';
+            $rank_badge = '🥉 Tiêu chuẩn';
+        }
+
+        $this->data['stat'] = [
+            'total_orders'      => $total_orders,
+            'total_spent'       => $total_spent,
+            'completed_orders'  => $completed_orders,
+            'delivering_orders' => $delivering_orders,
+            'canceled_orders'   => $canceled_orders,
+            'pending_orders'    => $pending_orders,
+            'rank_title'        => $rank_title,
+            'rank_class'        => $rank_class,
+            'rank_badge'        => $rank_badge
+        ];
+
+        $this->data['view']  = 'detail';
+        $this->data['title'] = 'Hồ sơ khách hàng - ' . $this->data['row']['fullname'];
         $this->load->view('backend/layout', $this->data);
+    }
+
+    /**
+     * Chuyển hướng update sang trang detail (Bảo vệ dữ liệu cá nhân)
+     */
+    public function update($id)
+    {
+        redirect('admin/customer/detail/' . $id);
+    }
+
+    /**
+     * Bật/tắt trạng thái hoạt động của khách hàng nhanh từ bảng danh sách
+     */
+    public function status($id)
+    {
+        $row = $this->Mnguoidung->user_detail($id);
+        if(!$row || (int)$row['role'] !== 3)
+        {
+            $this->session->set_flashdata('error', 'Khách hàng không tồn tại!');
+            redirect('admin/customer');
+            return;
+        }
+
+        $new_status = ($row['status'] == 1) ? 0 : 1;
+        $this->Mnguoidung->user_update(['status' => $new_status], $id);
+
+        $msg = ($new_status === 1) 
+            ? 'Đã kích hoạt lại tài khoản khách hàng [' . $row['fullname'] . ']!' 
+            : 'Đã tạm khóa tài khoản khách hàng [' . $row['fullname'] . ']!';
+        $this->session->set_flashdata('success', $msg);
+        redirect('admin/customer');
     }
 
     public function recyclebin()
