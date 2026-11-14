@@ -191,14 +191,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Nút Lưu cuối trang -->
-                    <div style="margin-top: 25px; text-align: right;">
-                        <button type="submit" class="btn btn-save-admin btn-lg" style="padding: 12px 35px;">
-                            <i class="fa fa-check"></i> Lưu tất cả thay đổi
-                        </button>
-                    </div>
-
                 </div>
             </div>
         </section>
