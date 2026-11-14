@@ -208,5 +208,15 @@
   <script src="public/js/bootstrap.js"></script>
   <!-- AdminLTE App -->
   <script src="public/js/app.min.js"></script>
+  <script>
+    // Tự động bổ sung CSRF Token cho tất cả các Form POST trong Admin để chống lỗi 403 Forbidden
+    $(document).ready(function() {
+      $('form[method="POST"], form[method="post"]').each(function() {
+        if ($(this).find('input[name="<?php echo $this->security->get_csrf_token_name(); ?>"]').length === 0) {
+          $(this).prepend('<input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>"/>');
+        }
+      });
+    });
+  </script>
 </body>
 </html>

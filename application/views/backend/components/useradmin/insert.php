@@ -1,7 +1,6 @@
 <?php echo form_open_multipart('admin/useradmin/insert'); ?>
 <div class="content-wrapper">
-    <form action="<?php echo base_url() ?>admin/useradmin/insert.html" enctype="multipart/form-data" method="POST" accept-charset="utf-8">
-        <section class="content-header">
+    <section class="content-header">
             <h1><i class="fa fa-user-plus"></i> Thêm thành viên</h1>
             <div class="breadcrumb">
                 <button type = "submit" class="btn btn-primary btn-sm">

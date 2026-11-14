@@ -1,5 +1,6 @@
 <div class="content-wrapper">
     <form action="<?php echo base_url('admin/useradmin/update/'.$row['id']); ?>" enctype="multipart/form-data" method="POST" accept-charset="utf-8">
+        <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>" />
         <section class="content-header">
             <div class="header-left">
                 <h1>

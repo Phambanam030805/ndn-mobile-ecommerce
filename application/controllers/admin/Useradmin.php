@@ -121,10 +121,10 @@ class Useradmin extends CI_Controller {
 				'gender'   => (int)$this->input->post('gender'),
 			);
 
-			// Nếu có nhập mật khẩu mới thì mới cập nhật password
+			// Nếu có nhập mật khẩu mới thì băm Bcrypt chuẩn bảo mật cao cấp
 			$new_pass = $this->input->post('password');
 			if(!empty($new_pass)){
-				$mydata['password'] = sha1($new_pass);
+				$mydata['password'] = password_hash($new_pass, PASSWORD_BCRYPT, ['cost' => 12]);
 			}
 
 			// Upload ảnh đại diện
