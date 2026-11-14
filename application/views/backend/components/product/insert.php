@@ -242,16 +242,60 @@
 
     // Xem trước ảnh đại diện
     function previewAvatar(input) {
+        var uploadZone = document.querySelector('.file-upload-zone');
+        var errorMsg = document.getElementById('avatar_error_msg');
         if (input.files && input.files[0]) {
+            if (uploadZone) {
+                uploadZone.style.borderColor = '#10b981';
+                uploadZone.style.background = '#f0fdf4';
+            }
+            if (errorMsg) {
+                errorMsg.style.display = 'none';
+            }
             var reader = new FileReader();
             reader.onload = function(e) {
                 var previewBox = document.getElementById('avatar_preview_box');
                 previewBox.innerHTML = '<img src="' + e.target.result + '" style="max-height: 140px; max-width: 100%; object-fit: contain; border-radius: 8px;">' +
-                                       '<span style="font-size: 11.5px; color: #10b981; font-weight: 700; margin-top: 6px;"><i class="fa fa-check-circle"></i> Đã tải ảnh lên</span>';
+                                       '<span style="font-size: 11.5px; color: #10b981; font-weight: 700; margin-top: 6px;"><i class="fa fa-check-circle"></i> Đã chọn ảnh: ' + input.files[0].name + '</span>';
             }
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    // Bắt buộc phải chọn ảnh đại diện trước khi lưu
+    document.addEventListener("DOMContentLoaded", function() {
+        var form = document.querySelector('form');
+        var avatarInput = document.getElementById('avatar_input');
+        var uploadZone = document.querySelector('.file-upload-zone');
+
+        if (form && avatarInput) {
+            form.addEventListener('submit', function(e) {
+                if (!avatarInput.files || avatarInput.files.length === 0) {
+                    e.preventDefault();
+
+                    // Cuộn màn hình và viền đỏ khung chọn ảnh
+                    if (uploadZone) {
+                        uploadZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        uploadZone.style.borderColor = '#ef4444';
+                        uploadZone.style.background = '#fef2f2';
+                    }
+
+                    // Hiển thị thông báo lỗi trực quan
+                    var errorMsg = document.getElementById('avatar_error_msg');
+                    if (!errorMsg) {
+                        errorMsg = document.createElement('div');
+                        errorMsg.id = 'avatar_error_msg';
+                        errorMsg.style.cssText = 'color: #dc2626; font-weight: 600; font-size: 13px; margin-top: 8px; display: flex; align-items: center; gap: 6px;';
+                        errorMsg.innerHTML = '<i class="fa fa-exclamation-triangle"></i> Vui lòng chọn ảnh đại diện cho sản phẩm!';
+                        uploadZone.parentNode.appendChild(errorMsg);
+                    } else {
+                        errorMsg.style.display = 'flex';
+                    }
+                    return false;
+                }
+            });
+        }
+    });
 
     // Xem trước danh sách ảnh chi tiết
     function previewGallery(input) {

@@ -99,6 +99,17 @@ class Product extends CI_Controller {
 				'trash'=>1,
 				'status'=>$_POST['status']
 			);
+			// Kiểm tra bắt buộc phải chọn ảnh đại diện cho sản phẩm mới
+			if (empty($_FILES['img']['name'])) {
+				$this->session->set_flashdata('error', 'Vui lòng chọn ảnh đại diện cho sản phẩm!');
+				$this->data['listcat'] = $this->Mdanhmuc->category_brand_list();
+				$this->data['listproducer'] = $this->Mnhacungcap->producer_list();
+				$this->data['view'] = 'insert';
+				$this->data['title'] = 'Thêm sản phẩm mới';
+				$this->load->view('backend/layout', $this->data);
+				return;
+			}
+
 			// Cấu hình tải ảnh lên hệ thống
 			$config = array(
 				'upload_path'   => './public/images/products/',
@@ -110,12 +121,17 @@ class Product extends CI_Controller {
 
 			// 1. Upload ảnh đại diện chính (img)
 			$this->upload->initialize($config);
-			if (!empty($_FILES['img']['name']) && $this->upload->do_upload('img')) {
+			if ($this->upload->do_upload('img')) {
 				$data = $this->upload->data();
 				$mydata['avatar'] = $data['file_name'];
 			} else {
-				// Nếu không chọn ảnh hoặc tải lên bị lỗi, tự động gán ảnh đại diện mặc định
-				$mydata['avatar'] = 'default.png';
+				$this->session->set_flashdata('error', 'Lỗi tải ảnh đại diện: ' . strip_tags($this->upload->display_errors()));
+				$this->data['listcat'] = $this->Mdanhmuc->category_brand_list();
+				$this->data['listproducer'] = $this->Mnhacungcap->producer_list();
+				$this->data['view'] = 'insert';
+				$this->data['title'] = 'Thêm sản phẩm mới';
+				$this->load->view('backend/layout', $this->data);
+				return;
 			}
 
 			// 2. Upload thư viện ảnh chi tiết (image_list)
