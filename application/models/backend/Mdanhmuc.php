@@ -21,6 +21,7 @@ class Mdanhmuc extends CI_Model {
             }
             $this->db->group_end();
         }
+        $this->db->order_by("CASE WHEN id = 3 THEN 0 ELSE 1 END", "ASC", FALSE);
         $this->db->order_by('orders', 'ASC');
         $this->db->order_by('id', 'DESC');
         $query = $this->db->get($this->table, $limit, $first);

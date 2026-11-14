@@ -45,6 +45,19 @@
                 <?php endif; ?>
 
                 <!-- Toolbar: Tìm kiếm -->
+                <?php
+                    $root_item = null;
+                    $child_items = [];
+                    if (!empty($list)) {
+                        foreach ($list as $item) {
+                            if ($item['id'] == 3 || ($item['parentid'] == 0 && $item['link'] == 'dien-thoai')) {
+                                $root_item = $item;
+                            } else {
+                                $child_items[] = $item;
+                            }
+                        }
+                    }
+                ?>
                 <div class="filter-card-wrapper">
                     <form action="<?php echo base_url('admin/category'); ?>" method="GET" class="filter-form">
                         <div class="filter-left">
@@ -69,7 +82,7 @@
 
                         <div class="filter-right">
                             <span class="total-badge">
-                                Tổng cộng: <b><?php echo isset($total) ? (int)$total : count($list); ?></b> loại sản phẩm
+                                Tổng cộng: <b><?php echo count($child_items); ?></b> thương hiệu con<?php echo (!empty($root_item)) ? ' (+1 gốc)' : ''; ?>
                             </span>
                         </div>
                     </form>
@@ -82,9 +95,9 @@
                             <table class="table modern-category-table">
                                 <thead>
                                     <tr>
-                                        <th style="width: 60px;" class="text-center">STT</th>
+                                        <th style="width: 75px;" class="text-center">STT</th>
                                         <th style="min-width: 220px;">Tên loại sản phẩm</th>
-                                        <th style="width: 160px;" class="text-center">Số sản phẩm</th>
+                                        <th style="width: 170px;" class="text-center">Số sản phẩm</th>
                                         <th style="min-width: 160px;">Danh mục cha</th>
                                         <th style="width: 170px;">Ngày tạo</th>
                                         <th style="width: 120px;" class="text-center">Trạng thái</th>
@@ -92,87 +105,134 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <?php if(!empty($list)): ?>
+                                <?php if(!empty($root_item) || !empty($child_items)): ?>
+                                    
+                                    <!-- 1. HÀNG GHIM ĐẶC BIỆT: DANH MỤC GỐC HỆ THỐNG (ĐẦU TIÊN, KHÔNG ĐỂ SỐ THỨ TỰ) -->
+                                    <?php if(!empty($root_item)): 
+                                        $count_child = (int)$this->Mdanhmuc->category_count_parentid($root_item['id']);
+                                    ?>
+                                        <tr class="category-pinned-root-row">
+                                            <td class="text-center">
+                                                <span class="category-root-badge" title="Danh mục gốc hệ thống (Không dùng số thứ tự)">
+                                                    <i class="fa fa-star"></i> GỐC
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <div class="category-name-cell">
+                                                    <span class="category-icon-box is-system-root-icon" title="Danh mục gốc cốt lõi hệ thống">
+                                                        <i class="fa fa-shield"></i>
+                                                    </span>
+                                                    <div class="category-name-info">
+                                                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                                            <span class="category-title-static" style="font-size: 15.5px; font-weight: 700; color: #b45309;">
+                                                                <?php echo htmlspecialchars($root_item['name']); ?>
+                                                            </span>
+                                                            <span class="badge-system-root-tag"><i class="fa fa-lock"></i> Danh mục gốc hệ thống</span>
+                                                        </div>
+                                                        <?php if(!empty($root_item['link'])): ?>
+                                                            <span class="category-slug">slug: <?php echo htmlspecialchars($root_item['link']); ?></span>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <span class="system-branches-badge" title="Cây danh mục gốc chứa <?php echo $count_child; ?> thương hiệu điện thoại con trực thuộc">
+                                                    <i class="fa fa-sitemap"></i> <b><?php echo $count_child; ?></b> thương hiệu con
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="parent-badge parent-root-system">
+                                                    <i class="fa fa-cube"></i> Cấp cao nhất
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="date-badge">
+                                                    <i class="fa fa-calendar-o"></i> 
+                                                    <?php echo !empty($root_item['created_at']) ? date('d/m/Y H:i', strtotime($root_item['created_at'])) : '--'; ?>
+                                                </span>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <span class="status-system-fixed" title="Danh mục gốc luôn ở trạng thái hoạt động mặc định">
+                                                    <i class="fa fa-check-circle"></i> Mặc định
+                                                </span>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <span class="btn-action-system-locked" title="Danh mục gốc hệ thống được bảo vệ cố định (Không sửa / Không xóa)">
+                                                    <i class="fa fa-lock"></i> Cố định
+                                                </span>
+                                            </td>
+                                        </tr>
+
+                                        <!-- DÒNG PHÂN CÁCH TIỂU MỤC TÁCH BIỆT RÕ RÀNG KHỎI CÁC DANH MỤC CON -->
+                                        <tr class="category-section-divider-row">
+                                            <td colspan="7">
+                                                <div class="category-section-divider-content">
+                                                    <div class="divider-left">
+                                                        <i class="fa fa-level-down text-primary"></i>
+                                                        <span>DANH SÁCH THƯƠNG HIỆU ĐIỆN THOẠI TRỰC THUỘC</span>
+                                                        <span class="sub-counter-badge"><?php echo count($child_items); ?> thương hiệu con</span>
+                                                    </div>
+                                                    <div class="divider-right">
+                                                        <small class="text-muted"><i class="fa fa-sort-numeric-asc"></i> Đánh số thứ tự độc lập từ 1</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
+
+                                    <!-- 2. DANH SÁCH CÁC THƯƠNG HIỆU CON (ĐÁNH SỐ THỨ TỰ BẮT ĐẦU TỪ 1) -->
                                     <?php 
                                         $page_arr = explode('/', uri_string());
                                         $last_seg = end($page_arr);
                                         $cur_page = is_numeric($last_seg) ? (int)$last_seg : 1;
-                                        $stt = ($cur_page - 1) * 10 + 1;
+                                        $stt = ($cur_page - 1) * 20 + 1;
                                     ?>
-                                    <?php foreach ($list as $row):
+                                    <?php foreach ($child_items as $row):
                                         $catid = $this->Mdanhmuc->category_parentid($row['id']);
                                         $parent_name = $this->Mdanhmuc->category_name_parent($catid);
                                         $count_prod = (int)$this->Msanpham->product_count_parentid($row['id']);
-                                        $count_child = (int)$this->Mdanhmuc->category_count_parentid($row['id']);
-                                        $is_root = ($catid == 0);
-                                        $is_system_root = ($row['id'] == 3 || ($is_root && $row['link'] == 'dien-thoai'));
                                     ?>
-                                        <tr class="category-item-row <?php echo $is_system_root ? 'is-system-root-row' : ''; ?>">
+                                        <tr class="category-item-row">
                                             <td class="text-center">
                                                 <span class="category-id-badge"><?php echo $stt++; ?></span>
                                             </td>
 
                                             <td>
                                                 <div class="category-name-cell">
-                                                    <?php if($is_system_root): ?>
-                                                        <span class="category-icon-box is-system-root-icon" title="Danh mục hệ thống cốt lõi">
-                                                            <i class="fa fa-shield"></i>
-                                                        </span>
-                                                        <div class="category-name-info">
-                                                            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                                                                <span class="category-title-static"><?php echo htmlspecialchars($row['name']); ?></span>
-                                                                <span class="badge-system-root-tag"><i class="fa fa-lock"></i> Hệ thống</span>
-                                                            </div>
-                                                            <?php if(!empty($row['link'])): ?>
-                                                                <span class="category-slug">slug: <?php echo htmlspecialchars($row['link']); ?></span>
-                                                            <?php endif; ?>
-                                                        </div>
-                                                    <?php else: ?>
-                                                        <span class="category-icon-box <?php echo $is_root ? 'is-parent-icon' : 'is-child-icon'; ?>">
-                                                            <i class="fa <?php echo $is_root ? 'fa-folder' : 'fa-mobile'; ?>"></i>
-                                                        </span>
-                                                        <div class="category-name-info">
-                                                            <a href="<?php echo base_url('admin/category/update/' . $row['id']); ?>" class="category-title-link" title="Bấm để chỉnh sửa">
-                                                                <?php echo htmlspecialchars($row['name']); ?>
-                                                            </a>
-                                                            <?php if(!empty($row['link'])): ?>
-                                                                <span class="category-slug">slug: <?php echo htmlspecialchars($row['link']); ?></span>
-                                                            <?php endif; ?>
-                                                        </div>
-                                                    <?php endif; ?>
+                                                    <span class="category-icon-box is-child-icon">
+                                                        <i class="fa fa-mobile"></i>
+                                                    </span>
+                                                    <div class="category-name-info">
+                                                        <a href="<?php echo base_url('admin/category/update/' . $row['id']); ?>" class="category-title-link" title="Bấm để chỉnh sửa">
+                                                            <?php echo htmlspecialchars($row['name']); ?>
+                                                        </a>
+                                                        <?php if(!empty($row['link'])): ?>
+                                                            <span class="category-slug">slug: <?php echo htmlspecialchars($row['link']); ?></span>
+                                                        <?php endif; ?>
+                                                    </div>
                                                 </div>
                                             </td>
 
                                             <td class="text-center">
-                                                <?php if($is_system_root): ?>
-                                                    <span class="system-branches-badge" title="Danh mục gốc cấp hệ thống chứa <?php echo $count_child; ?> hãng điện thoại con">
-                                                        <i class="fa fa-sitemap"></i> <b><?php echo $count_child; ?></b> thương hiệu con
-                                                    </span>
-                                                <?php else: ?>
-                                                    <a href="<?php echo base_url('admin/product?catid=' . $row['id']); ?>" 
-                                                       class="product-count-badge <?php echo ($count_prod > 0) ? 'has-products' : 'zero-products'; ?>" 
-                                                       title="Bấm để xem danh sách <?php echo $count_prod; ?> sản phẩm thuộc <?php echo htmlspecialchars($row['name']); ?>">
-                                                        <i class="fa fa-cubes"></i> 
-                                                        <span><b><?php echo $count_prod; ?></b> máy</span>
-                                                        <i class="fa fa-arrow-right view-arrow"></i>
-                                                    </a>
-                                                <?php endif; ?>
+                                                <a href="<?php echo base_url('admin/product?catid=' . $row['id']); ?>" 
+                                                   class="product-count-badge <?php echo ($count_prod > 0) ? 'has-products' : 'zero-products'; ?>" 
+                                                   title="Bấm để xem danh sách <?php echo $count_prod; ?> sản phẩm thuộc <?php echo htmlspecialchars($row['name']); ?>">
+                                                    <i class="fa fa-cubes"></i> 
+                                                    <span><b><?php echo $count_prod; ?></b> máy</span>
+                                                    <i class="fa fa-arrow-right view-arrow"></i>
+                                                </a>
                                             </td>
 
                                             <td>
-                                                <?php if($is_system_root): ?>
-                                                    <span class="parent-badge parent-root-system">
-                                                        <i class="fa fa-cube"></i> Danh mục gốc hệ thống
-                                                    </span>
-                                                <?php elseif($is_root): ?>
-                                                    <span class="parent-badge parent-root">
-                                                        <i class="fa fa-star"></i> Danh mục gốc
-                                                    </span>
-                                                <?php else: ?>
-                                                    <span class="parent-badge parent-child">
-                                                        <i class="fa fa-level-up fa-rotate-90"></i> <?php echo htmlspecialchars($parent_name); ?>
-                                                    </span>
-                                                <?php endif; ?>
+                                                <span class="parent-badge parent-child">
+                                                    <i class="fa fa-level-up fa-rotate-90"></i> <?php echo htmlspecialchars($parent_name); ?>
+                                                </span>
                                             </td>
 
                                             <td>
@@ -183,46 +243,34 @@
                                             </td>
 
                                             <td class="text-center">
-                                                <?php if($is_system_root): ?>
-                                                    <span class="status-system-fixed" title="Danh mục hệ thống luôn luôn ở trạng thái kích hoạt mặc định">
-                                                        <i class="fa fa-check-circle"></i> Mặc định
-                                                    </span>
-                                                <?php else: ?>
-                                                    <a href="<?php echo base_url('admin/category/status/' . $row['id']); ?>" 
-                                                       class="status-toggle-badge <?php echo ($row['status'] == 1) ? 'is-active' : 'is-hidden'; ?>"
-                                                       title="Bấm để chuyển đổi trạng thái hiển thị">
-                                                        <?php if($row['status'] == 1): ?>
-                                                            <i class="fa fa-check-circle"></i> Hoạt động
-                                                        <?php else: ?>
-                                                            <i class="fa fa-eye-slash"></i> Tạm ẩn
-                                                        <?php endif; ?>
-                                                    </a>
-                                                <?php endif; ?>
+                                                <a href="<?php echo base_url('admin/category/status/' . $row['id']); ?>" 
+                                                   class="status-toggle-badge <?php echo ($row['status'] == 1) ? 'is-active' : 'is-hidden'; ?>"
+                                                   title="Bấm để chuyển đổi trạng thái hiển thị">
+                                                    <?php if($row['status'] == 1): ?>
+                                                        <i class="fa fa-check-circle"></i> Hoạt động
+                                                    <?php else: ?>
+                                                        <i class="fa fa-eye-slash"></i> Tạm ẩn
+                                                    <?php endif; ?>
+                                                </a>
                                             </td>
 
                                             <td class="text-center">
-                                                <?php if($is_system_root): ?>
-                                                    <span class="btn-action-system-locked" title="Danh mục gốc mặc định hệ thống được bảo vệ cố định (Không sửa / Không xóa)">
-                                                        <i class="fa fa-lock"></i> Cố định
-                                                    </span>
-                                                <?php else: ?>
-                                                    <div class="action-btn-group">
-                                                        <?php if($user['role'] == 1): ?>
-                                                            <a href="<?php echo base_url('admin/category/update/' . $row['id']); ?>" 
-                                                               class="btn-action-pill btn-action-edit" 
-                                                               title="Chỉnh sửa loại sản phẩm">
-                                                                <i class="fa fa-pencil"></i> Sửa
-                                                            </a>
-                                                        <?php endif; ?>
-
-                                                        <a href="<?php echo base_url('admin/category/trash/' . $row['id']); ?>" 
-                                                           onclick="return confirm('Chuyển danh mục [<?php echo htmlspecialchars(addslashes($row['name'])); ?>] vào thùng rác?');" 
-                                                           class="btn-action-pill btn-action-trash" 
-                                                           title="Xóa vào thùng rác">
-                                                            <i class="fa fa-trash"></i> Xóa
+                                                <div class="action-btn-group">
+                                                    <?php if($user['role'] == 1): ?>
+                                                        <a href="<?php echo base_url('admin/category/update/' . $row['id']); ?>" 
+                                                           class="btn-action-pill btn-action-edit" 
+                                                           title="Chỉnh sửa loại sản phẩm">
+                                                            <i class="fa fa-pencil"></i> Sửa
                                                         </a>
-                                                    </div>
-                                                <?php endif; ?>
+                                                    <?php endif; ?>
+
+                                                    <a href="<?php echo base_url('admin/category/trash/' . $row['id']); ?>" 
+                                                       onclick="return confirm('Chuyển danh mục [<?php echo htmlspecialchars(addslashes($row['name'])); ?>] vào thùng rác?');" 
+                                                       class="btn-action-pill btn-action-trash" 
+                                                       title="Xóa vào thùng rác">
+                                                        <i class="fa fa-trash"></i> Xóa
+                                                    </a>
+                                                </div>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -675,6 +723,69 @@
 }
 
 /* System Root Category Highlight & Protection Styling */
+.category-pinned-root-row td {
+    background: #fffdf5 !important;
+    border-bottom: 2px solid #fde68a !important;
+    padding: 16px 16px !important;
+    vertical-align: middle !important;
+}
+.category-pinned-root-row:hover td {
+    background-color: #fefce8 !important;
+}
+.category-pinned-root-row td:first-child {
+    border-left: 5px solid #f59e0b !important;
+}
+
+.category-root-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #ffffff;
+    padding: 5px 9px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 6px rgba(217, 119, 6, 0.25);
+    text-transform: uppercase;
+}
+
+.category-section-divider-row td {
+    background: #f8fafc !important;
+    padding: 10px 16px !important;
+    border-top: 1px solid #e2e8f0 !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+}
+.category-section-divider-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.category-section-divider-content .divider-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #334155;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+.category-section-divider-content .sub-counter-badge {
+    background: #e2e8f0;
+    color: #475569;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: none;
+}
+.category-section-divider-content .divider-right small {
+    font-size: 11.5px;
+    color: #64748b;
+}
+
 .category-item-row.is-system-root-row td {
     background-color: #fffdf5 !important;
 }

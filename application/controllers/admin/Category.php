@@ -46,7 +46,7 @@ class Category extends CI_Controller {
         $search = $this->input->get('search', TRUE);
         $search = trim($search ? $search : '');
 
-        $limit   = 10;
+        $limit   = 20;
         $current = $this->phantrang->PageCurrent();
         $first   = $this->phantrang->PageFirst($limit, $current);
         $total   = $this->Mdanhmuc->category_count($search);
