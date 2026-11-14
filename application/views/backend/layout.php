@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi" class="notranslate" translate="no">
 <head>
 	<base href="<?php echo base_url(); ?>"></base>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="google" content="notranslate">
   <title><?php echo $title ?></title>
   <link rel="icon" type="image/svg+xml" href="<?php echo base_url('public/images/favicon.svg'); ?>">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
