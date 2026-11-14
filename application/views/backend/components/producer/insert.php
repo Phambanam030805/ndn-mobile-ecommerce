@@ -113,12 +113,6 @@
                                     <p class="help-text">Mã đối tác (Code) sẽ được hệ thống dùng để tra cứu nhanh nguồn gốc lô hàng khi kiểm kê tồn kho và nhập hàng.</p>
                                 </div>
 
-                                <div style="margin-top: 20px;">
-                                    <button type="submit" class="btn btn-modern-save btn-block" style="padding: 12px;">
-                                        <i class="fa fa-check"></i> Hoàn tất thêm mới
-                                    </button>
-                                </div>
-
                             </div>
                         </div>
                     </div>
