@@ -63,8 +63,9 @@
                                             <label class="fg-label">Mã code đối tác (Cố định)</label>
                                             <div class="input-with-icon">
                                                 <i class="fa fa-barcode input-icon"></i>
-                                                <input type="text" class="form-control modern-input" name="code" 
-                                                       value="<?php echo htmlspecialchars($row['code']); ?>" disabled style="background: #f1f5f9; cursor: not-allowed; font-weight: 700;">
+                                                <input type="text" class="form-control modern-input" 
+                                                       value="<?php echo htmlspecialchars($row['code']); ?>" readonly style="background: #f8fafc; cursor: not-allowed; font-weight: 700;">
+                                                <input type="hidden" name="code" value="<?php echo htmlspecialchars($row['code']); ?>">
                                             </div>
                                             <span class="fg-hint">Mã code đối tác đã định danh, không thể thay đổi.</span>
                                         </div>
@@ -115,12 +116,6 @@
                                         <span class="meta-label"><i class="fa fa-clock-o"></i> Cập nhật gần nhất:</span>
                                         <span class="meta-value"><?php echo !empty($row['updated_at']) ? date('d/m/Y H:i', strtotime($row['updated_at'])) : 'Chưa cập nhật'; ?></span>
                                     </div>
-                                </div>
-
-                                <div style="margin-top: 24px;">
-                                    <button type="submit" class="btn btn-modern-save btn-block" style="padding: 12px;">
-                                        <i class="fa fa-check"></i> Lưu thay đổi
-                                    </button>
                                 </div>
 
                             </div>

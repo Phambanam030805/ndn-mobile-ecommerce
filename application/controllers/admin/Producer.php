@@ -30,7 +30,7 @@ class Producer extends CI_Controller {
 		$search = $this->input->get('search', TRUE);
 		$search = trim($search ? $search : '');
 
-		$limit = 10;
+		$limit = 15;
 		$current = $this->phantrang->PageCurrent();
 		$first = $this->phantrang->PageFirst($limit, $current);
 		$total = $this->Mnhacungcap->producer_count($search);
@@ -93,6 +93,12 @@ class Producer extends CI_Controller {
 		$this->load->library('form_validation');
 		$this->load->library('session');
 		$this->load->library('alias');
+
+		// Đảm bảo mã code luôn được giữ nguyên nếu form submit không gửi kèm
+		if (empty($_POST['code']) && !empty($this->data['row']['code'])) {
+			$_POST['code'] = $this->data['row']['code'];
+		}
+
 		$this->form_validation->set_rules('name', 'Tên nhà cung cấp', 'required');
 		$this->form_validation->set_rules('code', 'Mã code', 'required');
 		$this->form_validation->set_rules('keyword', 'Từ khóa', 'required');
