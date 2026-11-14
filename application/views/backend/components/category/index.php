@@ -21,20 +21,26 @@
         <div class="row">
             <div class="col-md-12">
                 
-                <!-- Flash Messages -->
+                <!-- Flash Messages: Hiển thị dạng Toast Notification nổi bật ở góc trên không bị che khuất -->
                 <?php if($this->session->flashdata('success')): ?>
-                    <div class="alert alert-success alert-modern">
-                        <i class="fa fa-check-circle"></i>
-                        <span><?php echo $this->session->flashdata('success'); ?></span>
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <div class="alert alert-modern alert-toast-fixed">
+                        <i class="fa fa-check-circle" style="font-size: 24px; color: #10b981;"></i>
+                        <div style="flex: 1;">
+                            <strong style="display: block; font-size: 14px; margin-bottom: 2px; color: #065f46;">Thành công!</strong>
+                            <span style="font-size: 13px; color: #047857;"><?php echo $this->session->flashdata('success'); ?></span>
+                        </div>
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true" style="color: #64748b; font-size: 20px; opacity: 0.8;">&times;</button>
                     </div>
                 <?php endif; ?>
 
                 <?php if($this->session->flashdata('error')): ?>
-                    <div class="alert alert-danger alert-modern">
-                        <i class="fa fa-exclamation-triangle"></i>
-                        <span><?php echo $this->session->flashdata('error'); ?></span>
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <div class="alert alert-modern alert-toast-fixed" style="border-left-color: #ef4444 !important;">
+                        <i class="fa fa-exclamation-triangle" style="font-size: 24px; color: #ef4444;"></i>
+                        <div style="flex: 1;">
+                            <strong style="display: block; font-size: 14px; margin-bottom: 2px; color: #991b1b;">Thông báo lỗi!</strong>
+                            <span style="font-size: 13px; color: #b91c1c;"><?php echo $this->session->flashdata('error'); ?></span>
+                        </div>
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true" style="color: #64748b; font-size: 20px; opacity: 0.8;">&times;</button>
                     </div>
                 <?php endif; ?>
 
@@ -678,4 +684,45 @@
     color: #fff !important;
     box-shadow: 0 3px 10px rgba(215, 0, 24, 0.25);
 }
+
+/* Toast Notification nổi bật ở góc trên không bị thanh cố định che khuất */
+.alert-toast-fixed {
+    position: fixed !important;
+    top: 65px !important;
+    right: 25px !important;
+    z-index: 99999 !important;
+    min-width: 330px !important;
+    max-width: 480px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18) !important;
+    border-left: 5px solid #10b981 !important;
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 14px 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    animation: toastSlideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+@keyframes toastSlideIn {
+    from {
+        transform: translateX(110%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
 </style>
+
+<script>
+$(document).ready(function() {
+    if ($('.alert-toast-fixed').length) {
+        setTimeout(function() {
+            $('.alert-toast-fixed').fadeOut(600, function() {
+                $(this).remove();
+            });
+        }, 4000);
+    }
+});
+</script>
