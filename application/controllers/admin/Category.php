@@ -125,6 +125,13 @@ class Category extends CI_Controller {
      */
     public function update(int $id): void
     {
+        // Bảo vệ danh mục gốc hệ thống "Điện thoại" (ID: 3)
+        if ($id == 3) {
+            $this->session->set_flashdata('error', 'Danh mục gốc mặc định của hệ thống được bảo vệ, không thể chỉnh sửa!');
+            redirect('admin/category', 'refresh');
+            return;
+        }
+
         $user_role = $this->session->userdata('sessionadmin');
         if ($user_role['role'] == 2) {
             redirect('admin/E403/index', 'refresh');
@@ -175,6 +182,13 @@ class Category extends CI_Controller {
      */
     public function status(int $id): void
     {
+        // Bảo vệ danh mục gốc hệ thống "Điện thoại" (ID: 3)
+        if ($id == 3) {
+            $this->session->set_flashdata('error', 'Danh mục gốc mặc định của hệ thống luôn luôn ở trạng thái hoạt động!');
+            redirect('admin/category', 'refresh');
+            return;
+        }
+
         $row = $this->Mdanhmuc->category_detail($id);
         $status = ($row['status'] == 1) ? 0 : 1;
         $mydata = ['status' => $status];
@@ -190,6 +204,13 @@ class Category extends CI_Controller {
      */
     public function trash(int $id): void
     {
+        // Bảo vệ danh mục gốc hệ thống "Điện thoại" (ID: 3)
+        if ($id == 3) {
+            $this->session->set_flashdata('error', 'Danh mục gốc mặc định của hệ thống không thể xóa vào thùng rác!');
+            redirect('admin/category', 'refresh');
+            return;
+        }
+
         $row = $this->Mdanhmuc->category_detail($id);
         $count_product = $this->Msanpham->product_count_parentid($row['id']);
         $count_category = $this->Mdanhmuc->category_count_parentid($row['id']);
@@ -251,6 +272,13 @@ class Category extends CI_Controller {
      */
     public function delete(int $id): void
     {
+        // Bảo vệ danh mục gốc hệ thống "Điện thoại" (ID: 3)
+        if ($id == 3) {
+            $this->session->set_flashdata('error', 'Danh mục gốc mặc định của hệ thống không thể xóa!');
+            redirect('admin/category/recyclebin', 'refresh');
+            return;
+        }
+
         $this->Mdanhmuc->category_delete($id);
         $this->session->set_flashdata('success', 'Xóa loại sản phẩm thành công');
         redirect('admin/category/recyclebin', 'refresh');

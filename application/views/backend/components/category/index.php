@@ -2,7 +2,7 @@
     <section class="content-header">
         <h1>
             <i class="fa fa-folder-open text-red" style="font-size: 24px; vertical-align: middle; margin-right: 6px;"></i> Quản lý loại sản phẩm
-            <small style="font-weight: 400; color: #7f8c8d; font-size: 13px;">Danh mục hãng điện thoại & thiết bị</small>
+            <small style="font-weight: 400; color: #7f8c8d; font-size: 13px;">Danh mục hãng điện thoại</small>
         </h1>
         <div class="breadcrumb" style="top: 12px; background: transparent; padding: 0;">
             <?php if($user['role'] == 1): ?>
@@ -103,41 +103,68 @@
                                         $catid = $this->Mdanhmuc->category_parentid($row['id']);
                                         $parent_name = $this->Mdanhmuc->category_name_parent($catid);
                                         $count_prod = (int)$this->Msanpham->product_count_parentid($row['id']);
+                                        $count_child = (int)$this->Mdanhmuc->category_count_parentid($row['id']);
                                         $is_root = ($catid == 0);
+                                        $is_system_root = ($row['id'] == 3 || ($is_root && $row['link'] == 'dien-thoai'));
                                     ?>
-                                        <tr class="category-item-row">
+                                        <tr class="category-item-row <?php echo $is_system_root ? 'is-system-root-row' : ''; ?>">
                                             <td class="text-center">
                                                 <span class="category-id-badge"><?php echo $stt++; ?></span>
                                             </td>
 
                                             <td>
                                                 <div class="category-name-cell">
-                                                    <span class="category-icon-box <?php echo $is_root ? 'is-parent-icon' : 'is-child-icon'; ?>">
-                                                        <i class="fa <?php echo $is_root ? 'fa-folder' : 'fa-mobile'; ?>"></i>
-                                                    </span>
-                                                    <div class="category-name-info">
-                                                        <a href="<?php echo base_url('admin/category/update/' . $row['id']); ?>" class="category-title-link" title="Bấm để chỉnh sửa">
-                                                            <?php echo htmlspecialchars($row['name']); ?>
-                                                        </a>
-                                                        <?php if(!empty($row['link'])): ?>
-                                                            <span class="category-slug">slug: <?php echo htmlspecialchars($row['link']); ?></span>
-                                                        <?php endif; ?>
-                                                    </div>
+                                                    <?php if($is_system_root): ?>
+                                                        <span class="category-icon-box is-system-root-icon" title="Danh mục hệ thống cốt lõi">
+                                                            <i class="fa fa-shield"></i>
+                                                        </span>
+                                                        <div class="category-name-info">
+                                                            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                                                                <span class="category-title-static"><?php echo htmlspecialchars($row['name']); ?></span>
+                                                                <span class="badge-system-root-tag"><i class="fa fa-lock"></i> Hệ thống</span>
+                                                            </div>
+                                                            <?php if(!empty($row['link'])): ?>
+                                                                <span class="category-slug">slug: <?php echo htmlspecialchars($row['link']); ?></span>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    <?php else: ?>
+                                                        <span class="category-icon-box <?php echo $is_root ? 'is-parent-icon' : 'is-child-icon'; ?>">
+                                                            <i class="fa <?php echo $is_root ? 'fa-folder' : 'fa-mobile'; ?>"></i>
+                                                        </span>
+                                                        <div class="category-name-info">
+                                                            <a href="<?php echo base_url('admin/category/update/' . $row['id']); ?>" class="category-title-link" title="Bấm để chỉnh sửa">
+                                                                <?php echo htmlspecialchars($row['name']); ?>
+                                                            </a>
+                                                            <?php if(!empty($row['link'])): ?>
+                                                                <span class="category-slug">slug: <?php echo htmlspecialchars($row['link']); ?></span>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    <?php endif; ?>
                                                 </div>
                                             </td>
 
                                             <td class="text-center">
-                                                <a href="<?php echo base_url('admin/product?catid=' . $row['id']); ?>" 
-                                                   class="product-count-badge <?php echo ($count_prod > 0) ? 'has-products' : 'zero-products'; ?>" 
-                                                   title="Bấm để xem danh sách <?php echo $count_prod; ?> sản phẩm thuộc <?php echo htmlspecialchars($row['name']); ?>">
-                                                    <i class="fa fa-cubes"></i> 
-                                                    <span><b><?php echo $count_prod; ?></b> máy</span>
-                                                    <i class="fa fa-arrow-right view-arrow"></i>
-                                                </a>
+                                                <?php if($is_system_root): ?>
+                                                    <span class="system-branches-badge" title="Danh mục gốc cấp hệ thống chứa <?php echo $count_child; ?> hãng điện thoại con">
+                                                        <i class="fa fa-sitemap"></i> <b><?php echo $count_child; ?></b> thương hiệu con
+                                                    </span>
+                                                <?php else: ?>
+                                                    <a href="<?php echo base_url('admin/product?catid=' . $row['id']); ?>" 
+                                                       class="product-count-badge <?php echo ($count_prod > 0) ? 'has-products' : 'zero-products'; ?>" 
+                                                       title="Bấm để xem danh sách <?php echo $count_prod; ?> sản phẩm thuộc <?php echo htmlspecialchars($row['name']); ?>">
+                                                        <i class="fa fa-cubes"></i> 
+                                                        <span><b><?php echo $count_prod; ?></b> máy</span>
+                                                        <i class="fa fa-arrow-right view-arrow"></i>
+                                                    </a>
+                                                <?php endif; ?>
                                             </td>
 
                                             <td>
-                                                <?php if($is_root): ?>
+                                                <?php if($is_system_root): ?>
+                                                    <span class="parent-badge parent-root-system">
+                                                        <i class="fa fa-cube"></i> Danh mục gốc hệ thống
+                                                    </span>
+                                                <?php elseif($is_root): ?>
                                                     <span class="parent-badge parent-root">
                                                         <i class="fa fa-star"></i> Danh mục gốc
                                                     </span>
@@ -156,34 +183,46 @@
                                             </td>
 
                                             <td class="text-center">
-                                                <a href="<?php echo base_url('admin/category/status/' . $row['id']); ?>" 
-                                                   class="status-toggle-badge <?php echo ($row['status'] == 1) ? 'is-active' : 'is-hidden'; ?>"
-                                                   title="Bấm để chuyển đổi trạng thái hiển thị">
-                                                    <?php if($row['status'] == 1): ?>
-                                                        <i class="fa fa-check-circle"></i> Hoạt động
-                                                    <?php else: ?>
-                                                        <i class="fa fa-eye-slash"></i> Tạm ẩn
-                                                    <?php endif; ?>
-                                                </a>
+                                                <?php if($is_system_root): ?>
+                                                    <span class="status-system-fixed" title="Danh mục hệ thống luôn luôn ở trạng thái kích hoạt mặc định">
+                                                        <i class="fa fa-check-circle"></i> Mặc định
+                                                    </span>
+                                                <?php else: ?>
+                                                    <a href="<?php echo base_url('admin/category/status/' . $row['id']); ?>" 
+                                                       class="status-toggle-badge <?php echo ($row['status'] == 1) ? 'is-active' : 'is-hidden'; ?>"
+                                                       title="Bấm để chuyển đổi trạng thái hiển thị">
+                                                        <?php if($row['status'] == 1): ?>
+                                                            <i class="fa fa-check-circle"></i> Hoạt động
+                                                        <?php else: ?>
+                                                            <i class="fa fa-eye-slash"></i> Tạm ẩn
+                                                        <?php endif; ?>
+                                                    </a>
+                                                <?php endif; ?>
                                             </td>
 
                                             <td class="text-center">
-                                                <div class="action-btn-group">
-                                                    <?php if($user['role'] == 1): ?>
-                                                        <a href="<?php echo base_url('admin/category/update/' . $row['id']); ?>" 
-                                                           class="btn-action-pill btn-action-edit" 
-                                                           title="Chỉnh sửa loại sản phẩm">
-                                                            <i class="fa fa-pencil"></i> Sửa
-                                                        </a>
-                                                    <?php endif; ?>
+                                                <?php if($is_system_root): ?>
+                                                    <span class="btn-action-system-locked" title="Danh mục gốc mặc định hệ thống được bảo vệ cố định (Không sửa / Không xóa)">
+                                                        <i class="fa fa-lock"></i> Cố định
+                                                    </span>
+                                                <?php else: ?>
+                                                    <div class="action-btn-group">
+                                                        <?php if($user['role'] == 1): ?>
+                                                            <a href="<?php echo base_url('admin/category/update/' . $row['id']); ?>" 
+                                                               class="btn-action-pill btn-action-edit" 
+                                                               title="Chỉnh sửa loại sản phẩm">
+                                                                <i class="fa fa-pencil"></i> Sửa
+                                                            </a>
+                                                        <?php endif; ?>
 
-                                                    <a href="<?php echo base_url('admin/category/trash/' . $row['id']); ?>" 
-                                                       onclick="return confirm('Chuyển danh mục [<?php echo htmlspecialchars(addslashes($row['name'])); ?>] vào thùng rác?');" 
-                                                       class="btn-action-pill btn-action-trash" 
-                                                       title="Xóa vào thùng rác">
-                                                        <i class="fa fa-trash"></i> Xóa
-                                                    </a>
-                                                </div>
+                                                        <a href="<?php echo base_url('admin/category/trash/' . $row['id']); ?>" 
+                                                           onclick="return confirm('Chuyển danh mục [<?php echo htmlspecialchars(addslashes($row['name'])); ?>] vào thùng rác?');" 
+                                                           class="btn-action-pill btn-action-trash" 
+                                                           title="Xóa vào thùng rác">
+                                                            <i class="fa fa-trash"></i> Xóa
+                                                        </a>
+                                                    </div>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -633,6 +672,105 @@
     background: #dc2626;
     color: #fff;
     box-shadow: 0 3px 8px rgba(220, 38, 38, 0.25);
+}
+
+/* System Root Category Highlight & Protection Styling */
+.category-item-row.is-system-root-row td {
+    background-color: #fffdf5 !important;
+}
+.category-item-row.is-system-root-row:hover td {
+    background-color: #fefce8 !important;
+}
+.category-item-row.is-system-root-row td:first-child {
+    border-left: 4px solid #f59e0b;
+}
+
+.category-icon-box.is-system-root-icon {
+    background: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fde68a;
+    box-shadow: 0 2px 6px rgba(217, 119, 6, 0.15);
+}
+
+.category-title-static {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    letter-spacing: -0.2px;
+}
+
+.badge-system-root-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 8px;
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
+    border-radius: 4px;
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.system-branches-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #ffedd5;
+    border-radius: 20px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: default;
+}
+.system-branches-badge b {
+    color: #9a3412;
+    font-weight: 700;
+}
+
+.parent-badge.parent-root-system {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+    font-weight: 700;
+}
+
+.status-system-fixed {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    cursor: default;
+    user-select: none;
+}
+.status-system-fixed i {
+    color: #10b981;
+}
+
+.btn-action-system-locked {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #f8fafc;
+    color: #94a3b8;
+    border: 1px solid #e2e8f0;
+    cursor: not-allowed;
+    user-select: none;
 }
 
 /* Empty State */
