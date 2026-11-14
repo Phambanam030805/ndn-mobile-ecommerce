@@ -4,7 +4,10 @@
             <i class="fa fa-shopping-cart text-red" style="font-size: 24px; vertical-align: middle; margin-right: 6px;"></i> Quản lý đơn hàng
             <small style="font-weight: 400; color: #7f8c8d; font-size: 13px;">Theo dõi, xử lý và cập nhật tiến độ giao hàng</small>
         </h1>
-        <div class="breadcrumb" style="top: 12px; background: transparent; padding: 0;">
+        <div class="breadcrumb" style="top: 12px; background: transparent; padding: 0; display: flex; align-items: center; gap: 8px;">
+            <a class="btn btn-modern-archive-top" href="<?php echo base_url('admin/orders/archive'); ?>" role="button">
+                <i class="fa fa-archive"></i> Đơn lưu trữ (<b><?php echo (int)$this->Mdonhang->orders_archive_count(); ?></b>)
+            </a>
             <a class="btn btn-modern-archive" href="<?php echo base_url('admin/orders/recyclebin'); ?>" role="button">
                 <i class="fa fa-trash-o text-danger"></i> Thùng rác (<b><?php echo (int)$this->Mdonhang->orders_trash_count(); ?></b>)
             </a>
@@ -16,20 +19,26 @@
         <div class="row">
             <div class="col-md-12">
                 
-                <!-- Flash Messages -->
+                <!-- Flash Messages: Hiển thị Toast Notification nổi ở góc trên -->
                 <?php if($this->session->flashdata('success')): ?>
-                    <div class="alert alert-success alert-modern">
-                        <i class="fa fa-check-circle"></i>
-                        <span><?php echo $this->session->flashdata('success'); ?></span>
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <div class="alert alert-modern alert-toast-fixed">
+                        <i class="fa fa-check-circle" style="font-size: 24px; color: #10b981;"></i>
+                        <div style="flex: 1;">
+                            <strong style="display: block; font-size: 14px; margin-bottom: 2px; color: #065f46;">Thành công!</strong>
+                            <span style="font-size: 13px; color: #047857;"><?php echo $this->session->flashdata('success'); ?></span>
+                        </div>
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true" style="color: #64748b; font-size: 20px; opacity: 0.8;">&times;</button>
                     </div>
                 <?php endif; ?>
 
                 <?php if($this->session->flashdata('error')): ?>
-                    <div class="alert alert-danger alert-modern">
-                        <i class="fa fa-exclamation-triangle"></i>
-                        <span><?php echo $this->session->flashdata('error'); ?></span>
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <div class="alert alert-modern alert-toast-fixed" style="border-left-color: #ef4444 !important;">
+                        <i class="fa fa-exclamation-triangle" style="font-size: 24px; color: #ef4444;"></i>
+                        <div style="flex: 1;">
+                            <strong style="display: block; font-size: 14px; margin-bottom: 2px; color: #991b1b;">Thông báo lỗi!</strong>
+                            <span style="font-size: 13px; color: #b91c1c;"><?php echo $this->session->flashdata('error'); ?></span>
+                        </div>
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true" style="color: #64748b; font-size: 20px; opacity: 0.8;">&times;</button>
                     </div>
                 <?php endif; ?>
 
@@ -225,12 +234,20 @@
                                                         <i class="fa fa-eye"></i> Xem
                                                     </a>
 
-                                                    <!-- Lưu trữ / Chuyển vào thùng rác -->
-                                                    <a href="<?php echo base_url('admin/orders/trash/' . $val['id']); ?>" 
-                                                       onclick="return confirm('Chuyển đơn hàng #<?php echo htmlspecialchars($order_code); ?> vào danh sách đã lưu?');" 
+                                                    <!-- Lưu trữ đơn hàng -->
+                                                    <a href="<?php echo base_url('admin/orders/do_archive/' . $val['id']); ?>" 
+                                                       onclick="return confirm('Chuyển đơn hàng #<?php echo htmlspecialchars($order_code); ?> vào kho Lưu trữ?');" 
                                                        class="btn-action-pill btn-action-archive" 
-                                                       title="Lưu trữ đơn hàng">
+                                                       title="Lưu trữ đơn hàng (Cất vào kho hồ sơ)">
                                                         <i class="fa fa-archive"></i>
+                                                    </a>
+
+                                                    <!-- Xóa vào thùng rác -->
+                                                    <a href="<?php echo base_url('admin/orders/trash/' . $val['id']); ?>" 
+                                                       onclick="return confirm('Chuyển đơn hàng #<?php echo htmlspecialchars($order_code); ?> vào Thùng rác?');" 
+                                                       class="btn-action-pill btn-action-trash" 
+                                                       title="Xóa vào thùng rác">
+                                                        <i class="fa fa-trash"></i>
                                                     </a>
                                                 </div>
                                             </td>
@@ -275,6 +292,30 @@
 <!-- 🎨 MODERN LUXURY ORDERS ADMIN STYLES -->
 <style>
 /* Header Action Buttons */
+.btn-modern-archive-top {
+    background: #ffffff;
+    color: #b45309 !important;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid #fde68a;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.btn-modern-archive-top:hover {
+    background: #fffbeb;
+    border-color: #f59e0b;
+    color: #92400e !important;
+    transform: translateY(-1px);
+}
+.btn-modern-archive-top i {
+    color: #d97706;
+}
+
 .btn-modern-archive {
     background: #ffffff;
     color: #475569 !important;
@@ -724,15 +765,26 @@
     box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
 }
 .btn-action-archive {
-    background: #f8fafc;
-    color: #64748b;
-    border: 1px solid #cbd5e1;
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
     padding: 6px 9px;
 }
 .btn-action-archive:hover {
-    background: #64748b;
+    background: #d97706;
     color: #fff;
-    box-shadow: 0 3px 8px rgba(100, 116, 139, 0.25);
+    box-shadow: 0 3px 8px rgba(217, 119, 6, 0.25);
+}
+.btn-action-trash {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    padding: 6px 9px;
+}
+.btn-action-trash:hover {
+    background: #dc2626;
+    color: #fff;
+    box-shadow: 0 3px 8px rgba(220, 38, 38, 0.25);
 }
 
 /* Empty State */
@@ -784,4 +836,45 @@
     color: #fff !important;
     box-shadow: 0 3px 10px rgba(215, 0, 24, 0.25);
 }
+
+/* Toast Notification nổi bật ở góc trên không bị thanh cố định che khuất & không làm xô lệch trang */
+.alert-toast-fixed {
+    position: fixed !important;
+    top: 65px !important;
+    right: 25px !important;
+    z-index: 99999 !important;
+    min-width: 330px !important;
+    max-width: 480px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18) !important;
+    border-left: 5px solid #10b981 !important;
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 14px 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    animation: toastSlideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+@keyframes toastSlideIn {
+    from {
+        transform: translateX(110%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
 </style>
+
+<script>
+$(document).ready(function() {
+    if ($('.alert-toast-fixed').length) {
+        setTimeout(function() {
+            $('.alert-toast-fixed').fadeOut(600, function() {
+                $(this).remove();
+            });
+        }, 4000);
+    }
+});
+</script>

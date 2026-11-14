@@ -14,10 +14,11 @@ class Mdonhang extends CI_Model {
         return $query->result_array();
     }
 
-    // 1. Lấy danh sách đơn hàng cho trang quản lý (hỗ trợ tìm kiếm & lọc trạng thái)
-    public function orders_listorders($limit, $first, $search = '', $status = '')
+    // 1. Lấy danh sách đơn hàng cho trang quản lý (hỗ trợ tìm kiếm, lọc trạng thái & phân biệt lưu trữ)
+    public function orders_listorders($limit, $first, $search = '', $status = '', $is_archive = 0)
     {
         $this->db->where('trash', 1);
+        $this->db->where('is_archive', (int)$is_archive);
         if ($status !== '' && $status !== null) {
             $this->db->where('status', (int)$status);
         }
@@ -37,9 +38,10 @@ class Mdonhang extends CI_Model {
     }
 
     // 2. Đếm tổng đơn hàng để phân trang
-    public function orders_count($search = '', $status = '')
+    public function orders_count($search = '', $status = '', $is_archive = 0)
     {
         $this->db->where('trash', 1);
+        $this->db->where('is_archive', (int)$is_archive);
         if ($status !== '' && $status !== null) {
             $this->db->where('status', (int)$status);
         }
@@ -54,6 +56,21 @@ class Mdonhang extends CI_Model {
             $this->db->group_end();
         }
         return $this->db->count_all_results($this->table);
+    }
+
+    // 2b. Đếm số đơn trong kho lưu trữ
+    public function orders_archive_count()
+    {
+        $this->db->where('trash', 1);
+        $this->db->where('is_archive', 1);
+        return $this->db->count_all_results($this->table);
+    }
+
+    // 2c. Cập nhật trạng thái lưu trữ của đơn hàng
+    public function orders_set_archive($id, $is_archive = 1)
+    {
+        $this->db->where('id', (int)$id);
+        $this->db->update($this->table, ['is_archive' => (int)$is_archive]);
     }
 
     // 3. Đếm số đơn trong thùng rác
@@ -125,7 +142,7 @@ class Mdonhang extends CI_Model {
     // 11. Khôi phục đơn hàng từ thùng rác
     public function orders_restore($id)
     {
-        $mydata = array('trash' => 1);
+        $mydata = array('trash' => 1, 'is_archive' => 0);
         $this->db->where('id', $id);
         $this->db->update($this->table, $mydata);
     }

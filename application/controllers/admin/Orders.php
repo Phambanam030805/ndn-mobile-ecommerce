@@ -45,8 +45,8 @@ class Orders extends CI_Controller {
     $search = $this->input->get('search', TRUE);
     $status = $this->input->get('status', TRUE);
 
-    // Đếm tổng số đơn hàng theo bộ lọc
-    $total = $this->Mdonhang->orders_count($search, $status);
+    // Đếm tổng số đơn hàng theo bộ lọc (chỉ đơn đang xử lý, không bao gồm đơn lưu trữ)
+    $total = $this->Mdonhang->orders_count($search, $status, 0);
 
     // Tạo link phân trang giữ nguyên các tham số tìm kiếm
     $queryString = [];
@@ -57,14 +57,93 @@ class Orders extends CI_Controller {
       $url .= '?' . http_build_query($queryString);
     }
 
-    $this->data['strphantrang'] = $this->phantrang->PagePer($total, $current, $limit, $url);
-    $this->data['list'] = $this->Mdonhang->orders_listorders($limit, $first, $search, $status);
-    $this->data['search'] = $search;
-    $this->data['status'] = $status;
-    $this->data['total'] = $total;
-    $this->data['view'] = 'index';
-    $this->data['title'] = 'Danh sách đơn hàng';
+    $this->data['strphantrang']  = $this->phantrang->PagePer($total, $current, $limit, $url);
+    $this->data['list']          = $this->Mdonhang->orders_listorders($limit, $first, $search, $status, 0);
+    $this->data['search']        = $search;
+    $this->data['status']        = $status;
+    $this->data['total']         = $total;
+    $this->data['archive_count'] = $this->Mdonhang->orders_archive_count();
+    $this->data['trash_count']   = $this->Mdonhang->orders_trash_count();
+    $this->data['view']          = 'index';
+    $this->data['title']         = 'Danh sách đơn hàng';
     $this->load->view('backend/layout', $this->data);
+  }
+
+  /**
+   * Danh sách đơn hàng trong kho lưu trữ
+   */
+  public function archive()
+  {
+    $this->load->library('phantrang');
+    $limit = 10;
+    $current = $this->phantrang->PageCurrent();
+    $first = $this->phantrang->PageFirst($limit, $current);
+
+    $search = $this->input->get('search', TRUE);
+    $status = $this->input->get('status', TRUE);
+
+    // Đếm tổng số đơn hàng lưu trữ
+    $total = $this->Mdonhang->orders_count($search, $status, 1);
+
+    $queryString = [];
+    if (!empty($search)) $queryString['search'] = $search;
+    if ($status !== '' && $status !== null) $queryString['status'] = $status;
+    $url = 'admin/orders/archive';
+    if (!empty($queryString)) {
+      $url .= '?' . http_build_query($queryString);
+    }
+
+    $this->data['strphantrang']  = $this->phantrang->PagePer($total, $current, $limit, $url);
+    $this->data['list']          = $this->Mdonhang->orders_listorders($limit, $first, $search, $status, 1);
+    $this->data['search']        = $search;
+    $this->data['status']        = $status;
+    $this->data['total']         = $total;
+    $this->data['archive_count'] = $total;
+    $this->data['trash_count']   = $this->Mdonhang->orders_trash_count();
+    $this->data['view']          = 'archive';
+    $this->data['title']         = 'Lưu trữ đơn hàng';
+    $this->load->view('backend/layout', $this->data);
+  }
+
+  /**
+   * Thực hiện lưu trữ đơn hàng (is_archive = 1)
+   */
+  public function do_archive($id)
+  {
+    $row = $this->Mdonhang->orders_detail($id);
+    if(!$row) {
+      $this->session->set_flashdata('error', 'Đơn hàng không tồn tại!');
+      redirect('admin/orders');
+      return;
+    }
+
+    $status = (int)$row['status'];
+    if($status === 1){
+      $this->session->set_flashdata('error', 'Đơn hàng #' . $row['orderCode'] . ' đang được giao, không thể lưu trữ lúc này!');
+      redirect('admin/orders');
+      return;
+    }
+
+    $this->Mdonhang->orders_set_archive((int)$id, 1);
+    $this->session->set_flashdata('success', 'Đã chuyển đơn hàng #' . $row['orderCode'] . ' vào kho Lưu trữ thành công!');
+    redirect('admin/orders');
+  }
+
+  /**
+   * Bỏ lưu trữ đơn hàng (đưa trở lại danh sách chính: is_archive = 0)
+   */
+  public function unarchive($id)
+  {
+    $row = $this->Mdonhang->orders_detail($id);
+    if(!$row) {
+      $this->session->set_flashdata('error', 'Đơn hàng không tồn tại!');
+      redirect('admin/orders/archive');
+      return;
+    }
+
+    $this->Mdonhang->orders_set_archive((int)$id, 0);
+    $this->session->set_flashdata('success', 'Đã bỏ lưu trữ đơn hàng #' . $row['orderCode'] . ' và đưa về danh sách chính!');
+    redirect('admin/orders/archive');
   }
 
   public function detail($id)
@@ -180,13 +259,19 @@ class Orders extends CI_Controller {
     }
     $status = (int)$row['status'];
     if($status === 1){
-      $this->session->set_flashdata('error', 'Đơn hàng #' . $row['orderCode'] . ' đang được giao, không thể lưu vào thùng rác!');
+      $this->session->set_flashdata('error', 'Đơn hàng #' . $row['orderCode'] . ' đang được giao, không thể xóa vào thùng rác!');
       redirect('admin/orders');
       return;
     }else{
       $this->Mdonhang->orders_update(['trash' => 0], (int)$id);
-      $this->session->set_flashdata('success', 'Đã lưu đơn hàng #' . $row['orderCode'] . ' vào thùng rác thành công!');
-      redirect('admin/orders');
+      $this->session->set_flashdata('success', 'Đã chuyển đơn hàng #' . $row['orderCode'] . ' vào thùng rác thành công!');
+
+      $ref = $this->input->server('HTTP_REFERER');
+      if ($ref && strpos($ref, 'archive') !== false) {
+        redirect('admin/orders/archive');
+      } else {
+        redirect('admin/orders');
+      }
       return;
     }
   }
