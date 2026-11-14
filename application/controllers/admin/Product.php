@@ -99,51 +99,49 @@ class Product extends CI_Controller {
 				'trash'=>1,
 				'status'=>$_POST['status']
 			);
-			$config = array();
-	         //thuc mục chứa file
-			$config['upload_path']   = './public/images/products/';
-	         //Định dạng file được phép tải
-			$config['allowed_types'] = 'jpg|png|gif';
-	         //Dung lượng tối đa
-			$config['max_size']      = '500';
-			$config['encrypt_name'] = TRUE;
-	         //Chiều rộng tối đa
-			$config['max_width']     = '1028';
-	         //Chiều cao tối đa
-			$config['max_height']    = '768';
-	         //load thư viện upload
-	         //bien chua cac ten file upload
-			$name_array = array();
-
-	        //lưu biến môi trường khi thực hiện upload
-			$file  = $_FILES['image_list'];
-			$count = count($file['name']);
-			$img = '';
+			// Cấu hình tải ảnh lên hệ thống
+			$config = array(
+				'upload_path'   => './public/images/products/',
+				'allowed_types' => 'jpg|jpeg|png|gif|webp',
+				'max_size'      => '10240', // Cho phép tới 10MB
+				'encrypt_name'  => TRUE
+			);
 			$this->load->library('upload', $config);
-			for($i=0; $i<=$count-1; $i++){
 
-              	$_FILES['userfile']['name']     = $file['name'][$i];  //khai báo tên của file thứ i
-              	$_FILES['userfile']['type']     = $file['type'][$i]; //khai báo kiểu của file thứ i
-              	$_FILES['userfile']['tmp_name'] = $file['tmp_name'][$i]; //khai báo đường dẫn tạm của file thứ i
-          		$_FILES['userfile']['error']    = $file['error'][$i]; //khai báo lỗi của file thứ i
-              	$_FILES['userfile']['size']     = $file['size'][$i]; //khai báo kích cỡ của file thứ i
-	              //load thư viện upload và cấu hình
-	              //thực hiện upload từng file
-              	if($this->upload->do_upload()){
-	                  //nếu upload thành công thì lưu toàn bộ dữ liệu
-              		$data = $this->upload->data();
-	                  //in cấu trúc dữ liệu của các file
-              		$img .= $data['file_name'].'#';
-              	}     
-              }
-	        //Lưu nhóm hình ảnh chi tiết
-              $img = rtrim($img, '#');
-              $mydata['img']= $img;
-              if ( $this->upload->do_upload('img')){
-              	$data = $this->upload->data();
-              	$mydata['avatar']=$data['file_name'];
-              }
-              $this->Msanpham->product_insert($mydata);
+			// 1. Upload ảnh đại diện chính (img)
+			$this->upload->initialize($config);
+			if (!empty($_FILES['img']['name']) && $this->upload->do_upload('img')) {
+				$data = $this->upload->data();
+				$mydata['avatar'] = $data['file_name'];
+			} else {
+				// Nếu không chọn ảnh hoặc tải lên bị lỗi, tự động gán ảnh đại diện mặc định
+				$mydata['avatar'] = 'default.png';
+			}
+
+			// 2. Upload thư viện ảnh chi tiết (image_list)
+			$img = '';
+			if (isset($_FILES['image_list']) && !empty($_FILES['image_list']['name'][0])) {
+				$file  = $_FILES['image_list'];
+				$count = count($file['name']);
+				for ($i = 0; $i < $count; $i++) {
+					if (empty($file['name'][$i])) continue;
+					$_FILES['userfile']['name']     = $file['name'][$i];
+					$_FILES['userfile']['type']     = $file['type'][$i];
+					$_FILES['userfile']['tmp_name'] = $file['tmp_name'][$i];
+					$_FILES['userfile']['error']    = $file['error'][$i];
+					$_FILES['userfile']['size']     = $file['size'][$i];
+
+					$this->upload->initialize($config);
+					if ($this->upload->do_upload('userfile')) {
+						$data = $this->upload->data();
+						$img .= $data['file_name'] . '#';
+					}
+				}
+				$img = rtrim($img, '#');
+			}
+			$mydata['img'] = $img;
+
+			$this->Msanpham->product_insert($mydata);
               $this->session->set_flashdata('success', 'Thêm sản phẩm thành công');
               redirect('admin/product','refresh');
             }else{
@@ -199,20 +197,23 @@ class Product extends CI_Controller {
          );
          
          // Thêm logic xử lý upload ảnh khi cập nhật
-         $config['upload_path']   = './public/images/products/';
-         $config['allowed_types'] = 'jpg|png|gif';
-         $config['max_size']      = '500';
-         $config['encrypt_name']  = TRUE;
+         $config = array(
+             'upload_path'   => './public/images/products/',
+             'allowed_types' => 'jpg|jpeg|png|gif|webp',
+             'max_size'      => '10240', // 10MB
+             'encrypt_name'  => TRUE
+         );
          $this->load->library('upload', $config);
+         $this->upload->initialize($config);
 
          // Upload ảnh đại diện mới nếu có
-         if ($this->upload->do_upload('img')){
+         if (!empty($_FILES['img']['name']) && $this->upload->do_upload('img')){
              $data = $this->upload->data();
              $mydata['avatar'] = $data['file_name'];
              // Xóa ảnh cũ để tiết kiệm bộ nhớ (tùy chọn)
              $row_old = $this->Msanpham->product_detail($id);
-             if(!empty($row_old['avatar']) && file_exists('./public/images/products/'.$row_old['avatar'])){
-                 unlink('./public/images/products/'.$row_old['avatar']);
+             if(!empty($row_old['avatar']) && $row_old['avatar'] != 'default.png' && file_exists('./public/images/products/'.$row_old['avatar'])){
+                 @unlink('./public/images/products/'.$row_old['avatar']);
              }
          }
 

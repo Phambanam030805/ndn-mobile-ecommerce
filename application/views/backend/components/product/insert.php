@@ -177,7 +177,7 @@
                                 <div class="form-group-custom">
                                     <label class="form-label-custom">Ảnh đại diện chính <span class="text-danger">*</span></label>
                                     <div class="file-upload-zone" onclick="document.getElementById('avatar_input').click()">
-                                        <input type="file" id="avatar_input" name="img" accept="image/*" required style="display: none;" onchange="previewAvatar(this)">
+                                        <input type="file" id="avatar_input" name="img" accept="image/*" style="display: none;" onchange="previewAvatar(this)">
                                         <div id="avatar_preview_box" class="avatar-preview-box">
                                             <i class="fa fa-cloud-upload upload-icon"></i>
                                             <span class="upload-title">Chọn ảnh đại diện</span>
