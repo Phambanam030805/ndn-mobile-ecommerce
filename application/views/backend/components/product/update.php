@@ -1,6 +1,6 @@
 <?php echo form_open_multipart('admin/product/update/'.$row['id']); ?>
 <?php  
-$list=$this->Mdanhmuc->category_list();
+$list=$this->Mdanhmuc->category_brand_list();
 $option_parentid="";
 foreach ($list as $r) {
 	if($r['id']==$row['catid']){

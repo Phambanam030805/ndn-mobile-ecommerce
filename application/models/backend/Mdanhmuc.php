@@ -105,6 +105,21 @@ class Mdanhmuc extends CI_Model {
         return $query->result_array();
     }
 
+    // Lấy danh sách danh mục hãng (loại bỏ danh mục phân loại chung như "Điện thoại")
+    public function category_brand_list()
+    {
+        $this->db->where('trash', 1);
+        $this->db->where('type', 'product');
+        $this->db->group_start();
+        $this->db->where('parentid >', 0);
+        $this->db->or_where('level >', 1);
+        $this->db->group_end();
+        $this->db->where('id !=', 3);
+        $this->db->order_by('orders', 'asc');
+        $query = $this->db->get($this->table);
+        return $query->result_array();
+    }
+
     // Lấy lên thông tin danh mục đó lv
     public function category_detail($id)
     {

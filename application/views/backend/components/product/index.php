@@ -56,6 +56,7 @@
                                     <option value="">-- Tất cả danh mục hãng --</option>
                                     <?php if(!empty($categories)): ?>
                                         <?php foreach($categories as $c): ?>
+                                            <?php if($c['id'] == 3 || mb_strtolower(trim($c['name'])) === 'điện thoại') continue; ?>
                                             <option value="<?php echo $c['id']; ?>" <?php if(isset($catid) && $catid == $c['id']) echo 'selected'; ?>>
                                                 <?php echo htmlspecialchars($c['name']); ?>
                                             </option>

@@ -52,7 +52,7 @@ class Product extends CI_Controller {
 
 		$this->data['strphantrang'] = $this->phantrang->PagePer($total, $current, $limit, $url);
 		$this->data['list'] = $this->Msanpham->product_sanpham($limit, $first, $search, $catid);
-		$this->data['categories'] = $this->Mdanhmuc->category_list();
+		$this->data['categories'] = $this->Mdanhmuc->category_brand_list();
 		$this->data['search'] = $search;
 		$this->data['catid'] = $catid;
 		$this->data['total'] = $total;
@@ -147,7 +147,7 @@ class Product extends CI_Controller {
               $this->session->set_flashdata('success', 'Thêm sản phẩm thành công');
               redirect('admin/product','refresh');
             }else{
-             $this->data['listcat'] = $this->Mdanhmuc->category_list();
+             $this->data['listcat'] = $this->Mdanhmuc->category_brand_list();
              $this->data['listproducer'] = $this->Mnhacungcap->producer_list();
              $this->data['view']='insert';
              $this->data['title']='Thêm sản phẩm mới';
@@ -241,7 +241,7 @@ class Product extends CI_Controller {
               $this->session->set_flashdata('success', 'Cập nhật sản phẩm thành công');
               redirect('admin/product','refresh');
             } 
-            $this->data['listcat'] = $this->Mdanhmuc->category_list();
+            $this->data['listcat'] = $this->Mdanhmuc->category_brand_list();
             $this->data['listproducer'] = $this->Mnhacungcap->producer_list();
             $this->data['view']='update';
             $this->data['title']='Cập nhật sản phẩm';
