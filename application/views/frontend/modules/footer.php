@@ -5,10 +5,9 @@
             <div class="social-wrapper">
                 <span class="social-text">Kết nối với chúng tôi:</span>
                 <ul class="list-unstyled social-links">
-                    <li><a href="https://www.facebook.com/share/1Fy7X7PbZD/" target="_blank" class="fb"><i class="fab fa-facebook-f"></i></a></li>
-                    <li><a href="https://www.instagram.com/shopcuaop/" target="_blank" class="ig"><i class="fab fa-instagram"></i></a></li>
-                    <li><a href="https://www.tiktok.com/@pbn_05" target="_blank" class="tk"><i class="fab fa-tiktok"></i></a></li>
-                    <li><a href="https://www.youtube.com/@Namcoco385" target="_blank" class="yt"><i class="fab fa-youtube"></i></a></li>
+                    <li><a href="https://www.facebook.com/profile.php?id=61561226965970" target="_blank" rel="noopener noreferrer" class="fb" title="Facebook - Mê Phimm"><i class="fab fa-facebook-f"></i></a></li>
+                    <li><a href="https://www.tiktok.com/@pbn_05" target="_blank" rel="noopener noreferrer" class="tk" title="TikTok - @pbn_05"><i class="fab fa-tiktok"></i></a></li>
+                    <li><a href="https://zalo.me/0794358619" target="_blank" rel="noopener noreferrer" class="zl" title="Chat Zalo - 0794.358.619"><span style="font-weight: 800; font-size: 11px; font-family: 'Segoe UI', -apple-system, Arial, sans-serif; letter-spacing: -0.3px;">Zalo</span></a></li>
                 </ul>
             </div>
         </div>

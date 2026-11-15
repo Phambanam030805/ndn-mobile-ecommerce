@@ -3776,6 +3776,7 @@ a.fright {
 .social-links li a.ig:hover { background: #e1306c; }
 .social-links li a.tk:hover { background: #000000; }
 .social-links li a.yt:hover { background: #ff0000; }
+.social-links li a.zl:hover { background: #0068ff; }
 
 .top-footer {
     padding: 60px 0 40px;
@@ -3957,6 +3958,7 @@ a.fright {
 .social-links li a.ig:hover { background: #e1306c; transform: scale(1.1); }
 .social-links li a.tk:hover { background: #000000; transform: scale(1.1); }
 .social-links li a.yt:hover { background: #ff0000; transform: scale(1.1); }
+.social-links li a.zl:hover { background: #0068ff; transform: scale(1.1); }
 
 .top-footer {
     padding: 50px 0 30px;
@@ -4121,6 +4123,7 @@ a.fright {
 .social-links li a.ig:hover { background: #e1306c; }
 .social-links li a.tk:hover { background: #000000; }
 .social-links li a.yt:hover { background: #ff0000; }
+.social-links li a.zl:hover { background: #0068ff; }
 
 .top-footer {
     padding: 50px 0 40px;
