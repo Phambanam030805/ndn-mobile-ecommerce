@@ -79,46 +79,94 @@
                                 </div>
 
                                 <?php 
+                                    $admin_email    = 'phambanam385@gmail.com';
                                     $customer_email = !empty($row['email']) ? trim($row['email']) : '';
+                                    $customer_name  = !empty($row['fullname']) ? trim($row['fullname']) : 'Quý khách';
                                     $customer_phone = !empty($row['phone']) ? trim($row['phone']) : '';
                                     $clean_phone    = preg_replace('/[^0-9]/', '', $customer_phone);
 
-                                    // Soạn sẵn liên kết trực tiếp mở Gmail Web chuyên nghiệp
+                                    // Soạn sẵn liên kết trực tiếp mở Gmail Web bằng chính tài khoản phambanam385@gmail.com
                                     $gmail_su   = rawurlencode('NDN Mobile - Phản hồi liên hệ: ' . $row['title']);
-                                    $gmail_body = rawurlencode("Kính gửi Quý khách " . $row['fullname'] . ",\n\nNDN Mobile xin chân thành cảm ơn Quý khách đã gửi liên hệ về: \"" . $row['title'] . "\".\n\nVề yêu cầu của Quý khách, Ban quản trị NDN Mobile xin phản hồi như sau:\n\n[Nhập nội dung tư vấn/hỗ trợ tại đây]\n\nNếu Quý khách cần hỗ trợ thêm thông tin gì, xin vui lòng phản hồi email này hoặc liên hệ hotline để được phục vụ nhanh nhất.\n\nTrân trọng cảm ơn Quý khách,\n--\nBan Quản trị & CSKH NDN Mobile\nHotline: 1800.6868 | 0903.123.456\nWebsite: http://localhost/ndnmobile/");
-                                    $gmail_link = "https://mail.google.com/mail/?view=cm&fs=1&to=" . urlencode($customer_email) . "&su=" . $gmail_su . "&body=" . $gmail_body;
+                                    $default_reply_text = "Kính gửi Quý khách " . $customer_name . ",\n\nBan Quản trị NDN Mobile xin chân thành cảm ơn bạn đã gửi liên hệ về: \"" . $row['title'] . "\".\n\nVề yêu cầu của bạn, chúng tôi xin phản hồi như sau:\n\n[Nhập nội dung tư vấn/hỗ trợ tại đây]\n\nNếu cần hỗ trợ thêm thông tin gì, bạn có thể trả lời trực tiếp email này hoặc gọi hotline 1800.6868 để được phục vụ chu đáo nhất.\n\nTrân trọng cảm ơn bạn!\n--\nBan Quản trị & CSKH NDN Mobile\nEmail người gửi: " . $admin_email . "\nHotline hỗ trợ: 1800.6868\nWebsite: http://localhost/ndnmobile/";
+                                    $gmail_body = rawurlencode($default_reply_text);
+                                    
+                                    // URL Gmail Web chỉ định authuser để mở đúng tài khoản phambanam385@gmail.com
+                                    $gmail_link = "https://mail.google.com/mail/u/?authuser=" . urlencode($admin_email) . "&view=cm&fs=1&to=" . urlencode($customer_email) . "&su=" . $gmail_su . "&body=" . $gmail_body;
 
                                     // Link Zalo
                                     $zalo_link = !empty($clean_phone) ? "https://zalo.me/" . $clean_phone : "";
                                 ?>
 
-                                <!-- Thanh thao tác phản hồi đa kênh -->
+                                <!-- KHUNG SOẠN & GỬI EMAIL PHẢN HỒI TRỰC TIẾP TỪ phambanam385@gmail.com -->
+                                <div class="direct-email-reply-box">
+                                    <div class="reply-box-header">
+                                        <div class="reply-header-left">
+                                            <i class="fa fa-paper-plane text-red" style="font-size: 16px;"></i>
+                                            <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: #1e293b;">
+                                                Soạn & Gửi email phản hồi cho khách hàng
+                                            </h4>
+                                        </div>
+                                        <div class="sender-email-badge">
+                                            <i class="fa fa-user-circle"></i> Từ: <b><?php echo htmlspecialchars($admin_email); ?></b>
+                                        </div>
+                                    </div>
+
+                                    <form action="<?php echo base_url('admin/contact/send_reply/' . $row['id']); ?>" method="POST" class="reply-email-form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group-reply">
+                                                    <label class="label-reply">Người nhận (Email khách hàng):</label>
+                                                    <div class="input-with-copy">
+                                                        <input type="email" name="to_email" class="form-control-reply" value="<?php echo htmlspecialchars($customer_email); ?>" required placeholder="khachhang@gmail.com">
+                                                        <button type="button" class="btn-input-copy" onclick="copyContactText('<?php echo htmlspecialchars($customer_email); ?>', 'Email')" title="Sao chép email">
+                                                            <i class="fa fa-copy"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group-reply">
+                                                    <label class="label-reply">Tiêu đề thư gửi:</label>
+                                                    <input type="text" name="subject" class="form-control-reply" value="NDN Mobile - Phản hồi liên hệ: <?php echo htmlspecialchars($row['title']); ?>" required>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group-reply" style="margin-bottom: 12px;">
+                                            <label class="label-reply">Nội dung tin nhắn gửi cho tài khoản <b><?php echo htmlspecialchars($customer_name); ?></b>:</label>
+                                            <textarea name="content" rows="6" class="form-control-reply textarea-reply" required placeholder="Nhập nội dung tư vấn, giải đáp thắc mắc cho khách hàng..."><?php echo htmlspecialchars($default_reply_text); ?></textarea>
+                                        </div>
+
+                                        <div class="reply-actions-bar">
+                                            <button type="submit" class="btn-send-reply-now" onclick="return confirm('Bạn có chắc chắn muốn gửi email này từ <?php echo $admin_email; ?> đến <?php echo $customer_email; ?>?');">
+                                                <i class="fa fa-send"></i> Gửi email phản hồi ngay từ hệ thống
+                                            </button>
+
+                                            <!-- Mở Gmail Web có rel noopener noreferrer tránh lỗi bảo mật Google -->
+                                            <a href="<?php echo $gmail_link; ?>" target="_blank" rel="noopener noreferrer" class="btn-open-gmail-web" title="Mở trực tiếp Gmail Web của tài khoản phambanam385@gmail.com">
+                                                <i class="fa fa-google"></i> Mở soạn bằng Gmail Web (<?php echo htmlspecialchars($admin_email); ?>)
+                                            </a>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- Thanh thao tác nhanh tương tác đa kênh & Đổi trạng thái -->
                                 <div class="quick-reply-wrapper">
                                     <div class="quick-reply-label">
-                                        <i class="fa fa-paper-plane text-red"></i> <b>Kênh liên lạc & Phản hồi trực tiếp cho khách:</b>
+                                        <i class="fa fa-bolt text-warning"></i> <b>Kênh liên lạc khác & Trạng thái:</b>
                                     </div>
                                     <div class="quick-reply-bar">
-                                        <!-- 1. Gửi Email thực tế qua Gmail Web -->
-                                        <?php if(!empty($customer_email)): ?>
-                                            <a href="<?php echo $gmail_link; ?>" target="_blank" class="btn-reply-email" title="Mở thẳng Gmail để soạn thư trả lời khách hàng">
-                                                <i class="fa fa-envelope"></i> Soạn gửi Gmail cho khách
-                                            </a>
-                                            <button type="button" class="btn-copy-action" onclick="copyContactText('<?php echo htmlspecialchars($customer_email); ?>', 'Địa chỉ Email');" title="Sao chép địa chỉ Email">
-                                                <i class="fa fa-copy"></i> Chép Email
-                                            </button>
-                                        <?php endif; ?>
-
-                                        <!-- 2. Kênh Zalo & Hotline (Tránh bị trang trắng tel:) -->
+                                        <!-- Kênh Zalo & SĐT -->
                                         <?php if(!empty($customer_phone)): ?>
-                                            <a href="<?php echo $zalo_link; ?>" target="_blank" class="btn-zalo-phone" title="Mở Zalo nhắn tin hoặc gọi điện cho khách hàng">
+                                            <a href="<?php echo $zalo_link; ?>" target="_blank" rel="noopener noreferrer" class="btn-zalo-phone" title="Mở Zalo nhắn tin hoặc gọi điện cho khách hàng">
                                                 <i class="fa fa-comments"></i> Nhắn / Gọi Zalo (<?php echo htmlspecialchars($customer_phone); ?>)
                                             </a>
                                             <button type="button" class="btn-copy-action btn-copy-phone" onclick="copyContactText('<?php echo htmlspecialchars($customer_phone); ?>', 'Số điện thoại');" title="Sao chép SĐT vào bộ nhớ tạm">
-                                                <i class="fa fa-phone"></i> Chép SĐT
+                                                <i class="fa fa-phone"></i> Chép SĐT: <?php echo htmlspecialchars($customer_phone); ?>
                                             </button>
                                         <?php endif; ?>
 
-                                        <!-- 3. Đổi trạng thái có xác nhận -->
+                                        <!-- Đổi trạng thái có xác nhận -->
                                         <a href="<?php echo base_url('admin/contact/status/'.$row['id']); ?>" 
                                            onclick="return confirm('<?php echo ($row['status'] == 1) ? 'Bạn có chắc chắn muốn đánh dấu thư này là CHƯA XEM / CHƯA XỬ LÝ?' : 'Bạn có chắc chắn muốn đánh dấu thư này là ĐÃ XEM / ĐÃ XỬ LÝ?'; ?>');"
                                            class="btn-toggle-status <?php echo ($row['status'] == 1) ? 'btn-status-unread' : 'btn-status-read'; ?>"
@@ -353,6 +401,142 @@
         line-height: 1.7;
         color: #1e293b;
         white-space: pre-wrap;
+    }
+
+    /* Direct Email Reply Box */
+    .direct-email-reply-box {
+        background: #ffffff;
+        border: 1.5px solid #fed7aa;
+        border-radius: 14px;
+        padding: 20px;
+        margin-top: 20px;
+        box-shadow: 0 4px 16px rgba(234, 88, 12, 0.06);
+    }
+    .reply-box-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid #ffedd5;
+        margin-bottom: 16px;
+    }
+    .reply-header-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .sender-email-badge {
+        background: #fff7ed;
+        color: #c2410c;
+        border: 1px solid #ffedd5;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .form-group-reply {
+        margin-bottom: 14px;
+    }
+    .label-reply {
+        font-size: 12.5px;
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: 6px;
+        display: block;
+    }
+    .form-control-reply {
+        width: 100%;
+        height: 40px;
+        padding: 8px 14px;
+        font-size: 13.5px;
+        border-radius: 8px;
+        border: 1.5px solid #cbd5e1;
+        background: #ffffff;
+        color: #1e293b;
+        transition: all 0.2s ease;
+    }
+    .form-control-reply:focus {
+        border-color: #d70018;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(215, 0, 24, 0.1);
+    }
+    .textarea-reply {
+        height: auto !important;
+        line-height: 1.6;
+        font-family: inherit;
+        resize: vertical;
+    }
+    .input-with-copy {
+        position: relative;
+    }
+    .input-with-copy input {
+        padding-right: 42px;
+    }
+    .btn-input-copy {
+        position: absolute;
+        right: 4px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        color: #64748b;
+        padding: 6px 10px;
+        cursor: pointer;
+        border-radius: 6px;
+    }
+    .btn-input-copy:hover {
+        background: #f1f5f9;
+        color: #d70018;
+    }
+    .reply-actions-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+    .btn-send-reply-now {
+        background: linear-gradient(135deg, #d70018 0%, #b91c1c 100%);
+        color: #ffffff;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 10px;
+        font-size: 13.5px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(215, 0, 24, 0.3);
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .btn-send-reply-now:hover {
+        background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(215, 0, 24, 0.4);
+    }
+    .btn-open-gmail-web {
+        background: #ffffff;
+        color: #dc2626 !important;
+        border: 1.5px solid #fecaca;
+        padding: 9px 18px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+    }
+    .btn-open-gmail-web:hover {
+        background: #fef2f2;
+        border-color: #f87171;
+        color: #b91c1c !important;
     }
 
     /* Quick Action Wrapper & Buttons */

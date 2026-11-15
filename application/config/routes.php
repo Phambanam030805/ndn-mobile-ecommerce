@@ -186,6 +186,8 @@ $route['useradmin/insert']='admin/useradmin/insert';
 // --- QUẢN LÝ LIÊN HỆ ---
 $route['admin/contact'] ='admin/contact/index';
 $route['admin/contact/detail/(:num)'] ='admin/contact/detail/$1';
+$route['admin/contact/status/(:num)'] = 'admin/contact/status/$1';
+$route['admin/contact/send_reply/(:num)'] = 'admin/contact/send_reply/$1';
 $route['admin/contact/(:num)'] ='admin/contact/index/$1';
 $route['admin/contact/recyclebin'] ='admin/contact/recyclebin';
 
