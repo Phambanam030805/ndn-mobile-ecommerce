@@ -54,19 +54,21 @@ class Mlienhe extends CI_Model {
         $this->db->update($this->table, $mydata);
     }
 
-    // Chi tiết liên hệ và đánh dấu đã xem
+    // Chi tiết liên hệ (Không tự động đổi status, tránh lỗi logic khi kiểm tra trạng thái)
     public function contact_detail($id)
     {
-        // Đánh dấu đã xem
-        $this->db->where('id', $id);
-        $this->db->update($this->table, array('status' => 1));
-
-        // Lấy thông tin chi tiết
         $this->db->where('trash', 1);
         $this->db->where('id', $id);
         $this->db->where('type', 'contact');
         $query = $this->db->get($this->table);
         return $query->row_array();   
+    }
+
+    // Đánh dấu đã xem liên hệ
+    public function contact_mark_read($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->update($this->table, array('status' => 1));
     }
 
     // RECYCLEBIN (Thùng rác)

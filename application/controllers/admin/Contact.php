@@ -47,21 +47,41 @@ class Contact extends CI_Controller {
 		$this->data['title']        = 'Quản lý liên hệ';
 		$this->load->view('backend/layout', $this->data);
 	}
-		public function status($id)
+	public function status($id)
 	{
-		$row=$this->Mlienhe->contact_detail($id);
+		$row = $this->Mlienhe->contact_detail($id);
+		if(!$row) {
+			$this->session->set_flashdata('error', 'Thư liên hệ không tồn tại hoặc đã bị xóa!');
+			redirect('admin/contact');
+			return;
+		}
 
-		$status=($row['status']==0)?1:0;
-		$mydata= array('status' => $status);
+		$status = ($row['status'] == 1) ? 0 : 1;
+		$mydata = array('status' => $status);
 		$this->Mlienhe->contact_update($mydata, $id);
-		$this->session->set_flashdata('success', 'Cập nhật trạng thái thành công');
-		redirect('admin/contact/','refresh');
+
+		$status_label = ($status == 1) ? 'Đã xem' : 'Chưa xem';
+		$this->session->set_flashdata('success', 'Đã chuyển trạng thái thư của [' . $row['fullname'] . '] sang "' . $status_label . '" thành công!');
+
+		$referer = $this->input->server('HTTP_REFERER');
+		if(!empty($referer) && strpos($referer, 'admin/contact/detail') !== false) {
+			redirect('admin/contact/detail/' . $id);
+		} else {
+			redirect('admin/contact');
+		}
 	}
+
 	public function detail($id)
     {
         $this->data['row'] = $this->Mlienhe->contact_detail($id);
+        if(!$this->data['row']) {
+            $this->session->set_flashdata('error', 'Thư liên hệ không tồn tại hoặc đã bị xóa!');
+            redirect('admin/contact');
+            return;
+        }
+
         $this->data['view'] = 'detail';
-		$this->data['title'] = 'Chi tiết liên hệ';
+		$this->data['title'] = 'Chi tiết liên hệ - ' . $this->data['row']['fullname'];
 		$this->load->view('backend/layout', $this->data);
     }
     public function delete($id)
