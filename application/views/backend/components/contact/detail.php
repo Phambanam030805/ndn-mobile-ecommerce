@@ -97,13 +97,46 @@
                                     $zalo_link = !empty($clean_phone) ? "https://zalo.me/" . $clean_phone : "";
                                 ?>
 
+                                <!-- LỊCH SỬ PHẢN HỒI ĐÃ GỬI (NẾU CÓ) -->
+                                <?php if(!empty($row['introtext'])): ?>
+                                    <div class="replied-history-box">
+                                        <div class="replied-history-header">
+                                            <div class="replied-header-left">
+                                                <i class="fa fa-check-circle" style="font-size: 22px; color: #10b981;"></i>
+                                                <div>
+                                                    <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: #065f46;">
+                                                        Nội dung phản hồi đã gửi cho khách hàng
+                                                    </h4>
+                                                    <span style="font-size: 12px; color: #047857;">Thư đã gửi thành công đến hộp thư <b><?php echo htmlspecialchars($customer_email); ?></b></span>
+                                                </div>
+                                            </div>
+                                            <div class="replied-meta">
+                                                <span><i class="fa fa-calendar-check-o"></i> Gửi lúc: <b><?php echo !empty($row['updated_at']) ? htmlspecialchars($row['updated_at']) : date('Y-m-d H:i:s'); ?></b></span>
+                                                <span><i class="fa fa-user-circle"></i> Từ: <b><?php echo htmlspecialchars(!empty($row['updated_by']) ? $row['updated_by'] : $admin_email); ?></b></span>
+                                            </div>
+                                        </div>
+                                        <div class="replied-content-body">
+                                            <?php echo nl2br(htmlspecialchars($row['introtext'])); ?>
+                                        </div>
+                                        <div class="replied-footer-bar">
+                                            <span class="badge-sent-success">
+                                                <i class="fa fa-shield"></i> Xác thực: Đã gửi qua máy chủ Google SMTP (SSL Port 465)
+                                            </span>
+                                            <button type="button" class="btn-copy-replied" onclick="copyContactText($('#replied-text-hidden').val(), 'Nội dung phản hồi');">
+                                                <i class="fa fa-copy"></i> Sao chép nội dung đã gửi
+                                            </button>
+                                            <textarea id="replied-text-hidden" style="display:none;"><?php echo htmlspecialchars($row['introtext']); ?></textarea>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+
                                 <!-- KHUNG SOẠN & GỬI EMAIL PHẢN HỒI TRỰC TIẾP TỪ phambanam385@gmail.com -->
                                 <div class="direct-email-reply-box">
                                     <div class="reply-box-header">
                                         <div class="reply-header-left">
                                             <i class="fa fa-paper-plane text-red" style="font-size: 16px;"></i>
                                             <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: #1e293b;">
-                                                Soạn & Gửi email phản hồi cho khách hàng
+                                                <?php echo !empty($row['introtext']) ? 'Soạn & Gửi thêm phản hồi khác cho khách hàng' : 'Soạn & Gửi email phản hồi cho khách hàng'; ?>
                                             </h4>
                                         </div>
                                         <div class="sender-email-badge">
@@ -675,6 +708,82 @@
     .btn-status-unread:hover {
         background: #d97706;
         color: #fff !important;
+    }
+
+    /* Replied History Box */
+    .replied-history-box {
+        background: #f0fdf4;
+        border: 1.5px solid #86efac;
+        border-radius: 14px;
+        padding: 18px 20px;
+        margin-bottom: 22px;
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.08);
+    }
+    .replied-history-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px dashed #bbf7d0;
+        margin-bottom: 14px;
+    }
+    .replied-header-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .replied-meta {
+        display: flex;
+        gap: 14px;
+        font-size: 12.5px;
+        color: #166534;
+        flex-wrap: wrap;
+    }
+    .replied-content-body {
+        background: #ffffff;
+        border: 1px solid #dcfce7;
+        border-radius: 10px;
+        padding: 16px 18px;
+        color: #14532d;
+        font-size: 13.5px;
+        line-height: 1.65;
+        white-space: pre-wrap;
+    }
+    .replied-footer-bar {
+        margin-top: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .badge-sent-success {
+        font-size: 12px;
+        color: #15803d;
+        background: #dcfce7;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .btn-copy-replied {
+        background: #ffffff;
+        border: 1px solid #86efac;
+        color: #15803d;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .btn-copy-replied:hover {
+        background: #dcfce7;
+        color: #14532d;
     }
 
     /* Toast Fixed */

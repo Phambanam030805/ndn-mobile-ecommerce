@@ -158,6 +158,11 @@
                                                         <i class="fa fa-envelope"></i> Chưa xem
                                                     <?php endif; ?>
                                                 </a>
+                                                <?php if(!empty($row['introtext'])): ?>
+                                                    <span class="badge-has-replied" style="display: block; margin-top: 5px; font-size: 11px; font-weight: 600; color: #15803d; background: #dcfce7; padding: 2px 8px; border-radius: 6px; border: 1px solid #bbf7d0;" title="Đã gửi email phản hồi lúc <?php echo htmlspecialchars($row['updated_at']); ?>">
+                                                        <i class="fa fa-reply"></i> Đã phản hồi
+                                                    </span>
+                                                <?php endif; ?>
                                             </td>
 
                                             <td class="text-center">

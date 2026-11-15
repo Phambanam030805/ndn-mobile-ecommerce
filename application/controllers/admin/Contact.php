@@ -159,8 +159,14 @@ class Contact extends CI_Controller {
 		$this->email->message($email_html);
 
 		if($this->email->send()) {
-			// Đánh dấu đã xem / đã xử lý
-			$this->Mlienhe->contact_update(['status' => 1], $id);
+			// Lưu lịch sử phản hồi và đánh dấu đã xem / đã xử lý
+			$reply_data = [
+				'status'     => 1,
+				'introtext'  => $content, // Lưu nội dung tin nhắn đã phản hồi
+				'updated_at' => date('Y-m-d H:i:s'), // Thời gian gửi phản hồi
+				'updated_by' => $smtp_user, // Người gửi phản hồi (phambanam385@gmail.com)
+			];
+			$this->Mlienhe->contact_update($reply_data, $id);
 			$this->session->set_flashdata('success', 'Đã gửi email phản hồi thành công từ ' . $smtp_user . ' đến ' . $to_email . '!');
 		} else {
 			log_message('error', 'Lỗi gửi mail phản hồi: ' . $this->email->print_debugger(['headers']));
