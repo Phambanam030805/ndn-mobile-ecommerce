@@ -25,8 +25,7 @@ class Lienhe extends CI_Controller {
 	
 	public function index()
 	{	
-		$d=getdate();
-		$today=$d['year']."/".$d['mon']."/".$d['mday'];
+		$today = date('Y-m-d H:i:s');
 		$this->load->library('form_validation');
 		$this->form_validation->set_rules('fullname', 'Họ và tên','required' );
 		$this->form_validation->set_rules('email', 'email','required|valid_email' );
@@ -35,13 +34,15 @@ class Lienhe extends CI_Controller {
 		$this->form_validation->set_rules('content', 'nội dụng','required' );
 		if($this->form_validation->run()==TRUE){
 			$mydata=array(
-				'fullname'=>$_POST['fullname'],
-				'email'=>$_POST['email'],
-				'phone'=>$_POST['phone'],
-				'title'=>$_POST['title'],
-				'content'=>$_POST['content'],
-				'fulltext'=>$_POST['content'],
+				'fullname'=>$this->input->post('fullname', TRUE),
+				'email'=>$this->input->post('email', TRUE),
+				'phone'=>$this->input->post('phone', TRUE),
+				'title'=>$this->input->post('title', TRUE),
+				'content'=>$this->input->post('content', TRUE),
+				'fulltext'=>$this->input->post('content', TRUE),
 				'type'=>'contact',
+				'status'=> 0, // Bắt buộc: 0 = Chưa xem (Thư liên hệ mới gửi)
+				'trash' => 1, // 1 = Hoạt động (không nằm trong thùng rác)
 				'created_at'=> $today
 			);
 			$this->Mlienhe->contact_insert($mydata);
