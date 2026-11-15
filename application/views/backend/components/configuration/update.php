@@ -76,7 +76,7 @@
                                             <i class="fa fa-phone input-icon"></i>
                                             <input type="text" class="form-control modern-input" name="phone_hotline" 
                                                    placeholder="098.xxx.xxxx hoặc 1900.xxxx" 
-                                                   value="<?php echo htmlspecialchars(isset($row['phone_hotline']) ? $row['phone_hotline'] : '098.345.6789'); ?>">
+                                                   value="<?php echo htmlspecialchars(isset($row['phone_hotline']) && !empty($row['phone_hotline']) ? $row['phone_hotline'] : '0794.358.619'); ?>">
                                         </div>
                                     </div>
                                 </div>

@@ -107,6 +107,7 @@
                                             </td>
                                             <td class="text-center">
                                                 <a href="<?php echo base_url('admin/content/status/'.$row['id']); ?>" 
+                                                   onclick="return confirm('<?php echo ($row['status'] == 1) ? 'Bạn có chắc chắn muốn TẠM ẨN bài viết [' . htmlspecialchars(addslashes($row['title'])) . ']?\nBài viết sẽ không hiển thị ở mục Tin tức.' : 'Bạn có chắc chắn muốn HIỂN THỊ bài viết [' . htmlspecialchars(addslashes($row['title'])) . ']?'; ?>');"
                                                    class="status-toggle-link" 
                                                    title="<?php echo ($row['status'] == 1) ? 'Bấm để tắt hiển thị' : 'Bấm để hiển thị bài viết'; ?>">
                                                     <?php if($row['status'] == 1): ?>

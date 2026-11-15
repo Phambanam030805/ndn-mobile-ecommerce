@@ -137,6 +137,7 @@
 
                                             <td class="text-center">
                                                 <a href="<?php echo base_url('admin/producer/status/' . $row['id']); ?>" 
+                                                   onclick="return confirm('<?php echo ($row['status'] == 1) ? 'Bạn có chắc chắn muốn TẠM NGƯNG HỢP TÁC với nhà cung cấp [' . htmlspecialchars(addslashes($row['name'])) . ']?' : 'Bạn có chắc chắn muốn KÍCH HOẠT HỢP TÁC với nhà cung cấp [' . htmlspecialchars(addslashes($row['name'])) . ']?'; ?>');"
                                                    class="status-toggle-badge <?php echo ($row['status'] == 1) ? 'is-active' : 'is-hidden'; ?>"
                                                    title="Bấm để chuyển đổi trạng thái hợp tác">
                                                     <?php if($row['status'] == 1): ?>

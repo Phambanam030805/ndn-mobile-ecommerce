@@ -215,6 +215,7 @@
 
                                             <td class="text-center">
                                                 <a href="<?php echo base_url('admin/product/status/' . $row['id']); ?>" 
+                                                   onclick="return confirm('<?php echo ($row['status'] == 1) ? 'Bạn có chắc chắn muốn TẠM ẨN sản phẩm [' . htmlspecialchars(addslashes($row['name'])) . ']?\nSản phẩm sẽ không xuất hiện trên website bán hàng.' : 'Bạn có chắc chắn muốn HIỂN THỊ sản phẩm [' . htmlspecialchars(addslashes($row['name'])) . ']?'; ?>');"
                                                    class="status-toggle-badge <?php echo ($row['status'] == 1) ? 'is-active' : 'is-hidden'; ?>"
                                                    title="Bấm để bật / tắt trạng thái hiển thị">
                                                     <?php if($row['status'] == 1): ?>

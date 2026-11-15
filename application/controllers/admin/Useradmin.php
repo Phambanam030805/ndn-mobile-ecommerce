@@ -198,7 +198,8 @@ class Useradmin extends CI_Controller {
 				$status=($row['status']==1)?0:1;
 				$mydata= array('status' => $status);
 				$this->Mnguoidung->user_update($mydata, $id);
-				$this->session->set_flashdata('success', 'Cập nhật tài khoản thành công');
+				$status_label = ($status == 1) ? 'Kích hoạt' : 'Tạm khóa';
+				$this->session->set_flashdata('success', 'Đã chuyển tài khoản quản trị [' . $row['fullname'] . '] sang trạng thái ' . $status_label . ' thành công!');
 				redirect('admin/useradmin','refresh');
 			}else{
 				$this->session->set_flashdata('error', 'Không thể thao tác với chính mình');

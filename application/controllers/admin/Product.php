@@ -267,10 +267,16 @@ class Product extends CI_Controller {
 
           public function status($id){
            $row=$this->Msanpham->product_detail($id);
+           if(!$row) {
+               $this->session->set_flashdata('error', 'Sản phẩm không tồn tại hoặc đã bị xóa!');
+               redirect('admin/product/','refresh');
+               return;
+           }
            $status=($row['status']==1)?0:1;
-           $mydata= array('status' => $status,'modified_by'=>$this->session->userdata('id'),);
+           $mydata= array('status' => $status,'modified_by'=>$this->session->userdata('id'));
            $this->Msanpham->product_update($mydata, $id);
-           $this->session->set_flashdata('success', 'Cập nhật sản phẩm thành công');
+           $status_label = ($status == 1) ? 'Hiển thị' : 'Tạm ẩn';
+           $this->session->set_flashdata('success', 'Đã chuyển sản phẩm [' . $row['name'] . '] sang trạng thái ' . $status_label . ' thành công!');
            redirect('admin/product/','refresh');
          }
 

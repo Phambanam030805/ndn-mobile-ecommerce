@@ -194,6 +194,7 @@
                                                     <?php if($val['status'] == 0): ?>
                                                         <!-- Chờ duyệt -> Duyệt đơn -->
                                                         <a href="<?php echo base_url('admin/orders/status/' . $val['id']); ?>" 
+                                                           onclick="return confirm('Xác nhận DUYỆT ĐƠN HÀNG #<?php echo htmlspecialchars($order_code); ?> và chuyển sang đang giao hàng?');"
                                                            class="btn-process-pill btn-process-approve" 
                                                            title="Duyệt đơn và chuyển sang trạng thái đang giao hàng">
                                                             <i class="fa fa-check-square-o"></i> Duyệt đơn
@@ -207,6 +208,7 @@
                                                     <?php elseif($val['status'] == 1): ?>
                                                         <!-- Đang giao -> Xác nhận giao thành công -->
                                                         <a href="<?php echo base_url('admin/orders/status/' . $val['id']); ?>" 
+                                                           onclick="return confirm('Xác nhận đơn hàng #<?php echo htmlspecialchars($order_code); ?> ĐÃ GIAO THÀNH CÔNG và hoàn tất thanh toán?');"
                                                            class="btn-process-pill btn-process-complete" 
                                                            title="Xác nhận khách đã nhận hàng và hoàn tất thanh toán">
                                                             <i class="fa fa-thumbs-up"></i> Đã giao & Thu tiền

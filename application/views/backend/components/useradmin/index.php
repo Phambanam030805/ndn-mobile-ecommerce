@@ -74,7 +74,9 @@
 													<td><?php echo $row['phone'] ?></td>
 													<td><?php echo $row['address'] ?></td>
 													<td class="text-center">
-														<a href="<?php echo base_url() ?>admin/useradmin/status/<?php echo $row['id'] ?>">
+														<a href="<?php echo base_url() ?>admin/useradmin/status/<?php echo $row['id'] ?>"
+														   onclick="return confirm('<?php echo ($row['status'] == 1) ? 'Bạn có chắc chắn muốn TẠM KHÓA tài khoản quản trị [' . htmlspecialchars(addslashes($row['fullname'])) . ']?\nNgười này sẽ không thể đăng nhập vào trang quản trị.' : 'Bạn có chắc chắn muốn KÍCH HOẠT lại tài khoản quản trị [' . htmlspecialchars(addslashes($row['fullname'])) . ']?'; ?>');"
+														   title="Bấm để <?php echo ($row['status'] == 1) ? 'Tạm khóa' : 'Kích hoạt'; ?> tài khoản">
 															<?php if($row['status']==1):?>
 																<span class="glyphicon glyphicon-ok-circle mauxanh18"></span>
 															<?php else: ?>

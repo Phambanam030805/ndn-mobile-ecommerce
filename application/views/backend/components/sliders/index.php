@@ -62,7 +62,9 @@
 													</td>
 													<td><?php echo $row['link'] ?></td>
 													<td class="text-center">
-														<a href="<?php echo base_url() ?>admin/sliders/status/<?php echo $row['id'] ?>">
+														<a href="<?php echo base_url() ?>admin/sliders/status/<?php echo $row['id'] ?>"
+														   onclick="return confirm('<?php echo ($row['status'] == 1) ? 'Bạn có chắc chắn muốn TẠM ẨN banner [' . htmlspecialchars(addslashes($row['name'])) . ']?\nBanner sẽ không hiển thị trên trang chủ.' : 'Bạn có chắc chắn muốn HIỂN THỊ banner [' . htmlspecialchars(addslashes($row['name'])) . ']?'; ?>');"
+														   title="Bấm để <?php echo ($row['status'] == 1) ? 'Tạm ẩn' : 'Hiển thị'; ?> banner">
 															<?php if($row['status']==1):?>
 																<span class="glyphicon glyphicon-ok-circle mauxanh18"></span>
 															<?php else: ?>

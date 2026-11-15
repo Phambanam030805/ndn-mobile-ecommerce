@@ -148,10 +148,16 @@ class Content extends CI_Controller {
 	public function status($id)
 	{
 		$row=$this->Mnoidung->content_detail($id);
+		if(!$row) {
+			$this->session->set_flashdata('error', 'Bài viết không tồn tại hoặc đã bị xóa!');
+			redirect('admin/content/','refresh');
+			return;
+		}
 		$status=($row['status']==1)?0:1;
 		$mydata= array('status' => $status);
 		$this->Mnoidung->content_update($mydata, $id);
-		$this->session->set_flashdata('success', 'Cập nhật viết thành công');
+		$status_label = ($status == 1) ? 'Hiển thị' : 'Tạm ẩn';
+		$this->session->set_flashdata('success', 'Đã chuyển bài viết [' . $row['title'] . '] sang trạng thái ' . $status_label . ' thành công!');
 		redirect('admin/content/','refresh');
 	}
 

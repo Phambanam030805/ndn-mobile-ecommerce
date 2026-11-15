@@ -190,10 +190,16 @@ class Category extends CI_Controller {
         }
 
         $row = $this->Mdanhmuc->category_detail($id);
+        if(!$row) {
+            $this->session->set_flashdata('error', 'Loại sản phẩm không tồn tại hoặc đã bị xóa!');
+            redirect('admin/category', 'refresh');
+            return;
+        }
         $status = ($row['status'] == 1) ? 0 : 1;
         $mydata = ['status' => $status];
         $this->Mdanhmuc->category_update($mydata, $id);
-        $this->session->set_flashdata('success', 'Cập nhật loại sản phẩm thành công');
+        $status_label = ($status == 1) ? 'Kích hoạt hoạt động' : 'Tạm ẩn';
+        $this->session->set_flashdata('success', 'Đã chuyển loại sản phẩm [' . $row['name'] . '] sang trạng thái ' . $status_label . ' thành công!');
         redirect('admin/category', 'refresh');
     }
 

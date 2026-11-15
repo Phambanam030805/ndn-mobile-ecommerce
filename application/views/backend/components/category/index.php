@@ -244,6 +244,7 @@
 
                                             <td class="text-center">
                                                 <a href="<?php echo base_url('admin/category/status/' . $row['id']); ?>" 
+                                                   onclick="return confirm('<?php echo ($row['status'] == 1) ? 'Bạn có chắc chắn muốn TẠM ẨN loại sản phẩm [' . htmlspecialchars(addslashes($row['name'])) . ']?\nCác sản phẩm thuộc danh mục này có thể bị ẩn trên website.' : 'Bạn có chắc chắn muốn KÍCH HOẠT HIỂN THỊ loại sản phẩm [' . htmlspecialchars(addslashes($row['name'])) . ']?'; ?>');"
                                                    class="status-toggle-badge <?php echo ($row['status'] == 1) ? 'is-active' : 'is-hidden'; ?>"
                                                    title="Bấm để chuyển đổi trạng thái hiển thị">
                                                     <?php if($row['status'] == 1): ?>
