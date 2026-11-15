@@ -903,23 +903,35 @@ function toggleWishlist(productId) {
     });
 }
 
-// Hàm xử lý mở email tiện lợi trên mọi thiết bị
+// Hàm xử lý mở email và form liên hệ tiện lợi trên mọi thiết bị
 function openEmailModal(e, email) {
     if (e) e.preventDefault();
     if (!email) email = 'phambanam385@gmail.com';
     $('#modalEmailAddress').text(email);
-    $('#modalEmailGmailLink').attr('href', 'https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=' + encodeURIComponent(email) + '&su=' + encodeURIComponent('NDN Mobile - Khách hàng liên hệ'));
-    $('#modalEmailClientLink').attr('href', 'mailto:' + email + '?subject=' + encodeURIComponent('NDN Mobile - Khách hàng liên hệ'));
+    $('#modalEmailGmailLink').attr('href', 'https://mail.google.com/mail/u/0/?fs=1&to=' + encodeURIComponent(email) + '&tf=cm&su=' + encodeURIComponent('NDN Mobile - Khách hàng liên hệ'));
+    $('#quickContactAlert').hide();
     $('#emailContactModal').modal('show');
 }
 
+function handleOpenMailClient() {
+    var email = $('#modalEmailAddress').text() || 'phambanam385@gmail.com';
+    var mailtoUrl = 'mailto:' + email + '?subject=' + encodeURIComponent('NDN Mobile - Khách hàng liên hệ');
+    window.location.href = mailtoUrl;
+
+    setTimeout(function() {
+        var $alert = $('#quickContactAlert');
+        $alert.css({'background-color': '#fffbeb', 'color': '#b45309', 'border': '1px solid #fde68a', 'display': 'block'})
+              .html('<i class="fas fa-info-circle"></i> <b>Lưu ý:</b> Nếu máy tính chưa cài phần mềm Email (như Outlook), bạn hãy điền form ở trên hoặc bấm nút <b>Sao chép Email</b> để gửi thư nhé!');
+    }, 1200);
+}
+
 function copyEmailToClipboard() {
-    var email = $('#modalEmailAddress').text();
+    var email = $('#modalEmailAddress').text() || 'phambanam385@gmail.com';
     var $btn = $('#btnCopyEmail');
     var originalHtml = $btn.html();
 
     function onSuccess() {
-        $btn.html('<i class="fas fa-check" style="color:#10b981;"></i> <span style="color:#059669; font-weight:700;">Đã sao chép vào bộ nhớ tạm!</span>')
+        $btn.html('<i class="fas fa-check" style="color:#10b981;"></i> <span style="color:#059669; font-weight:700;">Đã sao chép!</span>')
             .css({'background-color': '#ecfdf5', 'border-color': '#10b981'});
         setTimeout(function() {
             $btn.html(originalHtml).css({'background-color': '', 'border-color': ''});
@@ -944,48 +956,181 @@ function fallbackCopy(text, cb) {
     document.body.removeChild(tempInput);
     if (cb) cb();
 }
+
+function submitQuickContact() {
+    var fullname = $.trim($('#qc_fullname').val());
+    var phone = $.trim($('#qc_phone').val());
+    var email = $.trim($('#qc_email').val());
+    var content = $.trim($('#qc_content').val());
+    var $alert = $('#quickContactAlert');
+    var $btn = $('#btnSubmitQuickContact');
+    var $btnText = $('#qc_btn_text');
+    var $icon = $('#qc_icon_send');
+
+    if (!fullname) {
+        $alert.css({'background-color': '#fee2e2', 'color': '#b91c1c', 'border': '1px solid #fca5a5', 'display': 'block'})
+              .html('<i class="fas fa-exclamation-circle"></i> Vui lòng nhập họ và tên của bạn!');
+        $('#qc_fullname').focus();
+        return;
+    }
+    if (!phone) {
+        $alert.css({'background-color': '#fee2e2', 'color': '#b91c1c', 'border': '1px solid #fca5a5', 'display': 'block'})
+              .html('<i class="fas fa-exclamation-circle"></i> Vui lòng nhập số điện thoại để shop liên hệ lại!');
+        $('#qc_phone').focus();
+        return;
+    }
+    if (!email) {
+        $alert.css({'background-color': '#fee2e2', 'color': '#b91c1c', 'border': '1px solid #fca5a5', 'display': 'block'})
+              .html('<i class="fas fa-exclamation-circle"></i> Vui lòng nhập địa chỉ email của bạn!');
+        $('#qc_email').focus();
+        return;
+    }
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        $alert.css({'background-color': '#fee2e2', 'color': '#b91c1c', 'border': '1px solid #fca5a5', 'display': 'block'})
+              .html('<i class="fas fa-exclamation-circle"></i> Định dạng email không hợp lệ (ví dụ: name@gmail.com)!');
+        $('#qc_email').focus();
+        return;
+    }
+    if (!content) {
+        $alert.css({'background-color': '#fee2e2', 'color': '#b91c1c', 'border': '1px solid #fca5a5', 'display': 'block'})
+              .html('<i class="fas fa-exclamation-circle"></i> Vui lòng nhập nội dung câu hỏi hoặc yêu cầu cần tư vấn!');
+        $('#qc_content').focus();
+        return;
+    }
+
+    $btn.prop('disabled', true);
+    $icon.attr('class', 'fas fa-spinner fa-spin');
+    $btnText.text('Đang gửi tin nhắn...');
+    $alert.hide();
+
+    $.ajax({
+        url: '<?php echo base_url("lienhe/ajax_send"); ?>',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            fullname: fullname,
+            phone: phone,
+            email: email,
+            title: 'Khách gửi qua popup website: ' + fullname,
+            content: content
+        },
+        success: function(res) {
+            $btn.prop('disabled', false);
+            $icon.attr('class', 'fas fa-paper-plane');
+            $btnText.text('Gửi tin nhắn cho NDN Mobile');
+
+            if (res.status === 'success') {
+                $alert.css({'background-color': '#ecfdf5', 'color': '#065f46', 'border': '1px solid #a7f3d0', 'display': 'block'})
+                      .html('<i class="fas fa-check-circle" style="color: #10b981; font-size: 15px;"></i> <b>Gửi tin nhắn thành công!</b><br>' + res.message);
+                $('#qc_content').val('');
+                setTimeout(function() {
+                    $('#emailContactModal').modal('hide');
+                    $alert.hide();
+                }, 3500);
+            } else {
+                $alert.css({'background-color': '#fee2e2', 'color': '#b91c1c', 'border': '1px solid #fca5a5', 'display': 'block'})
+                      .html('<i class="fas fa-exclamation-circle"></i> ' + (res.message || 'Có lỗi xảy ra, vui lòng thử lại!'));
+            }
+        },
+        error: function() {
+            $btn.prop('disabled', false);
+            $icon.attr('class', 'fas fa-paper-plane');
+            $btnText.text('Gửi tin nhắn cho NDN Mobile');
+            $alert.css({'background-color': '#fee2e2', 'color': '#b91c1c', 'border': '1px solid #fca5a5', 'display': 'block'})
+                  .html('<i class="fas fa-exclamation-circle"></i> Không thể gửi lúc này do lỗi kết nối. Vui lòng thử lại hoặc gọi Hotline 0794.358.619!');
+        }
+    });
+}
 </script>
 
-<!-- MODAL LIÊN HỆ EMAIL TIỆN ÍCH -->
+<?php 
+$qc_customer = $this->session->userdata('sessionKhachHang');
+$qc_fullname = $this->session->userdata('fullname') ? $this->session->userdata('fullname') : (is_array($qc_customer) && isset($qc_customer['fullname']) ? $qc_customer['fullname'] : '');
+$qc_email = $this->session->userdata('email') ? $this->session->userdata('email') : (is_array($qc_customer) && isset($qc_customer['email']) ? $qc_customer['email'] : '');
+$qc_phone = $this->session->userdata('phone') ? $this->session->userdata('phone') : (is_array($qc_customer) && isset($qc_customer['phone']) ? $qc_customer['phone'] : '');
+?>
+
+<!-- MODAL LIÊN HỆ & GỬI TIN NHẮN NHANH -->
 <div class="modal fade" id="emailContactModal" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel" style="z-index: 99999;">
-  <div class="modal-dialog" role="document" style="margin-top: 15vh; max-width: 440px; width: 92%;">
-    <div class="modal-content" style="border-radius: 14px; overflow: hidden; border: none; box-shadow: 0 12px 35px rgba(0,0,0,0.25);">
-      <div class="modal-header" style="background: linear-gradient(135deg, #d70018 0%, #b30014 100%); color: #fff; padding: 18px 20px;">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #fff; opacity: 0.9; font-size: 24px;"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="emailModalLabel" style="font-weight: 700; font-size: 17px; margin: 0;">
-            <i class="fas fa-envelope-open-text" style="margin-right: 8px;"></i> Liên Hệ Qua Email
+  <div class="modal-dialog" role="document" style="margin-top: 8vh; max-width: 480px; width: 94%;">
+    <div class="modal-content" style="border-radius: 14px; overflow: hidden; border: none; box-shadow: 0 16px 40px rgba(0,0,0,0.28);">
+      <div class="modal-header" style="background: linear-gradient(135deg, #d70018 0%, #b30014 100%); color: #fff; padding: 15px 20px;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #fff; opacity: 0.9; font-size: 24px; text-shadow: none;"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="emailModalLabel" style="font-weight: 700; font-size: 16px; margin: 0; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-envelope-open-text"></i> Gửi Tin Nhắn & Liên Hệ Nhanh
         </h4>
       </div>
-      <div class="modal-body text-center" style="padding: 24px 22px;">
-        <p style="font-size: 13px; color: #666; margin-bottom: 8px;">Địa chỉ hòm thư chính thức:</p>
-        <div style="background: #fdf6f6; border: 1.5px dashed #d70018; border-radius: 10px; padding: 12px 14px; margin-bottom: 20px; overflow-x: auto;">
-            <strong id="modalEmailAddress" style="color: #d70018; font-size: 16px; font-weight: 700; white-space: nowrap; word-break: normal; letter-spacing: 0.2px;">phambanam385@gmail.com</strong>
+      <div class="modal-body" style="padding: 18px 20px;">
+        <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 9px 12px; border-radius: 6px; font-size: 12.5px; color: #991b1b; margin-bottom: 15px; line-height: 1.45;">
+            <strong><i class="fas fa-headset"></i> Bạn cần hỗ trợ hoặc tư vấn sản phẩm?</strong><br>
+            Gửi tin nhắn ngay bên dưới, NDN Mobile sẽ liên hệ lại qua SĐT hoặc Email trong thời gian sớm nhất!
         </div>
-        
-        <div style="display: flex; flex-direction: column; gap: 11px;">
-            <!-- Gửi tin nhắn trực tiếp qua Form liên hệ Website (Chuẩn thực tế nhất) -->
-            <a href="<?php echo base_url('lien-he'); ?>" class="btn btn-block" style="background: #d70018; color: #ffffff; padding: 11px 16px; font-weight: 700; border-radius: 8px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(215, 0, 24, 0.25);">
-                <i class="fas fa-paper-plane"></i> Gửi thư trực tiếp trên Website (Khuyên dùng)
-            </a>
 
-            <!-- Mở trực tiếp Gmail trên trình duyệt -->
-            <a id="modalEmailGmailLink" href="#" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" class="btn btn-danger btn-block" style="background: #ea4335; border-color: #ea4335; padding: 11px 16px; font-weight: 600; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                <i class="fab fa-google"></i> Soạn thư trực tiếp bằng Gmail Web
-            </a>
-            
-            <!-- Mở phần mềm mail mặc định trên máy (Outlook, Apple Mail, Windows Mail) -->
-            <a id="modalEmailClientLink" href="#" class="btn btn-default btn-block" style="padding: 11px 16px; font-weight: 600; border-radius: 8px; border: 1px solid #d1d5db; color: #374151; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                <i class="fas fa-envelope"></i> Mở ứng dụng Mail trên máy (Outlook/Mail)
-            </a>
-            
-            <!-- Sao chép địa chỉ email -->
-            <button id="btnCopyEmail" type="button" onclick="copyEmailToClipboard()" class="btn btn-default btn-block" style="padding: 11px 16px; font-weight: 600; border-radius: 8px; border: 1px solid #d1d5db; color: #374151; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                <i class="fas fa-copy"></i> Sao chép địa chỉ Email
+        <!-- Alert thông báo kết quả AJAX -->
+        <div id="quickContactAlert" style="display: none; margin-bottom: 14px; padding: 10px 12px; border-radius: 6px; font-size: 13px; line-height: 1.4;"></div>
+
+        <!-- Form gửi tin nhắn nhanh -->
+        <form id="quickContactForm" onsubmit="event.preventDefault(); submitQuickContact();">
+            <div class="row" style="margin: 0 -5px 10px -5px;">
+                <div class="col-xs-12 col-sm-6" style="padding: 0 5px 10px 5px;">
+                    <label style="font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 4px; display: block;">Họ và tên <span style="color:#ef4444;">*</span></label>
+                    <input type="text" id="qc_fullname" name="fullname" class="form-control" placeholder="Nhập họ và tên..." required value="<?php echo htmlspecialchars($qc_fullname); ?>" style="border-radius: 6px; height: 38px; font-size: 13px;">
+                </div>
+                <div class="col-xs-12 col-sm-6" style="padding: 0 5px 10px 5px;">
+                    <label style="font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 4px; display: block;">Số điện thoại <span style="color:#ef4444;">*</span></label>
+                    <input type="tel" id="qc_phone" name="phone" class="form-control" placeholder="Ví dụ: 0912345678" required value="<?php echo htmlspecialchars($qc_phone); ?>" style="border-radius: 6px; height: 38px; font-size: 13px;">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 10px;">
+                <label style="font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 4px; display: block;">Email nhận phản hồi <span style="color:#ef4444;">*</span></label>
+                <input type="email" id="qc_email" name="email" class="form-control" placeholder="email_cua_ban@gmail.com" required value="<?php echo htmlspecialchars($qc_email); ?>" style="border-radius: 6px; height: 38px; font-size: 13px;">
+            </div>
+
+            <div style="margin-bottom: 14px;">
+                <label style="font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 4px; display: block;">Nội dung tin nhắn cần hỗ trợ <span style="color:#ef4444;">*</span></label>
+                <textarea id="qc_content" name="content" rows="3" class="form-control" placeholder="Ví dụ: Shop tư vấn giúp mình mẫu iPhone 17 Pro Max hoặc tình trạng đơn hàng..." required style="border-radius: 6px; font-size: 13px; resize: vertical;"></textarea>
+            </div>
+
+            <button type="submit" id="btnSubmitQuickContact" class="btn btn-block" style="background: linear-gradient(135deg, #d70018 0%, #b30014 100%); color: #fff; font-weight: 700; font-size: 14px; padding: 10px 16px; border-radius: 8px; border: none; box-shadow: 0 4px 12px rgba(215, 0, 24, 0.3); transition: all 0.2s;">
+                <i class="fas fa-paper-plane" id="qc_icon_send" style="margin-right: 6px;"></i> <span id="qc_btn_text">Gửi tin nhắn cho NDN Mobile</span>
             </button>
+        </form>
+
+        <!-- Kênh liên hệ trực tiếp khác -->
+        <div style="margin-top: 18px; padding-top: 14px; border-top: 1px dashed #e5e7eb;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 12px;">
+                <span style="color: #6b7280; font-weight: 600;">Hòm thư chính thức:</span>
+                <span id="modalEmailAddress" style="font-weight: 700; color: #d70018; letter-spacing: 0.2px;">phambanam385@gmail.com</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <button type="button" id="btnCopyEmail" onclick="copyEmailToClipboard()" class="btn btn-default" style="font-size: 12px; font-weight: 600; border-radius: 6px; border: 1px solid #d1d5db; color: #374151; padding: 8px 10px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                    <i class="fas fa-copy"></i> Sao chép Email
+                </button>
+                <a href="tel:0794358619" class="btn btn-default" style="font-size: 12px; font-weight: 600; border-radius: 6px; border: 1px solid #bbf7d0; color: #15803d; background: #f0fdf4; padding: 8px 10px; display: flex; align-items: center; justify-content: center; gap: 5px; text-decoration: none;">
+                    <i class="fas fa-phone-alt"></i> 0794.358.619
+                </a>
+            </div>
+
+            <div style="margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 14px; font-size: 12px;">
+                <a id="modalEmailGmailLink" href="https://mail.google.com/mail/u/0/?fs=1&to=phambanam385@gmail.com&tf=cm" target="_blank" rel="noopener noreferrer" style="color: #4b5563; text-decoration: none;" title="Mở trang Gmail nếu bạn đã đăng nhập tài khoản Google trên trình duyệt">
+                    <i class="fab fa-google" style="color: #ea4335;"></i> Mở Gmail Web
+                </a>
+                <span style="color: #d1d5db;">|</span>
+                <a href="javascript:void(0)" onclick="handleOpenMailClient()" style="color: #4b5563; text-decoration: none;" title="Mở ứng dụng Outlook hoặc Mail có sẵn trên máy">
+                    <i class="fas fa-envelope" style="color: #3b82f6;"></i> Mở ứng dụng Mail
+                </a>
+                <span style="color: #d1d5db;">|</span>
+                <a href="<?php echo base_url('lien-he'); ?>" style="color: #4b5563; text-decoration: none;" title="Đến trang Liên hệ chính thức">
+                    <i class="fas fa-external-link-alt" style="color: #8b5cf6;"></i> Trang Liên Hệ
+                </a>
+            </div>
         </div>
       </div>
-      <div class="modal-footer" style="background: #f8f9fa; border-top: 1px solid #eee; padding: 10px 15px; text-align: center;">
-        <small style="color: #888;">NDN Mobile luôn phản hồi email trong vòng 1-2 giờ làm việc</small>
+      <div class="modal-footer" style="background: #f8f9fa; border-top: 1px solid #eee; padding: 9px 15px; text-align: center;">
+        <small style="color: #888; font-size: 11.5px;">NDN Mobile luôn phản hồi yêu cầu của Quý khách trong thời gian sớm nhất</small>
       </div>
     </div>
   </div>

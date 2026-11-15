@@ -28,6 +28,7 @@ $route['search/(:any)'] = 'search/index';
 $route['search'] = 'search';
 
 $route['lien-he'] = 'lienhe/index';
+$route['lienhe/ajax_send'] = 'lienhe/ajax_send';
 $route['dang-nhap'] = 'dangnhap/dangnhap';
 $route['dang-ky'] = 'dangnhap/dangky';
 $route['dang-xuat'] = 'dangnhap/dangxuat';

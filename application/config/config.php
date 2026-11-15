@@ -454,7 +454,8 @@ $config['csrf_exclude_uris'] = array(
     'giohang/coupon', 
     'giohang/removecoupon',
     'ai-chat/ask',
-    'ai_chat/ask'
+    'ai_chat/ask',
+    'lienhe/ajax_send'
 );
 
 /*
