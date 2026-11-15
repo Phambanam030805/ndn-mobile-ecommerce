@@ -50,12 +50,27 @@ class Reviews extends CI_Controller {
 
     public function status($id)
     {
-        $row=$this->Mreview->review_detail($id);
-        $status=($row['status']==1)?0:1;
-        $mydata= array('status' => $status);
+        $row = $this->Mreview->review_detail($id);
+        if (!$row) {
+            $this->session->set_flashdata('error', 'Đánh giá không tồn tại hoặc đã bị xóa!');
+            redirect('admin/reviews');
+            return;
+        }
+
+        $status = ($row['status'] == 1) ? 0 : 1;
+        $mydata = array('status' => $status);
         $this->Mreview->review_update($mydata, $id);
-        $this->session->set_flashdata('success', 'Cập nhật trạng thái đánh giá thành công');
-        redirect('admin/reviews','refresh');
+
+        $customer_name = !empty($row['fullname']) ? $row['fullname'] : 'Khách hàng';
+        $status_label = ($status == 1) ? 'Đã duyệt (Hiển thị)' : 'Chờ duyệt (Tạm ẩn)';
+        $this->session->set_flashdata('success', 'Đã chuyển trạng thái đánh giá của [' . $customer_name . '] sang "' . $status_label . '" thành công!');
+
+        $referer = $this->input->server('HTTP_REFERER');
+        if (!empty($referer) && strpos($referer, 'admin/reviews') !== false) {
+            redirect($referer);
+        } else {
+            redirect('admin/reviews');
+        }
     }
 
     public function trash($id)

@@ -16,20 +16,20 @@
         <div class="row">
             <div class="col-md-12">
                 
-                <!-- Flash Messages -->
+                <!-- Flash Notification (Toast Fixed) -->
                 <?php if($this->session->flashdata('success')): ?>
-                    <div class="alert alert-success alert-modern">
-                        <i class="fa fa-check-circle"></i>
-                        <span><?php echo $this->session->flashdata('success'); ?></span>
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <div class="alert alert-success alert-modern alert-toast-fixed">
+                        <i class="fa fa-check-circle" style="font-size: 20px; color: #10b981;"></i>
+                        <span style="font-weight: 500; font-size: 14px; color: #065f46;"><?php echo $this->session->flashdata('success'); ?></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true" style="margin-left: auto;">&times;</button>
                     </div>
                 <?php endif; ?>
 
                 <?php if($this->session->flashdata('error')): ?>
-                    <div class="alert alert-danger alert-modern">
-                        <i class="fa fa-exclamation-triangle"></i>
-                        <span><?php echo $this->session->flashdata('error'); ?></span>
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <div class="alert alert-danger alert-modern alert-toast-fixed">
+                        <i class="fa fa-exclamation-triangle" style="font-size: 20px; color: #ef4444;"></i>
+                        <span style="font-weight: 500; font-size: 14px; color: #991b1b;"><?php echo $this->session->flashdata('error'); ?></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true" style="margin-left: auto;">&times;</button>
                     </div>
                 <?php endif; ?>
 
@@ -83,14 +83,14 @@
                             <table class="table modern-review-table">
                                 <thead>
                                     <tr>
-                                        <th style="width: 55px;" class="text-center">STT</th>
-                                        <th style="min-width: 200px;">Sản phẩm</th>
-                                        <th style="min-width: 180px;">Khách hàng</th>
-                                        <th style="width: 130px;" class="text-center">Xếp hạng</th>
-                                        <th style="min-width: 240px;">Nội dung đánh giá</th>
-                                        <th style="width: 150px;">Thời gian</th>
-                                        <th style="width: 130px;" class="text-center">Trạng thái</th>
-                                        <th style="width: 90px;" class="text-center">Thao tác</th>
+                                        <th style="width: 50px;" class="text-center">STT</th>
+                                        <th style="width: 22%;">Sản phẩm</th>
+                                        <th style="width: 20%;">Khách hàng</th>
+                                        <th style="width: 140px;" class="text-center">Xếp hạng</th>
+                                        <th style="min-width: 260px;">Nội dung đánh giá</th>
+                                        <th style="width: 145px;">Thời gian</th>
+                                        <th style="width: 125px;" class="text-center">Trạng thái</th>
+                                        <th style="width: 85px;" class="text-center">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -181,8 +181,9 @@
 
                                             <td class="text-center">
                                                 <a href="<?php echo base_url('admin/reviews/status/' . $row['id']); ?>" 
+                                                   onclick="return confirm('<?php echo ($row['status'] == 1) ? 'Bạn có chắc chắn muốn chuyển đánh giá của [' . htmlspecialchars(addslashes($fullname)) . '] về trạng thái CHỜ DUYỆT (Tạm ẩn khỏi sản phẩm)?' : 'Bạn có chắc chắn muốn DUYỆT đánh giá của [' . htmlspecialchars(addslashes($fullname)) . '] để hiển thị công khai trên website?'; ?>');"
                                                    class="status-toggle-badge <?php echo ($row['status'] == 1) ? 'is-active' : 'is-pending'; ?>"
-                                                   title="Bấm để chuyển trạng thái duyệt / chờ duyệt">
+                                                   title="Bấm để <?php echo ($row['status'] == 1) ? 'chuyển sang Chờ duyệt (Tạm ẩn)' : 'Duyệt hiển thị'; ?>">
                                                     <?php if($row['status'] == 1): ?>
                                                         <i class="fa fa-check-circle"></i> Đã duyệt
                                                     <?php else: ?>
@@ -275,6 +276,39 @@
 }
 .alert-modern i {
     font-size: 20px;
+}
+
+/* Toast Fixed Notification (Tránh xô lệch layout table khi đổi trạng thái) */
+.alert-toast-fixed {
+    position: fixed !important;
+    top: 65px !important;
+    right: 25px !important;
+    z-index: 99999 !important;
+    min-width: 330px !important;
+    max-width: 480px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18) !important;
+    border-left: 5px solid #10b981 !important;
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 14px 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    animation: toastSlideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    margin-bottom: 0 !important;
+}
+.alert-toast-fixed.alert-danger {
+    border-left-color: #ef4444 !important;
+}
+@keyframes toastSlideIn {
+    from {
+        transform: translateX(110%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 /* Filter Card Toolbar */
@@ -567,21 +601,24 @@
 .review-content-box {
     display: flex;
     align-items: flex-start;
-    gap: 8px;
+    gap: 10px;
     background: #f8fafc;
-    border: 1px solid #f1f5f9;
-    padding: 8px 12px;
-    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    padding: 9px 14px;
+    border-radius: 9px;
+    width: 100%;
 }
 .quote-icon {
-    font-size: 11px;
-    color: #cbd5e1;
+    font-size: 12px;
+    color: #94a3b8;
     margin-top: 3px;
+    flex-shrink: 0;
 }
 .review-comment-text {
     font-size: 13px;
-    color: #334155;
-    line-height: 1.4;
+    color: #1e293b;
+    line-height: 1.5;
+    word-break: break-word;
 }
 
 /* Date Badge */
@@ -700,3 +737,15 @@
     box-shadow: 0 3px 10px rgba(215, 0, 24, 0.25);
 }
 </style>
+
+<script>
+$(document).ready(function() {
+    if ($('.alert-toast-fixed').length) {
+        setTimeout(function() {
+            $('.alert-toast-fixed').fadeOut(600, function() {
+                $(this).remove();
+            });
+        }, 3500);
+    }
+});
+</script>
