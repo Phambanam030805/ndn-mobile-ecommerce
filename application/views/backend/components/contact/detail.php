@@ -90,8 +90,8 @@
                                     $default_reply_text = "Kính gửi Quý khách " . $customer_name . ",\n\nBan Quản trị NDN Mobile xin chân thành cảm ơn bạn đã gửi liên hệ về: \"" . $row['title'] . "\".\n\nVề yêu cầu của bạn, chúng tôi xin phản hồi như sau:\n\n[Nhập nội dung tư vấn/hỗ trợ tại đây]\n\nNếu cần hỗ trợ thêm thông tin gì, bạn có thể trả lời trực tiếp email này hoặc gọi hotline 1800.6868 để được phục vụ chu đáo nhất.\n\nTrân trọng cảm ơn bạn!\n--\nBan Quản trị & CSKH NDN Mobile\nEmail người gửi: " . $admin_email . "\nHotline hỗ trợ: 1800.6868\nWebsite: http://localhost/ndnmobile/";
                                     $gmail_body = rawurlencode($default_reply_text);
                                     
-                                    // URL Gmail Web chỉ định authuser để mở đúng tài khoản phambanam385@gmail.com
-                                    $gmail_link = "https://mail.google.com/mail/u/?authuser=" . urlencode($admin_email) . "&view=cm&fs=1&to=" . urlencode($customer_email) . "&su=" . $gmail_su . "&body=" . $gmail_body;
+                                    // URL Gmail Web chuẩn (không kèm authuser để tránh bị Google kích hoạt màn hình chặn bảo mật)
+                                    $gmail_link = "https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=" . urlencode($customer_email) . "&su=" . $gmail_su . "&body=" . $gmail_body;
 
                                     // Link Zalo
                                     $zalo_link = !empty($clean_phone) ? "https://zalo.me/" . $clean_phone : "";
@@ -111,7 +111,7 @@
                                         </div>
                                     </div>
 
-                                    <form action="<?php echo base_url('admin/contact/send_reply/' . $row['id']); ?>" method="POST" class="reply-email-form">
+                                    <?php echo form_open('admin/contact/send_reply/' . $row['id'], array('class' => 'reply-email-form', 'id' => 'reply-email-form', 'onsubmit' => 'return handleSendReplySubmit();')); ?>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group-reply">
@@ -134,20 +134,38 @@
 
                                         <div class="form-group-reply" style="margin-bottom: 12px;">
                                             <label class="label-reply">Nội dung tin nhắn gửi cho tài khoản <b><?php echo htmlspecialchars($customer_name); ?></b>:</label>
-                                            <textarea name="content" rows="6" class="form-control-reply textarea-reply" required placeholder="Nhập nội dung tư vấn, giải đáp thắc mắc cho khách hàng..."><?php echo htmlspecialchars($default_reply_text); ?></textarea>
+                                            <textarea name="content" id="reply-content-textarea" rows="6" class="form-control-reply textarea-reply" required placeholder="Nhập nội dung tư vấn, giải đáp thắc mắc cho khách hàng..."><?php echo htmlspecialchars($default_reply_text); ?></textarea>
                                         </div>
 
                                         <div class="reply-actions-bar">
-                                            <button type="submit" class="btn-send-reply-now" onclick="return confirm('Bạn có chắc chắn muốn gửi email này từ <?php echo $admin_email; ?> đến <?php echo $customer_email; ?>?');">
+                                            <!-- Nút gửi trực tiếp qua máy chủ Google SMTP (Không cần đăng nhập Google trên trình duyệt) -->
+                                            <button type="submit" id="btn-send-reply-now" class="btn-send-reply-now">
                                                 <i class="fa fa-send"></i> Gửi email phản hồi ngay từ hệ thống
                                             </button>
 
-                                            <!-- Mở Gmail Web có rel noopener noreferrer tránh lỗi bảo mật Google -->
-                                            <a href="<?php echo $gmail_link; ?>" target="_blank" rel="noopener noreferrer" class="btn-open-gmail-web" title="Mở trực tiếp Gmail Web của tài khoản phambanam385@gmail.com">
-                                                <i class="fa fa-google"></i> Mở soạn bằng Gmail Web (<?php echo htmlspecialchars($admin_email); ?>)
+                                            <!-- Mở Gmail Web có rel noopener noreferrer & no-referrer tránh Google chặn -->
+                                            <a href="<?php echo $gmail_link; ?>" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" class="btn-open-gmail-web" title="Mở trực tiếp màn hình soạn thư trên Gmail Web">
+                                                <i class="fa fa-google"></i> Mở soạn bằng Gmail Web
                                             </a>
+
+                                            <!-- Mở ứng dụng Mail mặc định -->
+                                            <a href="mailto:<?php echo htmlspecialchars($customer_email); ?>?subject=<?php echo $gmail_su; ?>&body=<?php echo $gmail_body; ?>" class="btn-copy-action" title="Mở qua ứng dụng Mail máy tính">
+                                                <i class="fa fa-envelope-o"></i> Ứng dụng Mail
+                                            </a>
+
+                                            <!-- Sao chép toàn bộ nội dung -->
+                                            <button type="button" class="btn-copy-action" onclick="copyContactText($('#reply-content-textarea').val(), 'Toàn bộ nội dung thư');" title="Sao chép nội dung thư để dán vào nơi khác">
+                                                <i class="fa fa-copy"></i> Chép nội dung thư
+                                            </button>
                                         </div>
-                                    </form>
+
+                                        <div class="gmail-signin-hint">
+                                            <i class="fa fa-info-circle text-blue"></i>
+                                            <span>
+                                                <b>Khuyên dùng:</b> Hãy bấm nút màu đỏ <b>"Gửi email phản hồi ngay từ hệ thống"</b>. Hệ thống sẽ kết nối trực tiếp đến Google SMTP và gửi thư thật từ <code><?php echo htmlspecialchars($admin_email); ?></code> đến khách hàng ngay lập tức mà <u>không cần</u> phải đăng nhập Google trên trình duyệt này!
+                                            </span>
+                                        </div>
+                                    <?php echo form_close(); ?>
                                 </div>
 
                                 <!-- Thanh thao tác nhanh tương tác đa kênh & Đổi trạng thái -->
@@ -781,6 +799,31 @@
 </style>
 
 <script>
+function handleSendReplySubmit() {
+    var toEmail = $.trim($('input[name="to_email"]').val());
+    var subject = $.trim($('input[name="subject"]').val());
+    var content = $.trim($('#reply-content-textarea').val());
+
+    if (!toEmail) {
+        alert('Vui lòng nhập địa chỉ email khách hàng nhận phản hồi!');
+        $('input[name="to_email"]').focus();
+        return false;
+    }
+    if (!content) {
+        alert('Vui lòng nhập nội dung thư phản hồi!');
+        $('#reply-content-textarea').focus();
+        return false;
+    }
+
+    if (!confirm('Bạn có chắc chắn muốn gửi email phản hồi này từ phambanam385@gmail.com đến ' + toEmail + '?')) {
+        return false;
+    }
+
+    var btn = $('#btn-send-reply-now');
+    btn.css({'pointer-events': 'none', 'opacity': '0.75'}).html('<i class="fa fa-spinner fa-spin"></i> Đang gửi email qua Google SMTP, vui lòng đợi...');
+    return true;
+}
+
 function copyContactText(text, label) {
     if (!text) return;
     navigator.clipboard.writeText(text).then(function() {
