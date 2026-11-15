@@ -16,20 +16,20 @@
 
         <!-- Main content -->
         <section class="content">
-            <!-- Flash Messages -->
+            <!-- Flash Notification (Toast Fixed) -->
             <?php if($this->session->flashdata('success')): ?>
-                <div class="alert alert-success alert-modern">
-                    <i class="fa fa-check-circle"></i>
-                    <span><?php echo $this->session->flashdata('success'); ?></span>
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <div class="alert alert-success alert-modern alert-toast-fixed">
+                    <i class="fa fa-check-circle" style="font-size: 20px; color: #10b981;"></i>
+                    <span style="font-weight: 500; font-size: 14px; color: #065f46;"><?php echo $this->session->flashdata('success'); ?></span>
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true" style="margin-left: auto;">&times;</button>
                 </div>
             <?php endif; ?>
 
             <?php if(validation_errors()): ?>
-                <div class="alert alert-danger alert-modern">
-                    <i class="fa fa-exclamation-triangle"></i>
-                    <div><?php echo validation_errors(); ?></div>
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <div class="alert alert-danger alert-modern alert-toast-fixed">
+                    <i class="fa fa-exclamation-triangle" style="font-size: 20px; color: #ef4444;"></i>
+                    <div style="font-weight: 500; font-size: 14px; color: #991b1b;"><?php echo validation_errors(); ?></div>
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true" style="margin-left: auto;">&times;</button>
                 </div>
             <?php endif; ?>
 
@@ -174,13 +174,6 @@
                                     <li>Chọn ứng dụng "Thư", tạo mã và dán mật khẩu 16 ký tự vào ô phía trên.</li>
                                 </ol>
                             </div>
-
-                            <!-- Bottom Action Button for Mobile / Small Screens -->
-                            <div style="margin-top: 25px;">
-                                <button type="submit" class="btn btn-save-config btn-block" style="padding: 12px;">
-                                    <i class="fa fa-check"></i> Lưu tất cả cài đặt
-                                </button>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -242,6 +235,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 shipPreview.innerHTML = '<span class="badge-fee"><i class="fa fa-money"></i> Phí ship: ' + val.toLocaleString('vi-VN') + '₫</span>';
             }
         });
+    // 4. Auto fadeout Toast
+    const toast = document.querySelector('.alert-toast-fixed');
+    if (toast) {
+        setTimeout(function() {
+            toast.style.transition = 'opacity 0.6s ease';
+            toast.style.opacity = '0';
+            setTimeout(function() { toast.remove(); }, 600);
+        }, 3500);
     }
 });
 </script>
@@ -324,6 +325,39 @@ document.addEventListener("DOMContentLoaded", function() {
     background: #fdf0f0;
     color: #c0392b;
     border-left: 4px solid #e74c3c;
+}
+
+/* Toast Fixed Notification */
+.alert-toast-fixed {
+    position: fixed !important;
+    top: 65px !important;
+    right: 25px !important;
+    z-index: 99999 !important;
+    min-width: 330px !important;
+    max-width: 480px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18) !important;
+    border-left: 5px solid #10b981 !important;
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 14px 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    animation: toastSlideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    margin-bottom: 0 !important;
+}
+.alert-toast-fixed.alert-danger {
+    border-left-color: #ef4444 !important;
+}
+@keyframes toastSlideIn {
+    from {
+        transform: translateX(110%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 /* Thẻ Card Cấu hình */
