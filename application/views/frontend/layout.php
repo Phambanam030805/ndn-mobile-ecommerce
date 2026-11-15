@@ -908,21 +908,8 @@ function openEmailModal(e, email) {
     if (e) e.preventDefault();
     if (!email) email = 'phambanam385@gmail.com';
     $('#modalEmailAddress').text(email);
-    $('#modalEmailGmailLink').attr('href', 'https://mail.google.com/mail/u/0/?fs=1&to=' + encodeURIComponent(email) + '&tf=cm&su=' + encodeURIComponent('NDN Mobile - Khách hàng liên hệ'));
     $('#quickContactAlert').hide();
     $('#emailContactModal').modal('show');
-}
-
-function handleOpenMailClient() {
-    var email = $('#modalEmailAddress').text() || 'phambanam385@gmail.com';
-    var mailtoUrl = 'mailto:' + email + '?subject=' + encodeURIComponent('NDN Mobile - Khách hàng liên hệ');
-    window.location.href = mailtoUrl;
-
-    setTimeout(function() {
-        var $alert = $('#quickContactAlert');
-        $alert.css({'background-color': '#fffbeb', 'color': '#b45309', 'border': '1px solid #fde68a', 'display': 'block'})
-              .html('<i class="fas fa-info-circle"></i> <b>Lưu ý:</b> Nếu máy tính chưa cài phần mềm Email (như Outlook), bạn hãy điền form ở trên hoặc bấm nút <b>Sao chép Email</b> để gửi thư nhé!');
-    }, 1200);
 }
 
 function copyEmailToClipboard() {
@@ -1111,20 +1098,6 @@ $qc_phone = $this->session->userdata('phone') ? $this->session->userdata('phone'
                 </button>
                 <a href="tel:0794358619" class="btn btn-default" style="font-size: 12px; font-weight: 600; border-radius: 6px; border: 1px solid #bbf7d0; color: #15803d; background: #f0fdf4; padding: 8px 10px; display: flex; align-items: center; justify-content: center; gap: 5px; text-decoration: none;">
                     <i class="fas fa-phone-alt"></i> 0794.358.619
-                </a>
-            </div>
-
-            <div style="margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 14px; font-size: 12px;">
-                <a id="modalEmailGmailLink" href="https://mail.google.com/mail/u/0/?fs=1&to=phambanam385@gmail.com&tf=cm" target="_blank" rel="noopener noreferrer" style="color: #4b5563; text-decoration: none;" title="Mở trang Gmail nếu bạn đã đăng nhập tài khoản Google trên trình duyệt">
-                    <i class="fab fa-google" style="color: #ea4335;"></i> Mở Gmail Web
-                </a>
-                <span style="color: #d1d5db;">|</span>
-                <a href="javascript:void(0)" onclick="handleOpenMailClient()" style="color: #4b5563; text-decoration: none;" title="Mở ứng dụng Outlook hoặc Mail có sẵn trên máy">
-                    <i class="fas fa-envelope" style="color: #3b82f6;"></i> Mở ứng dụng Mail
-                </a>
-                <span style="color: #d1d5db;">|</span>
-                <a href="<?php echo base_url('lien-he'); ?>" style="color: #4b5563; text-decoration: none;" title="Đến trang Liên hệ chính thức">
-                    <i class="fas fa-external-link-alt" style="color: #8b5cf6;"></i> Trang Liên Hệ
                 </a>
             </div>
         </div>
