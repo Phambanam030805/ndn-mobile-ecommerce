@@ -47,8 +47,8 @@
                     <i class="fa fa-phone" style="font-size: 32px; margin-bottom: 10px; color: #fff;"></i>
                     <h5 style="margin: 0 0 6px 0; font-weight: 700; color: #fff; font-size: 16px;">Tư vấn trả góp nhanh</h5>
                     <p style="font-size: 12px; color: rgba(255, 255, 255, 0.9); margin-bottom: 14px; line-height: 1.4;">Hỗ trợ xét duyệt hồ sơ online trong 5 phút</p>
-                    <a href="tel:0794258819" style="display: inline-block; background: #ffffff !important; color: #d70018 !important; border-radius: 24px; font-weight: 800; font-size: 14px; padding: 8px 22px; text-decoration: none; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); transition: transform 0.2s ease;">
-                        <i class="fa fa-phone-alt" style="margin-right: 5px;"></i> 0794.258.819
+                    <a href="tel:0794358619" style="display: inline-block; background: #ffffff !important; color: #d70018 !important; border-radius: 24px; font-weight: 800; font-size: 14px; padding: 8px 22px; text-decoration: none; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); transition: transform 0.2s ease;">
+                        <i class="fa fa-phone-alt" style="margin-right: 5px;"></i> 0794.358.619
                     </a>
                 </div>
             </div>

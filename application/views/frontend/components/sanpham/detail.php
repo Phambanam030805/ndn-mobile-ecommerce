@@ -308,7 +308,7 @@
 
                             <!-- Hotline tư vấn -->
                             <div class="hotline-box mt-3 text-center">
-                                <i class="fa fa-phone-alt text-danger"></i> Gọi đặt mua: <strong class="text-danger">0794258819</strong> <span class="text-muted">(8:00 - 22:00 hàng ngày)</span>
+                                <i class="fa fa-phone-alt text-danger"></i> Gọi đặt mua: <a href="tel:0794358619" style="color: #d70018; font-weight: 700; text-decoration: none;">0794.358.619</a> <span class="text-muted">(8:00 - 22:00 hàng ngày)</span>
                             </div>
                         </div>
                     </div>

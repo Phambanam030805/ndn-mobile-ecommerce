@@ -906,65 +906,81 @@ function toggleWishlist(productId) {
 // Hàm xử lý mở email tiện lợi trên mọi thiết bị
 function openEmailModal(e, email) {
     if (e) e.preventDefault();
+    if (!email) email = 'phambanam385@gmail.com';
     $('#modalEmailAddress').text(email);
-    $('#modalEmailGmailLink').attr('href', 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(email) + '&su=' + encodeURIComponent('Liên hệ từ NDN Mobile'));
-    $('#modalEmailClientLink').attr('href', 'mailto:' + email);
+    $('#modalEmailGmailLink').attr('href', 'https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=' + encodeURIComponent(email) + '&su=' + encodeURIComponent('NDN Mobile - Khách hàng liên hệ'));
+    $('#modalEmailClientLink').attr('href', 'mailto:' + email + '?subject=' + encodeURIComponent('NDN Mobile - Khách hàng liên hệ'));
     $('#emailContactModal').modal('show');
 }
 
 function copyEmailToClipboard() {
     var email = $('#modalEmailAddress').text();
+    var $btn = $('#btnCopyEmail');
+    var originalHtml = $btn.html();
+
+    function onSuccess() {
+        $btn.html('<i class="fas fa-check" style="color:#10b981;"></i> <span style="color:#059669; font-weight:700;">Đã sao chép vào bộ nhớ tạm!</span>')
+            .css({'background-color': '#ecfdf5', 'border-color': '#10b981'});
+        setTimeout(function() {
+            $btn.html(originalHtml).css({'background-color': '', 'border-color': ''});
+        }, 2500);
+    }
+
     if (navigator.clipboard) {
-        navigator.clipboard.writeText(email).then(function() {
-            var $btn = $('#btnCopyEmail');
-            var oldText = $btn.html();
-            $btn.html('<i class="fa fa-check"></i> Đã sao chép!').addClass('btn-success').removeClass('btn-default');
-            setTimeout(function() {
-                $btn.html(oldText).removeClass('btn-success').addClass('btn-default');
-            }, 2000);
+        navigator.clipboard.writeText(email).then(onSuccess).catch(function() {
+            fallbackCopy(email, onSuccess);
         });
     } else {
-        var tempInput = document.createElement("input");
-        tempInput.value = email;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-        document.execCommand("copy");
-        document.body.removeChild(tempInput);
-        alert('Đã sao chép địa chỉ email: ' + email);
+        fallbackCopy(email, onSuccess);
     }
+}
+
+function fallbackCopy(text, cb) {
+    var tempInput = document.createElement("input");
+    tempInput.value = text;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+    if (cb) cb();
 }
 </script>
 
 <!-- MODAL LIÊN HỆ EMAIL TIỆN ÍCH -->
 <div class="modal fade" id="emailContactModal" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel" style="z-index: 99999;">
-  <div class="modal-dialog modal-sm" role="document" style="margin-top: 15vh; max-width: 420px;">
-    <div class="modal-content" style="border-radius: 12px; overflow: hidden; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+  <div class="modal-dialog" role="document" style="margin-top: 15vh; max-width: 440px; width: 92%;">
+    <div class="modal-content" style="border-radius: 14px; overflow: hidden; border: none; box-shadow: 0 12px 35px rgba(0,0,0,0.25);">
       <div class="modal-header" style="background: linear-gradient(135deg, #d70018 0%, #b30014 100%); color: #fff; padding: 18px 20px;">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #fff; opacity: 0.9; font-size: 24px;"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="emailModalLabel" style="font-weight: 700; font-size: 17px; margin: 0;">
             <i class="fas fa-envelope-open-text" style="margin-right: 8px;"></i> Liên Hệ Qua Email
         </h4>
       </div>
-      <div class="modal-body text-center" style="padding: 25px 20px;">
+      <div class="modal-body text-center" style="padding: 24px 22px;">
         <p style="font-size: 13px; color: #666; margin-bottom: 8px;">Địa chỉ hòm thư chính thức:</p>
-        <div style="background: #fdf6f6; border: 1px dashed #d70018; border-radius: 8px; padding: 10px 15px; margin-bottom: 20px;">
-            <strong id="modalEmailAddress" style="color: #d70018; font-size: 16px; word-break: break-all;">phambanam385@gmail.com</strong>
+        <div style="background: #fdf6f6; border: 1.5px dashed #d70018; border-radius: 10px; padding: 12px 14px; margin-bottom: 20px; overflow-x: auto;">
+            <strong id="modalEmailAddress" style="color: #d70018; font-size: 16px; font-weight: 700; white-space: nowrap; word-break: normal; letter-spacing: 0.2px;">phambanam385@gmail.com</strong>
         </div>
         
-        <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; flex-direction: column; gap: 11px;">
+            <!-- Gửi tin nhắn trực tiếp qua Form liên hệ Website (Chuẩn thực tế nhất) -->
+            <a href="<?php echo base_url('lien-he'); ?>" class="btn btn-block" style="background: #d70018; color: #ffffff; padding: 11px 16px; font-weight: 700; border-radius: 8px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(215, 0, 24, 0.25);">
+                <i class="fas fa-paper-plane"></i> Gửi thư trực tiếp trên Website (Khuyên dùng)
+            </a>
+
             <!-- Mở trực tiếp Gmail trên trình duyệt -->
-            <a id="modalEmailGmailLink" href="#" target="_blank" class="btn btn-danger btn-block" style="background: #ea4335; border-color: #ea4335; padding: 10px 15px; font-weight: 600; border-radius: 6px;">
-                <i class="fab fa-google" style="margin-right: 6px;"></i> Soạn thư trực tiếp bằng Gmail
+            <a id="modalEmailGmailLink" href="#" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" class="btn btn-danger btn-block" style="background: #ea4335; border-color: #ea4335; padding: 11px 16px; font-weight: 600; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="fab fa-google"></i> Soạn thư trực tiếp bằng Gmail Web
             </a>
             
             <!-- Mở phần mềm mail mặc định trên máy (Outlook, Apple Mail, Windows Mail) -->
-            <a id="modalEmailClientLink" href="#" class="btn btn-default btn-block" style="padding: 10px 15px; font-weight: 600; border-radius: 6px; border: 1px solid #ccc;">
-                <i class="fas fa-paper-plane" style="margin-right: 6px;"></i> Mở ứng dụng Mail mặc định
+            <a id="modalEmailClientLink" href="#" class="btn btn-default btn-block" style="padding: 11px 16px; font-weight: 600; border-radius: 8px; border: 1px solid #d1d5db; color: #374151; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="fas fa-envelope"></i> Mở ứng dụng Mail trên máy (Outlook/Mail)
             </a>
             
             <!-- Sao chép địa chỉ email -->
-            <button id="btnCopyEmail" type="button" onclick="copyEmailToClipboard()" class="btn btn-default btn-block" style="padding: 10px 15px; font-weight: 600; border-radius: 6px; border: 1px solid #ccc;">
-                <i class="fas fa-copy" style="margin-right: 6px;"></i> Sao chép địa chỉ Email
+            <button id="btnCopyEmail" type="button" onclick="copyEmailToClipboard()" class="btn btn-default btn-block" style="padding: 11px 16px; font-weight: 600; border-radius: 8px; border: 1px solid #d1d5db; color: #374151; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="fas fa-copy"></i> Sao chép địa chỉ Email
             </button>
         </div>
       </div>
