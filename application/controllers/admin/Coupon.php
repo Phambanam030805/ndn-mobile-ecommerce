@@ -141,12 +141,20 @@ class Coupon extends CI_Controller {
 
 	public function status($id)
 	{
-		$row=$this->Mgiamgia->coupon_detail($id);
-		$status=($row['status']==1)?0:1;
-		$mydata= array('status' => $status);
+		$row = $this->Mgiamgia->coupon_detail($id);
+		if(!$row) {
+			$this->session->set_flashdata('error', 'Mã giảm giá không tồn tại hoặc đã bị xóa!');
+			redirect('admin/coupon');
+			return;
+		}
+
+		$status = ($row['status'] == 1) ? 0 : 1;
+		$mydata = array('status' => $status);
 		$this->Mgiamgia->coupon_update($mydata, $id);
-		$this->session->set_flashdata('success', 'Cập nhật trạng thái thành công');
-		redirect('admin/coupon','refresh');
+
+		$status_label = ($status == 1) ? 'Kích hoạt hoạt động' : 'Tạm khóa';
+		$this->session->set_flashdata('success', 'Đã chuyển mã giảm giá [' . $row['code'] . '] sang trạng thái ' . $status_label . ' thành công!');
+		redirect('admin/coupon');
 	}
 
 	public function trash($id)
